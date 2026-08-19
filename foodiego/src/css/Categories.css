@@ -1,0 +1,40 @@
+.categories {
+    padding: 80px 60px;
+    background: #ffffff;
+    text-align: center;
+}
+
+.categories h2 {
+    font-size: 40px;
+    color: #222;
+    margin-bottom: 50px;
+}
+
+.category-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.category-card{
+    width:170px;
+    height:170px;
+    border-radius:20px;
+    background:white;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+.category-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 15px 30px rgba(0,0,0,.15);
+}
+
+.category-card span {
+    font-size: 55px;
+}
+
+.category-card h3 {
+    margin-top: 15px;
+    font-size: 22px;
+}

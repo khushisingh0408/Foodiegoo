@@ -1,0 +1,12 @@
+{
+  "name": "foodiego-root",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix foodiego run dev",
+    "build": "npm --prefix foodiego run build",
+    "preview": "npm --prefix foodiego run preview"
+  },
+  "dependencies": {
+    "react-router-dom": "^7.18.2"
+  }
+}

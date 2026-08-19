@@ -1,0 +1,53 @@
+.search-results-page {
+  min-height: 100vh;
+  padding: 40px 50px;
+}
+
+.search-results-page h1 {
+  text-align: center;
+  color: #ff6b35;
+}
+
+.search-text {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.search-food-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 25px;
+}
+
+.search-food-container .food-card {
+  padding: 20px;
+  text-align: center;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.search-food-container .food-image {
+  width: 180px;
+  height: 150px;
+  object-fit: contain;
+}
+
+.search-food-container button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  background: #ff6b35;
+  color: white;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .search-food-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .search-results-page {
+    padding: 30px 20px;
+  }
+}

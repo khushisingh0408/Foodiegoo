@@ -1,0 +1,10 @@
+{
+  "buildCommand": "npm --prefix foodiego run build",
+  "outputDirectory": "foodiego/dist",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
+  ]
+}
