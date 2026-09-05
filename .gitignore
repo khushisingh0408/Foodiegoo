@@ -1,11 +1,17 @@
 # Dependencies
 node_modules/
 foodiego/node_modules/
+server/node_modules/
 
 # Production build
 dist/
 foodiego/dist/
 dist-ssr/
+
+# Database files
+server/database/*.db
+server/database/*.db-wal
+server/database/*.db-shm
 
 # Logs
 *.log
@@ -17,6 +23,7 @@ yarn-error.log*
 .env
 .env.local
 .env.*.local
+server/.env
 .vercel
 foodiego/.vercel
 

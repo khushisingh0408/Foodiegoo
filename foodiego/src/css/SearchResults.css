@@ -1,53 +1,195 @@
 .search-results-page {
-  min-height: 100vh;
-  padding: 40px 50px;
+  min-height: 80vh;
+  padding: 40px 40px;
+  background: #fff5f2;
+  box-sizing: border-box;
 }
 
 .search-results-page h1 {
   text-align: center;
   color: #ff6b35;
-}
-
-.search-text {
-  text-align: center;
   margin-bottom: 30px;
+  font-size: clamp(22px, 3.5vw, 34px);
 }
 
 .search-food-container {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 25px;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 24px;
+  max-width: 1280px;
+  margin: 0 auto;
 }
 
 .search-food-container .food-card {
-  padding: 20px;
+  padding: 20px 16px;
   text-align: center;
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 18px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.search-food-container .food-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(255, 107, 53, 0.15);
 }
 
 .search-food-container .food-image {
-  width: 180px;
-  height: 150px;
+  width: 130px;
+  height: 130px;
   object-fit: contain;
+  margin: 0 auto 14px auto;
+  display: block;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.1));
+  transition: transform 0.3s ease;
 }
 
-.search-food-container button {
-  padding: 10px 15px;
+.search-food-container .food-card:hover .food-image {
+  transform: scale(1.06) translateY(-3px);
+}
+
+.search-food-container .food-card h3 {
+  font-size: 16.5px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: #1e293b;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.25;
+}
+
+.search-food-container .food-card p {
+  color: #64748b;
+  font-size: 13.5px;
+  margin-bottom: 6px;
+}
+
+.search-food-container .food-card h4 {
+  color: #ff6b35;
+  margin-bottom: 12px;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.search-food-container button:not(.wishlist-btn) {
+  width: 100%;
+  padding: 11px;
   border: none;
-  border-radius: 5px;
+  border-radius: 9px;
   background: #ff6b35;
   color: white;
+  font-size: 14.5px;
+  font-weight: 700;
   cursor: pointer;
+  transition: background 0.2s ease;
+  margin-top: auto;
 }
 
-@media (max-width: 768px) {
-  .search-food-container {
-    grid-template-columns: repeat(2, 1fr);
+.search-food-container button:not(.wishlist-btn):hover {
+  background: #e85b2a;
+}
+
+.search-food-container .wishlist-btn {
+  width: 36px !important;
+  height: 32px !important;
+  padding: 0 !important;
+  margin: 0 auto 8px auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #fff0f0 !important;
+  color: #ff4d4d !important;
+  border: 1px solid #ffd1d1 !important;
+  border-radius: 8px !important;
+  font-size: 17px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.search-food-container .wishlist-btn:hover {
+  background: #ffe0e0 !important;
+  transform: scale(1.1) !important;
+}
+
+/* Tablet Screens (max-width: 868px) */
+@media (max-width: 868px) {
+  .search-results-page {
+    padding: 30px 18px;
   }
 
+  .search-food-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .search-food-container .food-card {
+    padding: 16px 12px;
+  }
+
+  .search-food-container .food-image {
+    width: 115px;
+    height: 115px;
+  }
+
+  .search-food-container .food-card h3 {
+    font-size: 15px;
+    min-height: 38px;
+  }
+
+  .search-food-container .food-card h4 {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+}
+
+/* Mobile Screens (max-width: 480px) */
+@media (max-width: 480px) {
   .search-results-page {
-    padding: 30px 20px;
+    padding: 24px 12px;
+  }
+
+  .search-food-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .search-food-container .food-card {
+    padding: 12px 8px;
+    border-radius: 14px;
+  }
+
+  .search-food-container .food-image {
+    width: 95px;
+    height: 95px;
+    margin-bottom: 8px;
+  }
+
+  .search-food-container .food-card h3 {
+    font-size: 13.5px;
+    min-height: 34px;
+  }
+
+  .search-food-container .food-card h4 {
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+
+  .search-food-container button:not(.wishlist-btn) {
+    padding: 9px 4px;
+    font-size: 13px;
+  }
+}
+
+/* Very Small Phones (max-width: 340px) */
+@media (max-width: 340px) {
+  .search-food-container {
+    grid-template-columns: 1fr;
   }
 }

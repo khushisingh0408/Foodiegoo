@@ -1,4 +1,5 @@
 {
+  "installCommand": "npm --prefix foodiego install",
   "buildCommand": "npm --prefix foodiego run build",
   "outputDirectory": "foodiego/dist",
   "rewrites": [

@@ -1,14 +1,11 @@
 import "../css/SearchResults.css";
-import burger from "../assets/images/classic Cheeseburger.png";
-import pizza from "../assets/images/margherita-pizza.png";
-import fries from "../assets/images/french fries.png";
-import drink from "../assets/images/soft drink.png";
-import dessert from "../assets/images/chocolate fudge cake.png";
-import noodles from "../assets/images/veg chowmein.png";
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
 import { WishlistContext } from "../context/WishlistContext";
+import { foods as localFoods } from "../data/foodsData";
+import { getFoodImage } from "../utils/foodImages";
+import api from "../services/api";
 
 function SearchResults() {
   const [searchParams] = useSearchParams();
@@ -16,91 +13,69 @@ function SearchResults() {
 
   const { addToCart } = useContext(CartContext);
   const { addToWishlist } = useContext(WishlistContext);
+  const [foodsList, setFoodsList] = useState(localFoods);
 
-  const foods = [
-    {
-      id: 1,
-      name: "Burger",
-      price: "₹199",
-      rating: "⭐ 4.8",
-      image: burger,
-    },
-    {
-      id: 2,
-      name: "Pizza",
-      price: "₹299",
-      rating: "⭐ 4.9",
-      image: pizza,
-    },
-    {
-      id: 3,
-      name: "Fries",
-      price: "₹149",
-      rating: "⭐ 4.7",
-      image: fries,
-    },
-    {
-      id: 4,
-      name: "Drink",
-      price: "₹99",
-      rating: "⭐ 4.6",
-      image: drink,
-    },
-    {
-      id: 5,
-      name: "Dessert",
-      price: "₹179",
-      rating: "⭐ 4.8",
-      image: dessert,
-    },
-    {
-      id: 6,
-      name: "Noodles",
-      price: "₹169",
-      rating: "⭐ 4.7",
-      image: noodles,
-    },
-  ];
+  useEffect(() => {
+    async function searchFoods() {
+      const res = await api.get(`/foods?search=${encodeURIComponent(searchTerm)}`);
+      if (res.success && Array.isArray(res.foods)) {
+        setFoodsList(res.foods);
+      } else {
+        const term = searchTerm.toLowerCase();
+        setFoodsList(
+          localFoods.filter(
+            (f) =>
+              f.name.toLowerCase().includes(term) ||
+              f.category.toLowerCase().includes(term)
+          )
+        );
+      }
+    }
 
-  const filteredFoods = foods.filter((food) =>
-    food.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+    searchFoods();
+  }, [searchTerm]);
 
   return (
     <section className="search-results-page">
-      
-
-
       <div className="search-food-container">
-        {filteredFoods.length === 0 ? (
-          <h2>No food found 😔</h2>
+        {foodsList.length === 0 ? (
+          <h2>No food found matching &quot;{searchTerm}&quot; 😔</h2>
         ) : (
-          filteredFoods.map((food) => (
-            <div className="food-card" key={food.id}>
-              <img
-                src={food.image}
-                alt={food.name}
-                className="food-image"
-              />
+          foodsList.map((food) => {
+            const displayImage = getFoodImage(food.image, food.id);
+            const foodObj = { ...food, image: displayImage };
 
-              <h3>{food.name}</h3>
+            return (
+              <div className="food-card" key={food.id}>
+                <img
+                  src={displayImage}
+                  alt={food.name}
+                  className="food-image"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src =
+                      "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80";
+                  }}
+                />
 
-              <p>{food.rating}</p>
+                <h3>{food.name}</h3>
+                <p>{food.rating}</p>
+                <h4>{food.price}</h4>
 
-              <h4>{food.price}</h4>
+                <button
+                  className="wishlist-btn"
+                  onClick={() => addToWishlist(foodObj)}
+                  aria-label="Add to wishlist"
+                >
+                  ❤️
+                </button>
 
-              <button
-                className="wishlist-btn"
-                onClick={() => addToWishlist(food)}
-              >
-                ❤️
-              </button>
-
-              <button onClick={() => addToCart(food)}>
-                Add to Cart
-              </button>
-            </div>
-          ))
+                <button onClick={() => addToCart(foodObj)}>
+                  Add to Cart
+                </button>
+              </div>
+            );
+          })
         )}
       </div>
     </section>

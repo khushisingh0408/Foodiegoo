@@ -1,54 +1,110 @@
 import "../css/Checkout.css";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { CartContext } from "../context/CartContext";
+import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import api from "../services/api";
 
 function Checkout() {
   const { cart, clearCart } = useContext(CartContext);
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
   const [address, setAddress] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("Cash on Delivery");
   const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Pre-fill delivery details from user profile if available
+  useEffect(() => {
+    if (user) {
+      if (user.name && !name) setName(user.name);
+      if (user.phone && !mobile) setMobile(user.phone);
+      if (user.address && !address) setAddress(user.address);
+    }
+  }, [user]);
 
   const totalPrice = cart.reduce(
     (total, food) =>
-      total + Number(food.price.replace("₹", "")) * food.quantity,
+      total + Number(String(food.price).replace("₹", "")) * (food.quantity || 1),
     0
   );
 
-  const handleOrder = () => {
-    if (!name || !mobile || !address) {
+  const handleOrder = async () => {
+    if (!name.trim() || !mobile.trim() || !address.trim()) {
       setMessage("Please fill all delivery details.");
       return;
     }
 
-    if (mobile.length !== 10) {
+    if (mobile.trim().length !== 10) {
       setMessage("Please enter a valid 10-digit mobile number.");
       return;
     }
-    const newOrder = {
-      id: Date.now(),
-      items: cart,
+
+    setIsSubmitting(true);
+    setMessage("");
+
+    const orderPayload = {
+      customerName: name.trim(),
+      customerMobile: mobile.trim(),
+      deliveryAddress: address.trim(),
+      paymentMethod,
+      items: cart.map((item) => ({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity || 1,
+        image: item.image || "",
+      })),
       total: totalPrice,
-      date: new Date().toLocaleString(),
-      status: "Order Placed",
     };
 
-    const existingOrders =
-      JSON.parse(localStorage.getItem("foodieGoOrders")) || [];
+    // Send to SQL backend
+    const res = await api.post("/orders", orderPayload);
 
-    localStorage.setItem(
-      "foodieGoOrders",
-      JSON.stringify([...existingOrders, newOrder])
-    );
-    clearCart();
-    setMessage("Order placed successfully! 🎉");
+    if (res.success && res.order) {
+      // Also save to local storage as fallback/cache
+      const existingOrders =
+        JSON.parse(localStorage.getItem("foodieGoOrders")) || [];
+      localStorage.setItem(
+        "foodieGoOrders",
+        JSON.stringify([res.order, ...existingOrders])
+      );
 
-    setTimeout(() => {
-      navigate("/");
-    }, 1500);
+      clearCart();
+      setMessage("Order placed & saved in SQL database! 🎉 Redirecting...");
+      setIsSubmitting(false);
+
+      setTimeout(() => {
+        navigate("/orders");
+      }, 1200);
+    } else {
+      // Offline fallback
+      const fallbackOrder = {
+        id: Date.now(),
+        items: cart,
+        total: totalPrice,
+        date: new Date().toLocaleString(),
+        status: "Order Placed",
+      };
+
+      const existingOrders =
+        JSON.parse(localStorage.getItem("foodieGoOrders")) || [];
+      localStorage.setItem(
+        "foodieGoOrders",
+        JSON.stringify([fallbackOrder, ...existingOrders])
+      );
+
+      clearCart();
+      setMessage("Order placed successfully! 🎉 Redirecting...");
+      setIsSubmitting(false);
+
+      setTimeout(() => {
+        navigate("/orders");
+      }, 1200);
+    }
   };
 
   return (
@@ -80,7 +136,7 @@ function Checkout() {
               </span>
 
               <span>
-                ₹{Number(food.price.replace("₹", "")) * food.quantity}
+                ₹{Number(String(food.price).replace("₹", "")) * (food.quantity || 1)}
               </span>
             </div>
           ))}
@@ -100,7 +156,7 @@ function Checkout() {
 
           <input
             type="tel"
-            placeholder="Enter mobile number"
+            placeholder="Enter 10-digit mobile number"
             value={mobile}
             onChange={(e) => setMobile(e.target.value)}
           />
@@ -109,18 +165,26 @@ function Checkout() {
             placeholder="Enter your delivery address"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
+            rows={3}
           ></textarea>
 
           <h2>Payment Method</h2>
 
-          <select>
-            <option>Cash on Delivery</option>
-            <option>UPI</option>
-            <option>Card</option>
+          <select
+            value={paymentMethod}
+            onChange={(e) => setPaymentMethod(e.target.value)}
+          >
+            <option value="Cash on Delivery">Cash on Delivery 💵</option>
+            <option value="UPI">UPI (Google Pay / PhonePe / Paytm) 📱</option>
+            <option value="Card">Credit / Debit Card 💳</option>
           </select>
 
-          <button className="place-order-btn" onClick={handleOrder}>
-            Place Order
+          <button
+            className="place-order-btn"
+            onClick={handleOrder}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Placing Order..." : `Place Order (₹${totalPrice})`}
           </button>
 
           {message && <p className="order-message">{message}</p>}

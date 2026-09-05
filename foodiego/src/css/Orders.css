@@ -1,40 +1,113 @@
 .orders-page {
-  min-height: 100vh;
-  padding: 50px 8%;
+  min-height: 80vh;
+  padding: 40px 16px;
   background: #fff5f2;
+  box-sizing: border-box;
 }
 
 .orders-page h1 {
   text-align: center;
   color: #ff6b35;
-  margin-bottom: 30px;
+  margin-bottom: 25px;
+  font-size: clamp(24px, 3.5vw, 36px);
+  font-weight: 800;
 }
 
 .orders-container {
-  max-width: 700px;
+  width: 100%;
+  max-width: 720px;
   margin: auto;
 }
 
 .order-card {
   background: white;
-  padding: 25px;
+  padding: 24px 22px;
   margin-bottom: 20px;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 18px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-sizing: border-box;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f1f5f9;
 }
 
 .order-card h2 {
-  margin-bottom: 10px;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.order-card p {
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 6px;
+  line-height: 1.4;
 }
 
 .order-card h3 {
   color: #ff6b35;
   text-align: right;
+  font-size: 20px;
+  font-weight: 800;
+  margin-top: 14px;
 }
 
 .order-items {
-  margin: 15px 0;
-  padding: 10px;
-  background: #fff5f2;
-  border-radius: 8px;
+  margin: 14px 0;
+  padding: 14px 16px;
+  background: #fff8f5;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 107, 53, 0.12);
+}
+
+.order-items strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #1e293b;
+  font-size: 14px;
+}
+
+.order-item-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+  font-size: 14px;
+  color: #475569;
+}
+
+@media (max-width: 480px) {
+  .orders-page {
+    padding: 24px 12px;
+  }
+
+  .order-card {
+    padding: 16px 14px;
+    border-radius: 14px;
+  }
+
+  .order-card h2 {
+    font-size: 16px;
+  }
+
+  .order-card p {
+    font-size: 13px;
+  }
+
+  .order-items {
+    padding: 10px 12px;
+  }
+
+  .order-item-row {
+    font-size: 13px;
+  }
 }
