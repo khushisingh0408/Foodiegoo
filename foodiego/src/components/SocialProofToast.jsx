@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { CheckCircle2, X } from "lucide-react";
 import "../css/SocialProofToast.css";
 import pizzaImg from "../assets/images/margherita-pizza.png";
 import lavaImg from "../assets/images/choco-lava-cake.png";
@@ -42,7 +43,7 @@ function SocialProofToast() {
   return (
     <div className="social-proof-toast">
       <button className="sp-close-btn" onClick={() => setVisible(false)} aria-label="Close">
-        ✕
+        <X size={14} />
       </button>
       <div className="sp-icon-box">
         <img src={currentPurchase.image} alt={currentPurchase.item} className="sp-real-food-img" loading="lazy" />
@@ -55,7 +56,9 @@ function SocialProofToast() {
           Just ordered {currentPurchase.item}
         </Link>
         <div className="sp-time-row">
-          <span className="sp-verified-badge">✓ Verified Order</span>
+          <span className="sp-verified-badge">
+            <CheckCircle2 size={12} className="inline-icon" /> Verified Order
+          </span>
           <span className="sp-time">• {currentPurchase.time}</span>
         </div>
       </div>

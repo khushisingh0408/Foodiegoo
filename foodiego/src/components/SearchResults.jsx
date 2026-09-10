@@ -1,5 +1,16 @@
 import { useLocation, Link } from "react-router-dom";
 import { useState, useContext } from "react";
+import {
+  Search,
+  CircleDot,
+  Store,
+  UtensilsCrossed,
+  Star,
+  Clock,
+  Plus,
+  Minus,
+  Home
+} from "lucide-react";
 import { foods } from "../data/foodsData";
 import { restaurants } from "../data/restaurantsData";
 import { CartContext } from "../context/CartContext";
@@ -79,7 +90,9 @@ function SearchResults() {
     <div className="search-results-page">
       <div className="search-results-header">
         <div>
-          <h1>Search Results for "{query}" 🔍</h1>
+          <h1 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            Search Results for "{query}" <Search size={24} color="#ff4757" />
+          </h1>
           <p>Showing matching restaurants and dishes in your delivery area</p>
         </div>
 
@@ -89,7 +102,9 @@ function SearchResults() {
             className={`veg-filter-btn ${isPureVegOnly ? "active" : ""}`}
             onClick={() => updatePureVegFilter(!isPureVegOnly)}
           >
-            <span>🟢 Pure Veg</span>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+              <CircleDot size={12} color="#10b981" /> Pure Veg
+            </span>
           </button>
 
           <select
@@ -108,7 +123,9 @@ function SearchResults() {
       {/* Section 1: Matched Restaurants */}
       {matchedRestaurants.length > 0 && (
         <div className="search-section">
-          <h2>🏬 Restaurants ({matchedRestaurants.length})</h2>
+          <h2 style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <Store size={20} color="#ff4757" /> Restaurants ({matchedRestaurants.length})
+          </h2>
           <div className="search-restaurants-grid">
             {matchedRestaurants.map((r) => (
               <Link to={`/restaurant/${r.id}`} className="search-rest-card" key={r.id}>
@@ -116,10 +133,14 @@ function SearchResults() {
                 <div className="search-rest-info">
                   <div className="s-rest-title-row">
                     <h3>{r.name}</h3>
-                    <span className="s-rest-rating">★ {r.rating}</span>
+                    <span className="s-rest-rating" style={{ display: "inline-flex", alignItems: "center", gap: "2px" }}>
+                      <Star size={12} fill="#fff" stroke="#fff" /> {r.rating}
+                    </span>
                   </div>
                   <p>{r.cuisines.join(", ")}</p>
-                  <small>⏱️ {r.deliveryTime} • {r.priceForTwo}</small>
+                  <small style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                    <Clock size={12} color="#ff4757" /> {r.deliveryTime} • {r.priceForTwo}
+                  </small>
                 </div>
               </Link>
             ))}
@@ -129,14 +150,16 @@ function SearchResults() {
 
       {/* Section 2: Matched Dishes */}
       <div className="search-section">
-        <h2>🍽️ Dishes ({matchedDishes.length})</h2>
+        <h2 style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          <UtensilsCrossed size={20} color="#ff4757" /> Dishes ({matchedDishes.length})
+        </h2>
 
         {matchedDishes.length === 0 && matchedRestaurants.length === 0 ? (
           <div className="no-search-results">
-            <h3>No results found for "{query}" 😔</h3>
+            <h3>No results found for "{query}"</h3>
             <p>Try searching for popular items like Pizza, Burger, Noodles, Biryani, or Cake.</p>
-            <Link to="/" className="home-link-btn">
-              Back to Home 🏠
+            <Link to="/" className="home-link-btn" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+              <Home size={16} /> Back to Home
             </Link>
           </div>
         ) : (
@@ -146,7 +169,9 @@ function SearchResults() {
               return (
                 <div className="search-dish-card" key={dish.id}>
                   <div className="s-dish-top">
-                    <span className="s-dish-diet">{dish.isVeg ? "🟢" : "🔴"}</span>
+                    <span className="s-dish-diet">
+                      <CircleDot size={12} color={dish.isVeg ? "#10b981" : "#ef4444"} />
+                    </span>
                     {dish.badge && <span className="s-dish-badge">{dish.badge}</span>}
                   </div>
 
@@ -156,13 +181,19 @@ function SearchResults() {
 
                   <div className="s-dish-meta">
                     <div className="s-dish-rating">
-                      <span>★ {dish.rating.replace("⭐", "").trim()}</span>
-                      <small>⏱️ {dish.prepTime || "20 mins"}</small>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: "2px" }}>
+                        <Star size={12} fill="#f59e0b" stroke="#f59e0b" /> {dish.rating.replace("⭐", "").trim()}
+                      </span>
+                      <small style={{ display: "inline-flex", alignItems: "center", gap: "3px" }}>
+                        <Clock size={12} color="#ff4757" /> {dish.prepTime || "20 mins"}
+                      </small>
                     </div>
 
                     <h4>{dish.name}</h4>
                     {dish.restaurantName && (
-                      <span className="s-dish-rest">🏬 {dish.restaurantName}</span>
+                      <span className="s-dish-rest" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                        <Store size={12} color="#64748b" /> {dish.restaurantName}
+                      </span>
                     )}
 
                     <div className="s-dish-bottom">
@@ -178,9 +209,9 @@ function SearchResults() {
                           </button>
                         ) : (
                           <div className="s-qty-stepper">
-                            <button onClick={() => decreaseQuantity(dish.id)}>−</button>
+                            <button onClick={() => decreaseQuantity(dish.id)}><Minus size={12} /></button>
                             <span>{qty}</span>
-                            <button onClick={() => increaseQuantity(dish.id)}>+</button>
+                            <button onClick={() => increaseQuantity(dish.id)}><Plus size={12} /></button>
                           </div>
                         )}
                       </div>

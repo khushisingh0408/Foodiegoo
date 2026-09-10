@@ -1,5 +1,27 @@
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  ShoppingBag,
+  UtensilsCrossed,
+  Heart,
+  Truck,
+  Trash2,
+  Plus,
+  Minus,
+  Sparkles,
+  ChefHat,
+  Zap,
+  Gift,
+  Bike,
+  Tag,
+  Receipt,
+  MapPin,
+  ArrowRight,
+  ArrowLeft,
+  ChevronDown,
+  ChevronUp,
+  CircleDot
+} from "lucide-react";
 import { CartContext } from "../context/CartContext";
 import { WishlistContext } from "../context/WishlistContext";
 import { coupons } from "../data/couponsData";
@@ -68,7 +90,9 @@ function Cart() {
   return (
     <div className="cart-page">
       <div className="cart-header">
-        <h1>Your Cart ({cart.length} {cart.length === 1 ? "Item" : "Items"}) 🛒</h1>
+        <h1 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          Your Cart ({cart.length} {cart.length === 1 ? "Item" : "Items"}) <ShoppingBag size={24} color="#ff4757" />
+        </h1>
         {cart.length > 0 && (
           <button className="clear-cart-text-btn" onClick={clearCart}>
             Clear All
@@ -78,15 +102,17 @@ function Cart() {
 
       {cart.length === 0 ? (
         <div className="empty-cart-view">
-          <div className="empty-cart-art">🍽️</div>
+          <div className="empty-cart-art" style={{ display: "flex", justifyContent: "center", margin: "20px 0" }}>
+            <ShoppingBag size={64} color="#ff4757" strokeWidth={1.5} />
+          </div>
           <h2>Your Cart is Empty</h2>
           <p>Good food is always just a few clicks away. Explore our delicious menu now!</p>
           <div className="empty-cart-actions">
-            <Link to="/shop" className="browse-menu-btn">
-              Explore Full Shop & Menu 🍕
+            <Link to="/shop" className="browse-menu-btn" style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+              Explore Full Shop & Menu <UtensilsCrossed size={16} />
             </Link>
-            <Link to="/wishlist" className="view-wishlist-cart-btn">
-              View Wishlist Favorites ❤️
+            <Link to="/wishlist" className="view-wishlist-cart-btn" style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+              View Wishlist Favorites <Heart size={16} />
             </Link>
           </div>
         </div>
@@ -98,13 +124,15 @@ function Cart() {
             <div className="free-delivery-card">
               <div className="free-delivery-header">
                 {remainingForFreeDelivery === 0 ? (
-                  <span className="free-unlocked">🎉 You unlocked <strong>FREE Delivery!</strong></span>
+                  <span className="free-unlocked" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                    <Sparkles size={16} color="#10b981" /> You unlocked <strong>FREE Delivery!</strong>
+                  </span>
                 ) : (
                   <span>
                     Add <strong>₹{remainingForFreeDelivery}</strong> more to get <strong>FREE Delivery</strong>
                   </span>
                 )}
-                <span className="free-icon">🚚</span>
+                <span className="free-icon"><Truck size={18} color="#ff4757" /></span>
               </div>
               <div className="progress-track">
                 <div
@@ -133,7 +161,7 @@ function Cart() {
                         <div className="item-name-brand-row">
                           <h4>{food.name}</h4>
                           <span className={`item-diet-dot ${food.isVeg !== false ? "veg" : "non-veg"}`}>
-                            {food.isVeg !== false ? "🟢" : "🔴"}
+                            <CircleDot size={12} color={food.isVeg !== false ? "#10b981" : "#ef4444"} />
                           </span>
                         </div>
                         <span className="item-unit-price">₹{itemPrice}</span>
@@ -156,7 +184,9 @@ function Cart() {
                         )}
 
                         {food.stock && food.stock <= 5 && (
-                          <span className="cart-stock-warning">⚡ Only {food.stock} left in stock</span>
+                          <span className="cart-stock-warning" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                            <Zap size={14} color="#f59e0b" /> Only {food.stock} left in stock
+                          </span>
                         )}
 
                         {/* Fast Move / Remove Actions */}
@@ -164,15 +194,17 @@ function Cart() {
                           <button
                             className="move-wishlist-btn"
                             onClick={() => handleMoveToWishlist(food)}
+                            style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}
                           >
-                            ❤️ Move to Wishlist
+                            <Heart size={14} color="#ff4757" /> Move to Wishlist
                           </button>
                           <span className="action-sep">•</span>
                           <button
                             className="remove-item-btn"
                             onClick={() => removeFromCart(identifier)}
+                            style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}
                           >
-                            🗑️ Remove
+                            <Trash2 size={14} color="#ef4444" /> Remove
                           </button>
                         </div>
                       </div>
@@ -180,9 +212,9 @@ function Cart() {
                       {/* Stepper */}
                       <div className="item-actions">
                         <div className="cart-stepper">
-                          <button onClick={() => decreaseQuantity(identifier)}>−</button>
+                          <button onClick={() => decreaseQuantity(identifier)}><Minus size={14} /></button>
                           <span>{food.quantity}</span>
-                          <button onClick={() => increaseQuantity(identifier)}>+</button>
+                          <button onClick={() => increaseQuantity(identifier)}><Plus size={14} /></button>
                         </div>
                         <span className="item-line-total">₹{totalLinePrice}</span>
                       </div>
@@ -195,7 +227,9 @@ function Cart() {
             {/* Recommended Add-ons Carousel */}
             {recommendedAddons.length > 0 && (
               <div className="recommended-addons-card">
-                <h4>🥤 Frequently Added With Your Order</h4>
+                <h4 style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <Sparkles size={16} color="#ff4757" /> Frequently Added With Your Order
+                </h4>
                 <div className="addons-carousel-row">
                   {recommendedAddons.map((addon) => (
                     <div className="addon-quick-card" key={addon.id}>
@@ -204,8 +238,8 @@ function Cart() {
                         <strong>{addon.name}</strong>
                         <span>{addon.price}</span>
                       </div>
-                      <button className="addon-add-btn" onClick={() => addToCart(addon)}>
-                        + Add
+                      <button className="addon-add-btn" onClick={() => addToCart(addon)} style={{ display: "inline-flex", alignItems: "center", gap: "2px" }}>
+                        <Plus size={13} /> Add
                       </button>
                     </div>
                   ))}
@@ -215,7 +249,9 @@ function Cart() {
 
             {/* Special Instructions */}
             <div className="cooking-notes-card">
-              <label>🧑‍🍳 Cooking & Delivery Instructions:</label>
+              <label style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                <ChefHat size={16} color="#ff4757" /> Cooking & Delivery Instructions:
+              </label>
               <textarea
                 rows={2}
                 placeholder="e.g. Leave at door, don't ring the bell, extra spicy sauce, extra napkins..."
@@ -226,7 +262,9 @@ function Cart() {
 
             {/* Delivery Speed Selector */}
             <div className="delivery-speed-card">
-              <label className="section-label">⚡ Choose Delivery Speed:</label>
+              <label className="section-label" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                <Zap size={16} color="#ff4757" /> Choose Delivery Speed:
+              </label>
               <div className="speed-options">
                 <div
                   className={`speed-card ${deliverySpeed === "standard" ? "selected" : ""}`}
@@ -256,7 +294,9 @@ function Cart() {
                     onChange={() => setDeliverySpeed("express")}
                   />
                   <div>
-                    <strong>⚡ Priority Express (15-20 mins)</strong>
+                    <strong style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                      <Zap size={14} color="#f59e0b" /> Priority Express (15-20 mins)
+                    </strong>
                     <small>Direct priority rider assignment</small>
                   </div>
                   <span className="speed-fee">+₹25</span>
@@ -273,7 +313,9 @@ function Cart() {
                   onChange={(e) => setIsGiftWrap(e.target.checked)}
                 />
                 <div>
-                  <strong>🎁 Add Premium Gift Wrapping (+₹30)</strong>
+                  <strong style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                    <Gift size={16} color="#ec4899" /> Add Premium Gift Wrapping (+₹30)
+                  </strong>
                   <p>Includes special thermal gift box, ribbon, and personalized card message.</p>
                 </div>
               </label>
@@ -293,7 +335,9 @@ function Cart() {
             <div className="driver-tip-card">
               <div className="tip-header">
                 <div>
-                  <strong>Tip Your Delivery Partner 🛵</strong>
+                  <strong style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                    Tip Your Delivery Partner <Bike size={16} color="#ff4757" />
+                  </strong>
                   <p>100% of your tip goes directly to your rider</p>
                 </div>
                 {driverTip > 0 && (
@@ -321,12 +365,16 @@ function Cart() {
           <div className="cart-right-col">
             {/* Coupon Application Box */}
             <div className="coupon-box-card">
-              <h3>🏷️ Coupons & Offers</h3>
+              <h3 style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                <Tag size={18} color="#ff4757" /> Coupons & Offers
+              </h3>
 
               {appliedCoupon ? (
                 <div className="applied-coupon-banner">
                   <div>
-                    <strong>Code {appliedCoupon.code} Applied! 🎉</strong>
+                    <strong style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                      Code {appliedCoupon.code} Applied! <Sparkles size={14} color="#10b981" />
+                    </strong>
                     <p>{appliedCoupon.title} (-₹{couponDiscount})</p>
                   </div>
                   <button className="remove-coupon-btn" onClick={removeCoupon}>
@@ -355,8 +403,13 @@ function Cart() {
               <button
                 className="view-available-coupons-btn"
                 onClick={() => setShowCouponsModal(!showCouponsModal)}
+                style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "4px" }}
               >
-                {showCouponsModal ? "Hide Available Coupons ▲" : "View Available Coupons (5) ▼"}
+                {showCouponsModal ? (
+                  <>Hide Available Coupons <ChevronUp size={14} /></>
+                ) : (
+                  <>View Available Coupons (5) <ChevronDown size={14} /></>
+                )}
               </button>
 
               {/* Available Coupons Dropdown */}
@@ -385,7 +438,9 @@ function Cart() {
 
             {/* Bill Summary */}
             <div className="bill-summary-card">
-              <h3>Bill Summary 🧾</h3>
+              <h3 style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                Bill Summary <Receipt size={18} color="#ff4757" />
+              </h3>
 
               <div className="bill-row">
                 <span>Item Total</span>
@@ -411,14 +466,18 @@ function Cart() {
 
               {deliverySpeed === "express" && (
                 <div className="bill-row">
-                  <span>⚡ Priority Express Delivery</span>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                    <Zap size={14} color="#f59e0b" /> Priority Express Delivery
+                  </span>
                   <span>₹{expressFee}</span>
                 </div>
               )}
 
               {isGiftWrap && (
                 <div className="bill-row">
-                  <span>🎁 Gift Wrapping & Card</span>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                    <Gift size={14} color="#ec4899" /> Gift Wrapping & Card
+                  </span>
                   <span>₹{giftWrapFee}</span>
                 </div>
               )}
@@ -449,18 +508,21 @@ function Cart() {
 
               {/* Delivery Address Preview */}
               <div className="cart-delivery-loc-preview">
-                <span>📍 Delivering to: <strong>{deliveryLocation?.tag}</strong> ({deliveryLocation?.address?.split(",")[0]})</span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                  <MapPin size={14} color="#ff4757" /> Delivering to: <strong>{deliveryLocation?.tag}</strong> ({deliveryLocation?.address?.split(",")[0]})
+                </span>
               </div>
 
               <button
                 className="proceed-checkout-btn"
                 onClick={() => navigate("/checkout")}
+                style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
               >
-                Proceed to Checkout • ₹{finalTotal} →
+                Proceed to Checkout • ₹{finalTotal} <ArrowRight size={16} />
               </button>
 
-              <Link to="/shop" className="continue-shopping-link">
-                ← Continue Shopping
+              <Link to="/shop" className="continue-shopping-link" style={{ display: "inline-flex", alignItems: "center", gap: "6px", justifyContent: "center" }}>
+                <ArrowLeft size={15} /> Continue Shopping
               </Link>
             </div>
           </div>

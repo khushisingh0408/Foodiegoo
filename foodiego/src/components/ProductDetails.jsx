@@ -1,5 +1,39 @@
 import { useState, useEffect, useContext, useRef } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
+import {
+  Camera,
+  Video,
+  RotateCw,
+  Leaf,
+  Zap,
+  ShieldCheck,
+  Store,
+  CheckCircle2,
+  Star,
+  Heart,
+  Share2,
+  SlidersHorizontal,
+  CreditCard,
+  Flame,
+  Tag,
+  Copy,
+  Truck,
+  Banknote,
+  RotateCcw,
+  ShoppingBag,
+  Bell,
+  Package,
+  Plus,
+  Minus,
+  BookOpen,
+  FileText,
+  Sparkles,
+  HelpCircle,
+  Clock,
+  UtensilsCrossed,
+  MessageSquare,
+  X
+} from "lucide-react";
 import { foods } from "../data/foodsData";
 import { coupons } from "../data/couponsData";
 import { CartContext } from "../context/CartContext";
@@ -61,46 +95,33 @@ function ProductDetails() {
   const [pincodeStatus, setPincodeStatus] = useState({
     checked: true,
     available: true,
-    message: "Delivery in 20-25 mins to Sector 62, Noida",
-    deliveryFeeText: "FREE Delivery Available",
-    codAvailable: true,
-    returnEligible: true
+    deliveryFeeText: "FREE Delivery on this item",
+    message: "Delivery available in 18-25 mins"
   });
 
-  // Active Info Tab
-  const [activeInfoTab, setActiveInfoTab] = useState("description"); // description | specs | features | warranty | reviews | qa
+  // Tab State: description | specs | features | warranty | reviews | qa
+  const [activeInfoTab, setActiveInfoTab] = useState("description");
 
   // Q&A State
-  const [qaList, setQaList] = useState(product.faqs || []);
+  const [qaList, setQaList] = useState(product.faqs || [
+    { q: "Is this prepared fresh on order?", a: "Yes, 100% prepared fresh à la minute by our master chefs upon receiving your order." },
+    { q: "Can I get extra sauce or dips?", a: "Yes, you can customize and add extra dips in the Add-ons section above." }
+  ]);
   const [newQuestion, setNewQuestion] = useState("");
   const [showQaModal, setShowQaModal] = useState(false);
 
-  // Share Modal State
+  // Share Modal
   const [showShareModal, setShowShareModal] = useState(false);
 
-  // Bundle Add-on State
-  const [includeBundleAddon, setIncludeBundleAddon] = useState(true);
-
-  // Image Zoom Mouse Move
-  const handleMouseMove = (e) => {
-    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - left) / width) * 100;
-    const y = ((e.clientY - top) / height) * 100;
-    setZoomPos({ x, y });
-  };
-
-  const isWishlisted = wishlist.some((w) => w.id === product.id);
-  const isSubscribedPriceDrop = priceDropAlerts.includes(product.id);
-
-  // Financial Calculations for Variants
-  const basePriceNum = Number(String(product.price).replace("₹", ""));
-  const sizeExtra = selectedSize ? selectedSize.price : 0;
-  const crustExtra = selectedCrust ? selectedCrust.price : 0;
-  const addOnsExtra = selectedAddOns.reduce((sum, a) => sum + a.price, 0);
-  const singleUnitCalculated = basePriceNum + sizeExtra + crustExtra + addOnsExtra;
+  // Calculate live single unit price based on variant selections
+  const basePriceNum = Number(String(product.price).replace("₹", "")) || 199;
+  const sizeSurcharge = selectedSize ? selectedSize.price : 0;
+  const crustSurcharge = selectedCrust ? selectedCrust.price : 0;
+  const addOnsSurcharge = selectedAddOns.reduce((sum, item) => sum + (item.price || 0), 0);
+  const singleUnitCalculated = basePriceNum + sizeSurcharge + crustSurcharge + addOnsSurcharge;
   const totalLinePrice = singleUnitCalculated * quantity;
 
-  // Toggle Add-on
+  // Toggle add-ons
   const toggleAddOn = (addon) => {
     if (selectedAddOns.some((a) => a.name === addon.name)) {
       setSelectedAddOns(selectedAddOns.filter((a) => a.name !== addon.name));
@@ -109,104 +130,128 @@ function ProductDetails() {
     }
   };
 
-  const handleAddToCart = () => {
-    const customOptions = {
-      size: selectedSize,
-      crust: selectedCrust,
-      addOns: selectedAddOns,
-      extraPrice: sizeExtra + crustExtra + addOnsExtra,
-    };
-    addToCart(product, customOptions, quantity);
+  // Zoom preview position calculations
+  const handleMouseMove = (e) => {
+    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - left) / width) * 100;
+    const y = ((e.clientY - top) / height) * 100;
+    setZoomPos({ x, y });
   };
 
+  // Check PIN Code handler
+  const handleCheckPincode = (e) => {
+    e.preventDefault();
+    if (pincodeInput.trim().length === 6) {
+      setPincodeStatus({
+        checked: true,
+        available: true,
+        deliveryFeeText: "FREE Delivery on this item",
+        message: `Express Delivery available in Sector ${pincodeInput.slice(-2)} (15-20 Mins)`
+      });
+      showToast(`Deliverable to PIN ${pincodeInput}!`, "success");
+    } else {
+      setPincodeStatus({
+        checked: true,
+        available: false,
+        deliveryFeeText: "Standard Delivery (₹30)",
+        message: "Please enter a valid 6-digit PIN code"
+      });
+    }
+  };
+
+  // Add customized item to cart
+  const handleAddToCart = () => {
+    const customizedItem = {
+      ...product,
+      price: `₹${singleUnitCalculated}`,
+      customizedPrice: singleUnitCalculated,
+      selectedSize: selectedSize?.name,
+      selectedCrust: selectedCrust?.name,
+      selectedAddOns: selectedAddOns.map((a) => a.name),
+      quantity: quantity
+    };
+
+    addToCart(customizedItem);
+    showToast(`Added ${quantity}x ${product.name} to your cart!`, "success");
+  };
+
+  // Buy Now
   const handleBuyNow = () => {
     handleAddToCart();
     navigate("/checkout");
   };
 
-  const handleCheckPincode = (e) => {
-    e.preventDefault();
-    if (pincodeInput.length === 6) {
-      setPincodeStatus({
-        checked: true,
-        available: true,
-        message: `Express Delivery Available in 20-25 mins (${pincodeInput})`,
-        deliveryFeeText: "FREE Delivery on orders ₹300+",
-        codAvailable: true,
-        returnEligible: true
-      });
-      showToast(`Pincode ${pincodeInput} is serviceable! ⚡`, "success");
-    } else {
-      showToast("Please enter a valid 6-digit PIN code.", "error");
-    }
-  };
-
+  // Handle Q&A submit
   const handleAddQuestion = (e) => {
     e.preventDefault();
     if (newQuestion.trim()) {
-      const newQa = {
-        q: newQuestion.trim(),
-        a: "Our chef & culinary team will review and answer this shortly!"
-      };
-      setQaList([newQa, ...qaList]);
+      setQaList([
+        { q: newQuestion, a: "Thank you for asking! Our culinary team will review and reply within 1 hour." },
+        ...qaList
+      ]);
       setNewQuestion("");
       setShowQaModal(false);
-      showToast("Your question has been submitted!", "success");
+      showToast("Question submitted successfully!", "success");
     }
   };
 
-  // Frequently Bought Together Bundle Item
-  const bundleCompanionId = product.frequentlyBoughtTogether?.[0] || 11;
-  const bundleCompanion = foods.find((f) => f.id === bundleCompanionId) || foods[10];
-  const bundleCompanionPrice = Number(String(bundleCompanion?.price || "149").replace("₹", ""));
-  const bundleCombinedPrice = singleUnitCalculated + (includeBundleAddon ? bundleCompanionPrice : 0);
-  const bundleDiscountSavings = includeBundleAddon ? 40 : 0;
-  const bundleFinalPayable = bundleCombinedPrice - bundleDiscountSavings;
+  // Frequently Bought Together Bundle Calculation
+  const companionId = product.frequentlyBoughtTogether ? product.frequentlyBoughtTogether[0] : null;
+  const bundleCompanion = foods.find((f) => f.id === companionId) || (product.id !== 11 ? foods.find((f) => f.id === 11) : foods.find((f) => f.id === 16));
+  const bundleCompanionPrice = bundleCompanion ? Number(String(bundleCompanion.price).replace("₹", "")) : 99;
+  const bundleDiscount = 40;
+  const bundleFinalPayable = singleUnitCalculated + bundleCompanionPrice - bundleDiscount;
 
   const handleAddBundleToCart = () => {
     handleAddToCart();
-    if (includeBundleAddon && bundleCompanion) {
+    if (bundleCompanion) {
       addToCart(bundleCompanion);
     }
-    showToast("Combo bundle added to your cart with ₹40 savings! 🎉", "success");
+    showToast("Added entire Combo Bundle to cart with ₹40 savings!", "success");
   };
 
-  // Similar Products List
-  const similarProducts = foods
-    .filter((f) => f.id !== product.id && (f.category === product.category || f.brand === product.brand))
-    .slice(0, 4);
+  // Wishlist state
+  const isWishlisted = wishlist.some((w) => w.id === product.id);
+
+  // Price Drop subscription state
+  const isSubscribedPriceDrop = priceDropAlerts.some((id) => id === product.id);
+
+  // Recommendations: Similar Products
+  const similarProducts = product.similarProductIds
+    ? foods.filter((f) => product.similarProductIds.includes(f.id))
+    : foods.filter((f) => f.category === product.category && f.id !== product.id).slice(0, 4);
 
   return (
     <div className="product-details-page">
-      {/* Breadcrumb Bar */}
-      <nav className="pdp-breadcrumb">
+      {/* Breadcrumbs */}
+      <div className="pdp-breadcrumbs">
         <Link to="/">Home</Link>
         <span>/</span>
         <Link to="/shop">Shop</Link>
         <span>/</span>
         <Link to={`/shop?category=${encodeURIComponent(product.category)}`}>{product.category}</Link>
         <span>/</span>
-        <span className="pdp-active-crumb">{product.name}</span>
-      </nav>
+        <span className="current">{product.name}</span>
+      </div>
 
-      {/* Main Top Grid: Gallery on Left + Info & Actions on Right */}
+      {/* Main Grid: Gallery on Left, Specs & Buy Box on Right */}
       <div className="pdp-main-grid">
-        {/* Left Column: Product Visual Media Gallery */}
+        {/* Left Column: Multi-Image Gallery, Video, 360 View */}
         <div className="pdp-gallery-column">
-          {/* Media Mode Tabs (Photos / Video / 360°) */}
-          <div className="media-mode-tabs">
+          {/* Media Mode Tabs */}
+          <div className="pdp-media-mode-tabs">
             <button
               className={`media-tab-btn ${activeMediaTab === "photos" ? "active" : ""}`}
               onClick={() => setActiveMediaTab("photos")}
             >
-              📷 Photos ({images.length})
+              <Camera size={13} className="inline-icon" /> Photos ({images.length})
             </button>
             {product.videoUrl && (
               <button
                 className={`media-tab-btn ${activeMediaTab === "video" ? "active" : ""}`}
                 onClick={() => setActiveMediaTab("video")}
               >
-                🎥 Video Clip
+                <Video size={13} className="inline-icon" /> Video Clip
               </button>
             )}
             {product.has360 && (
@@ -214,7 +259,7 @@ function ProductDetails() {
                 className={`media-tab-btn ${activeMediaTab === "360" ? "active" : ""}`}
                 onClick={() => setActiveMediaTab("360")}
               >
-                🔄 360° View
+                <RotateCw size={13} className="inline-icon" /> 360° View
               </button>
             )}
           </div>
@@ -263,7 +308,9 @@ function ProductDetails() {
                   <img src={product.image} alt="360 view" />
                 </div>
                 <div className="rotate-slider-wrap">
-                  <label>Drag to Rotate 360° 🔄</label>
+                  <label>
+                    <RotateCw size={12} className="inline-icon" /> Drag to Rotate 360°
+                  </label>
                   <input
                     type="range"
                     min={-180}
@@ -294,15 +341,15 @@ function ProductDetails() {
           {/* Guarantee Badges Row */}
           <div className="pdp-guarantee-badges">
             <div className="guarantee-badge-item">
-              <span className="g-icon">🌿</span>
+              <Leaf size={16} className="g-icon" color="#16a34a" />
               <span>100% Fresh Guaranteed</span>
             </div>
             <div className="guarantee-badge-item">
-              <span className="g-icon">⚡</span>
+              <Zap size={16} className="g-icon" color="#ea580c" />
               <span>20-Min Delivery</span>
             </div>
             <div className="guarantee-badge-item">
-              <span className="g-icon">🛡️</span>
+              <ShieldCheck size={16} className="g-icon" color="#2563eb" />
               <span>Contactless Safe Box</span>
             </div>
           </div>
@@ -312,10 +359,15 @@ function ProductDetails() {
         <div className="pdp-info-column">
           {/* Top Brand & Category Row */}
           <div className="pdp-top-brand-row">
-            <span className="brand-badge-pill">🏬 {product.brand || product.restaurantName}</span>
-            <span className="verified-store-tag">✓ Official Verified Menu</span>
+            <span className="brand-badge-pill">
+              <Store size={12} className="inline-icon" /> {product.brand || product.restaurantName}
+            </span>
+            <span className="verified-store-tag">
+              <CheckCircle2 size={12} className="inline-icon" /> Official Verified Menu
+            </span>
             <span className={`diet-tag ${product.isVeg ? "veg" : "non-veg"}`}>
-              {product.isVeg ? "🟢 100% Pure Veg" : "🔴 Non-Veg"}
+              <span className={`diet-indicator-dot ${product.isVeg ? "veg" : "non-veg"}`} />
+              {product.isVeg ? "100% Pure Veg" : "Non-Veg"}
             </span>
           </div>
 
@@ -324,7 +376,9 @@ function ProductDetails() {
           {/* Rating, Reviews & Wishlist/Share buttons */}
           <div className="pdp-rating-action-bar">
             <div className="pdp-rating-group">
-              <span className="star-score">{product.rating}</span>
+              <span className="star-score">
+                <Star size={13} fill="#ca8a04" color="#ca8a04" className="inline-icon" /> {product.ratingScore || 4.8}
+              </span>
               <span className="rating-count-txt">({product.reviewsTotal || 1840} Ratings & 350+ Reviews)</span>
             </div>
 
@@ -334,7 +388,8 @@ function ProductDetails() {
                 onClick={() => (isWishlisted ? removeFromWishlist(product.id) : addToWishlist(product))}
                 title="Wishlist"
               >
-                {isWishlisted ? "❤️ Wishlisted" : "🤍 Wishlist"}
+                <Heart size={14} fill={isWishlisted ? "#ef4444" : "none"} color={isWishlisted ? "#ef4444" : "#64748b"} className="inline-icon" />
+                {isWishlisted ? "Wishlisted" : "Wishlist"}
               </button>
 
               <button
@@ -342,7 +397,7 @@ function ProductDetails() {
                 onClick={() => setShowShareModal(true)}
                 title="Share"
               >
-                🔗 Share
+                <Share2 size={14} className="inline-icon" /> Share
               </button>
 
               <button
@@ -350,7 +405,7 @@ function ProductDetails() {
                 onClick={() => addToCompare(product)}
                 title="Compare"
               >
-                ⚖️ Compare
+                <SlidersHorizontal size={14} className="inline-icon" /> Compare
               </button>
             </div>
           </div>
@@ -366,20 +421,25 @@ function ProductDetails() {
             </div>
             <div className="tax-and-emi-row">
               <small className="inclusive-tax-txt">Inclusive of all restaurant taxes</small>
-              <span className="emi-tag">💳 No Cost EMI from ₹99/mo on cards</span>
+              <span className="emi-tag">
+                <CreditCard size={12} className="inline-icon" /> No Cost EMI from ₹99/mo on cards
+              </span>
             </div>
           </div>
 
           {/* Stock Warning Banner */}
           {product.stock && product.stock <= 5 && (
             <div className="limited-stock-banner">
-              <span>🔥 Hurry! Only <strong>{product.stock} items left</strong> in stock at your kitchen hub.</span>
+              <Flame size={14} color="#dc2626" className="inline-icon" />
+              <span>Hurry! Only <strong>{product.stock} items left</strong> in stock at your kitchen hub.</span>
             </div>
           )}
 
           {/* Bank & Coupon Offers Carousel */}
           <div className="pdp-offers-card">
-            <h4>🏷️ Available Offers & Coupons</h4>
+            <h4>
+              <Tag size={14} className="inline-icon" color="#ff5200" /> Available Offers & Coupons
+            </h4>
             <div className="pdp-offers-list">
               <div className="pdp-offer-item">
                 <div className="offer-item-left">
@@ -390,10 +450,10 @@ function ProductDetails() {
                   className="copy-coupon-btn"
                   onClick={() => {
                     navigator.clipboard.writeText("FOODIE50");
-                    showToast("Copied code FOODIE50! 📋", "success");
+                    showToast("Copied code FOODIE50!", "success");
                   }}
                 >
-                  Copy
+                  <Copy size={11} className="inline-icon" /> Copy
                 </button>
               </div>
 
@@ -406,15 +466,16 @@ function ProductDetails() {
                   className="copy-coupon-btn"
                   onClick={() => {
                     navigator.clipboard.writeText("FREEDEL");
-                    showToast("Copied code FREEDEL! 📋", "success");
+                    showToast("Copied code FREEDEL!", "success");
                   }}
                 >
-                  Copy
+                  <Copy size={11} className="inline-icon" /> Copy
                 </button>
               </div>
 
               <div className="pdp-bank-offer-row">
-                <span>💳 <strong>Bank Offer:</strong> 10% Instant Discount with HDFC & ICICI Cards</span>
+                <CreditCard size={13} className="inline-icon" />
+                <span><strong>Bank Offer:</strong> 10% Instant Discount with HDFC & ICICI Cards</span>
               </div>
             </div>
           </div>
@@ -490,7 +551,9 @@ function ProductDetails() {
 
           {/* PIN Code Delivery Checker */}
           <div className="pincode-checker-card">
-            <h4>🚚 Check Delivery Speed & Availability</h4>
+            <h4>
+              <Truck size={15} className="inline-icon" color="#ff5200" /> Check Delivery Speed & Availability
+            </h4>
             <form className="pincode-form" onSubmit={handleCheckPincode}>
               <input
                 type="text"
@@ -509,9 +572,15 @@ function ProductDetails() {
                   <strong>{pincodeStatus.message}</strong>
                 </div>
                 <div className="pincode-perks">
-                  <span>🛵 {pincodeStatus.deliveryFeeText}</span>
-                  <span>💵 Cash on Delivery Available</span>
-                  <span>🔄 7-Day Replacement / Instant Refund</span>
+                  <span>
+                    <Truck size={12} className="inline-icon" /> {pincodeStatus.deliveryFeeText}
+                  </span>
+                  <span>
+                    <Banknote size={12} className="inline-icon" /> Cash on Delivery Available
+                  </span>
+                  <span>
+                    <RotateCcw size={12} className="inline-icon" /> 7-Day Replacement / Instant Refund
+                  </span>
                 </div>
               </div>
             )}
@@ -522,19 +591,25 @@ function ProductDetails() {
             <div className="quantity-selector-wrap">
               <label>Quantity:</label>
               <div className="qty-stepper-box">
-                <button onClick={() => setQuantity((q) => Math.max(1, q - 1))}>−</button>
+                <button onClick={() => setQuantity((q) => Math.max(1, q - 1))}>
+                  <Minus size={13} />
+                </button>
                 <span>{quantity}</span>
-                <button onClick={() => setQuantity((q) => q + 1)}>+</button>
+                <button onClick={() => setQuantity((q) => q + 1)}>
+                  <Plus size={13} />
+                </button>
               </div>
             </div>
 
             <div className="cta-buttons-row">
               <button className="add-cart-large-btn" onClick={handleAddToCart}>
-                <span>🛒 Add to Cart • ₹{totalLinePrice}</span>
+                <ShoppingBag size={18} className="inline-icon" />
+                <span>Add to Cart • ₹{totalLinePrice}</span>
               </button>
 
               <button className="buy-now-large-btn" onClick={handleBuyNow}>
-                <span>⚡ Buy Now</span>
+                <Zap size={18} className="inline-icon" />
+                <span>Buy Now</span>
               </button>
             </div>
           </div>
@@ -545,7 +620,8 @@ function ProductDetails() {
               className={`subscribe-price-alert-btn ${isSubscribedPriceDrop ? "subscribed" : ""}`}
               onClick={() => subscribePriceDrop(product)}
             >
-              🔔 {isSubscribedPriceDrop ? "Subscribed to Price Drops ✓" : "Notify me if price drops"}
+              <Bell size={13} className="inline-icon" />
+              {isSubscribedPriceDrop ? "Subscribed to Price Drops" : "Notify me if price drops"}
             </button>
           </div>
         </div>
@@ -554,7 +630,9 @@ function ProductDetails() {
       {/* Frequently Bought Together Bundle */}
       {bundleCompanion && (
         <section className="pdp-bundle-section">
-          <h3>📦 Frequently Bought Together</h3>
+          <h3>
+            <Package size={18} className="inline-icon" color="#ff5200" /> Frequently Bought Together
+          </h3>
           <div className="bundle-card-container">
             <div className="bundle-items-row">
               {/* Item 1 */}
@@ -602,37 +680,37 @@ function ProductDetails() {
             className={`pdp-tab ${activeInfoTab === "description" ? "active" : ""}`}
             onClick={() => setActiveInfoTab("description")}
           >
-            📖 Description
+            <BookOpen size={13} className="inline-icon" /> Description
           </button>
           <button
             className={`pdp-tab ${activeInfoTab === "specs" ? "active" : ""}`}
             onClick={() => setActiveInfoTab("specs")}
           >
-            📋 Specifications
+            <FileText size={13} className="inline-icon" /> Specifications
           </button>
           <button
             className={`pdp-tab ${activeInfoTab === "features" ? "active" : ""}`}
             onClick={() => setActiveInfoTab("features")}
           >
-            ✨ Key Features
+            <Sparkles size={13} className="inline-icon" /> Key Features
           </button>
           <button
             className={`pdp-tab ${activeInfoTab === "warranty" ? "active" : ""}`}
             onClick={() => setActiveInfoTab("warranty")}
           >
-            🛡️ Freshness & Delivery
+            <ShieldCheck size={13} className="inline-icon" /> Freshness & Delivery
           </button>
           <button
             className={`pdp-tab ${activeInfoTab === "reviews" ? "active" : ""}`}
             onClick={() => setActiveInfoTab("reviews")}
           >
-            ⭐ Reviews ({product.reviewsTotal || 1840})
+            <Star size={13} className="inline-icon" /> Reviews ({product.reviewsTotal || 1840})
           </button>
           <button
             className={`pdp-tab ${activeInfoTab === "qa" ? "active" : ""}`}
             onClick={() => setActiveInfoTab("qa")}
           >
-            ❓ Q&A ({qaList.length})
+            <HelpCircle size={13} className="inline-icon" /> Q&A ({qaList.length})
           </button>
         </div>
 
@@ -643,7 +721,7 @@ function ProductDetails() {
               <h3>About {product.name}</h3>
               <p className="pdp-long-description">{product.description}</p>
               <div className="chef-notes-callout">
-                <strong>👨‍🍳 Chef's Culinary Note:</strong>
+                <strong>Chef's Culinary Note:</strong>
                 <p>
                   Every order is prepared strictly à la minute using non-GMO grains, real dairy cheese, and authentic natural seasonings.
                 </p>
@@ -692,18 +770,26 @@ function ProductDetails() {
               <h3>Key Features & Highlights</h3>
               <ul className="features-bullet-list">
                 {product.features?.map((f, idx) => (
-                  <li key={idx}>✓ {f}</li>
+                  <li key={idx} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <CheckCircle2 size={15} color="#10b981" /> {f}
+                  </li>
                 )) || (
                   <>
-                    <li>✓ 100% Genuine fresh ingredients</li>
-                    <li>✓ Prepared in temperature-controlled hygiene stations</li>
-                    <li>✓ Zero artificial preservatives or food dyes</li>
+                    <li style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <CheckCircle2 size={15} color="#10b981" /> 100% Genuine fresh ingredients
+                    </li>
+                    <li style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <CheckCircle2 size={15} color="#10b981" /> Prepared in temperature-controlled hygiene stations
+                    </li>
+                    <li style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <CheckCircle2 size={15} color="#10b981" /> Zero artificial preservatives or food dyes
+                    </li>
                   </>
                 )}
               </ul>
 
               <div className="whats-included-box">
-                <h4>📦 What's Included in Your Order:</h4>
+                <h4>What's Included in Your Order:</h4>
                 <p>{product.whatsIncluded || `1x Fresh ${product.name}, Premium Cutlery, Condiment Sachets`}</p>
               </div>
             </div>
@@ -715,15 +801,15 @@ function ProductDetails() {
               <h3>Freshness Guarantee & Shipping Policy</h3>
               <div className="policy-cards-grid">
                 <div className="policy-info-card">
-                  <h4>🛡️ Freshness Guarantee</h4>
+                  <h4>Freshness Guarantee</h4>
                   <p>{product.warranty || "100% Taste & Hot Delivery Guarantee or instant replacement."}</p>
                 </div>
                 <div className="policy-info-card">
-                  <h4>🚚 Insulated Thermal Shipping</h4>
+                  <h4>Insulated Thermal Shipping</h4>
                   <p>{product.shippingInfo || "Shipped in food-grade thermal honeycomb boxes to maintain temperature."}</p>
                 </div>
                 <div className="policy-info-card">
-                  <h4>🔄 Return & Refund Policy</h4>
+                  <h4>Return & Refund Policy</h4>
                   <p>{product.returnPolicy || "Instant refund or replacement if received damaged or lukewarm."}</p>
                 </div>
               </div>
@@ -736,7 +822,13 @@ function ProductDetails() {
               <div className="reviews-summary-dashboard">
                 <div className="overall-score-card">
                   <h2>{product.ratingScore || 4.8}</h2>
-                  <div className="stars-row">⭐⭐⭐⭐⭐</div>
+                  <div className="stars-row">
+                    <Star size={16} fill="#ca8a04" color="#ca8a04" />
+                    <Star size={16} fill="#ca8a04" color="#ca8a04" />
+                    <Star size={16} fill="#ca8a04" color="#ca8a04" />
+                    <Star size={16} fill="#ca8a04" color="#ca8a04" />
+                    <Star size={16} fill="#ca8a04" color="#ca8a04" />
+                  </div>
                   <p>Based on {product.reviewsTotal || 1840} verified customer reviews</p>
                 </div>
 
@@ -750,7 +842,9 @@ function ProductDetails() {
                     { star: 1, pct: product.ratingBreakdown?.[1] || 1 }
                   ].map((bar) => (
                     <div className="bar-row" key={bar.star}>
-                      <span>{bar.star} ★</span>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: "3px" }}>
+                        {bar.star} <Star size={12} fill="#ca8a04" color="#ca8a04" />
+                      </span>
                       <div className="bar-track">
                         <div className="bar-fill" style={{ width: `${bar.pct}%` }} />
                       </div>
@@ -769,8 +863,16 @@ function ProductDetails() {
                       <div>
                         <strong>{rev.author}</strong>
                         <div className="rev-meta">
-                          <span>{"⭐".repeat(rev.rating)}</span>
-                          {rev.verified && <span className="verified-pill">✓ Verified Purchase</span>}
+                          <span className="rev-stars">
+                            {Array.from({ length: rev.rating || 5 }).map((_, i) => (
+                              <Star key={i} size={11} fill="#ca8a04" color="#ca8a04" />
+                            ))}
+                          </span>
+                          {rev.verified && (
+                            <span className="verified-pill" style={{ display: "inline-flex", alignItems: "center", gap: "3px" }}>
+                              <CheckCircle2 size={11} color="#10b981" /> Verified Purchase
+                            </span>
+                          )}
                           <small>{rev.date}</small>
                         </div>
                       </div>
@@ -796,7 +898,7 @@ function ProductDetails() {
               <div className="qa-header-row">
                 <h3>Customer Questions & Answers ({qaList.length})</h3>
                 <button className="ask-btn" onClick={() => setShowQaModal(true)}>
-                  + Ask a Question
+                  <Plus size={13} className="inline-icon" /> Ask a Question
                 </button>
               </div>
 
@@ -820,7 +922,9 @@ function ProductDetails() {
       {/* Recommendations Carousel: Similar Products */}
       {similarProducts.length > 0 && (
         <section className="pdp-recommendations-section">
-          <h2>🍽️ You May Also Like</h2>
+          <h2>
+            <UtensilsCrossed size={18} className="inline-icon" color="#ff5200" /> You May Also Like
+          </h2>
           <div className="pdp-recom-grid">
             {similarProducts.map((item) => (
               <div className="recom-card" key={item.id}>
@@ -835,7 +939,7 @@ function ProductDetails() {
                   <div className="recom-price-row">
                     <strong>{item.price}</strong>
                     <button className="recom-add-btn" onClick={() => addToCart(item)}>
-                      + Add
+                      <Plus size={12} className="inline-icon" /> Add
                     </button>
                   </div>
                 </div>
@@ -848,7 +952,9 @@ function ProductDetails() {
       {/* Recently Viewed Products Strip */}
       {recentlyViewed.length > 1 && (
         <section className="pdp-recently-viewed-section">
-          <h3>🕒 Recently Viewed Items</h3>
+          <h3>
+            <Clock size={16} className="inline-icon" /> Recently Viewed Items
+          </h3>
           <div className="recent-scroll-row">
             {recentlyViewed
               .filter((r) => r.id !== product.id)
@@ -872,7 +978,9 @@ function ProductDetails() {
           <div className="pdp-modal-box" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h3>Ask a Question about {product.name}</h3>
-              <button onClick={() => setShowQaModal(false)}>✕</button>
+              <button onClick={() => setShowQaModal(false)}>
+                <X size={16} />
+              </button>
             </div>
             <form onSubmit={handleAddQuestion} className="qa-modal-form">
               <textarea
@@ -895,8 +1003,12 @@ function ProductDetails() {
         <div className="pdp-modal-overlay" onClick={() => setShowShareModal(false)}>
           <div className="pdp-modal-box" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h3>Share {product.name} 🔗</h3>
-              <button onClick={() => setShowShareModal(false)}>✕</button>
+              <h3>
+                <Share2 size={16} className="inline-icon" /> Share {product.name}
+              </h3>
+              <button onClick={() => setShowShareModal(false)}>
+                <X size={16} />
+              </button>
             </div>
             <div className="share-buttons-grid">
               <button
@@ -906,7 +1018,7 @@ function ProductDetails() {
                   setShowShareModal(false);
                 }}
               >
-                💬 WhatsApp
+                <MessageSquare size={14} className="inline-icon" /> WhatsApp
               </button>
               <button
                 className="share-social-btn twitter"
@@ -915,17 +1027,17 @@ function ProductDetails() {
                   setShowShareModal(false);
                 }}
               >
-                🐦 Twitter / X
+                <Share2 size={14} className="inline-icon" /> Twitter / X
               </button>
               <button
                 className="share-social-btn copy"
                 onClick={() => {
                   navigator.clipboard.writeText(window.location.href);
-                  showToast("Product link copied to clipboard! 📋", "success");
+                  showToast("Product link copied to clipboard!", "success");
                   setShowShareModal(false);
                 }}
               >
-                📋 Copy Link
+                <Copy size={14} className="inline-icon" /> Copy Link
               </button>
             </div>
           </div>

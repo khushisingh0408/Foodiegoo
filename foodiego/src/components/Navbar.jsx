@@ -1,5 +1,30 @@
 import { useContext, useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import {
+  Zap,
+  MapPin,
+  Search,
+  X,
+  Heart,
+  ShoppingBag,
+  Bell,
+  User,
+  Clock,
+  Flame,
+  Sparkles,
+  Menu,
+  Package,
+  Tag,
+  ChevronDown,
+  LogOut,
+  Store,
+  HelpCircle,
+  BadgePercent,
+  Layers,
+  UtensilsCrossed,
+  Truck,
+  Leaf
+} from "lucide-react";
 import { CartContext } from "../context/CartContext";
 import { WishlistContext } from "../context/WishlistContext";
 import { AuthContext } from "../context/AuthContext";
@@ -9,10 +34,10 @@ import LocationModal from "./LocationModal";
 import "../css/Navbar.css";
 
 const announcementMessages = [
-  "⚡ FLASH SALE IS LIVE: Use code FOODIE50 for 50% OFF up to ₹120!",
-  "🚚 FREE DELIVERY on all orders above ₹299 — Hot & fresh to your door",
-  "💳 Extra 10% Instant Discount on HDFC & ICICI Credit/Debit Cards",
-  "🎉 New Gourmet Pasta & Artisanal Desserts Added to Menu!"
+  "FLASH SALE IS LIVE: Use code FOODIE50 for 50% OFF up to ₹120!",
+  "FREE DELIVERY on all orders above ₹299 — Hot & fresh to your door",
+  "Extra 10% Instant Discount on HDFC & ICICI Credit/Debit Cards",
+  "New Gourmet Pasta & Artisanal Desserts Added to Menu!"
 ];
 
 function Navbar() {
@@ -89,7 +114,6 @@ function Navbar() {
   const handleSearchSubmit = (searchTermToUse) => {
     const term = (typeof searchTermToUse === "string" ? searchTermToUse : searchQuery).trim();
     if (term) {
-      // Add to recent searches
       const updated = [term, ...recentSearches.filter((s) => s.toLowerCase() !== term.toLowerCase())].slice(0, 6);
       setRecentSearches(updated);
       localStorage.setItem("foodieGoRecentSearches", JSON.stringify(updated));
@@ -128,12 +152,12 @@ function Navbar() {
 
   const trendingTags = ["Margherita Pizza", "Cheeseburger", "Loaded Fries", "Choco Lava", "Hakka Noodles", "Cold Coffee"];
   const categoryChips = [
-    { name: "Pizza", icon: "🍕" },
-    { name: "Burger", icon: "🍔" },
-    { name: "Fries", icon: "🍟" },
-    { name: "Drinks", icon: "🥤" },
-    { name: "Dessert", icon: "🍰" },
-    { name: "Noodles", icon: "🍜" }
+    { name: "Pizza" },
+    { name: "Burger" },
+    { name: "Fries" },
+    { name: "Drinks" },
+    { name: "Dessert" },
+    { name: "Noodles" }
   ];
 
   return (
@@ -155,7 +179,7 @@ function Navbar() {
                 onClick={() => setShowAnnouncement(false)}
                 aria-label="Close announcement"
               >
-                ✕
+                <X size={14} />
               </button>
             </div>
           </div>
@@ -166,7 +190,9 @@ function Navbar() {
           {/* Left: Brand Logo & Location */}
           <div className="nav-left-section">
             <Link to="/" className="brand-logo" onClick={() => setMenuOpen(false)}>
-              <div className="logo-icon-wrap">⚡</div>
+              <div className="logo-icon-wrap">
+                <Zap size={20} fill="#ffffff" color="#ffffff" />
+              </div>
               <div className="logo-text">
                 <h2>FoodieGo</h2>
                 <span className="desktop-tagline">Lightning Delivery</span>
@@ -179,13 +205,14 @@ function Navbar() {
               onClick={() => setIsLocationModalOpen(true)}
               title="Click to change delivery address"
             >
-              <span className="loc-pin">📍</span>
+              <MapPin size={16} className="loc-pin-icon" color="#ff5200" />
               <div className="loc-text-wrap">
                 <span className="loc-label">{deliveryLocation?.tag || "Deliver to"}</span>
                 <span className="loc-name">
-                  {deliveryLocation?.address?.split(",")[0] || "Select Area"} ▾
+                  {deliveryLocation?.address?.split(",")[0] || "Select Area"}
                 </span>
               </div>
+              <ChevronDown size={14} color="#94a3b8" />
             </button>
           </div>
 
@@ -198,7 +225,7 @@ function Navbar() {
                 handleSearchSubmit();
               }}
             >
-              <span className="search-icon">🔍</span>
+              <Search size={18} className="search-icon" color="#94a3b8" />
               <input
                 type="text"
                 placeholder="Search food, restaurants, cuisines, brands..."
@@ -212,7 +239,7 @@ function Navbar() {
                   className="clear-search-btn"
                   onClick={() => setSearchQuery("")}
                 >
-                  ✕
+                  <X size={14} />
                 </button>
               )}
               <button type="submit" className="search-action-btn">Search</button>
@@ -227,7 +254,9 @@ function Navbar() {
                     {recentSearches.length > 0 && (
                       <div className="recent-searches-box">
                         <div className="sugg-header-row">
-                          <span className="suggestions-title">🕒 Recent Searches</span>
+                          <span className="suggestions-title">
+                            <Clock size={14} className="inline-icon" /> Recent Searches
+                          </span>
                           <button
                             type="button"
                             className="clear-recent-btn"
@@ -244,7 +273,7 @@ function Navbar() {
                               className="trending-chip recent"
                               onClick={() => handleSearchSubmit(term)}
                             >
-                              🕒 {term}
+                              <Clock size={12} className="inline-icon" /> {term}
                             </button>
                           ))}
                         </div>
@@ -253,7 +282,9 @@ function Navbar() {
 
                     {/* Popular / Trending Searches */}
                     <div className="trending-searches-box">
-                      <div className="suggestions-title">🔥 Trending Searches</div>
+                      <div className="suggestions-title">
+                        <Flame size={14} className="inline-icon" color="#ea580c" /> Trending Searches
+                      </div>
                       <div className="trending-chips-wrap">
                         {trendingTags.map((tag, idx) => (
                           <button
@@ -270,7 +301,9 @@ function Navbar() {
 
                     {/* Suggested Categories */}
                     <div className="sugg-categories-box">
-                      <div className="suggestions-title">📂 Explore Categories</div>
+                      <div className="suggestions-title">
+                        <Layers size={14} className="inline-icon" /> Explore Categories
+                      </div>
                       <div className="sugg-cat-grid">
                         {categoryChips.map((c, idx) => (
                           <div
@@ -281,7 +314,7 @@ function Navbar() {
                               navigate(`/shop?category=${encodeURIComponent(c.name)}`);
                             }}
                           >
-                            <span>{c.icon}</span>
+                            <UtensilsCrossed size={14} color="#ff5200" />
                             <span>{c.name}</span>
                           </div>
                         ))}
@@ -293,7 +326,9 @@ function Navbar() {
                     {/* Matching Brands */}
                     {matchedBrands.length > 0 && (
                       <div className="results-group">
-                        <span className="group-label">🏷️ BRANDS</span>
+                        <span className="group-label">
+                          <Tag size={12} className="inline-icon" /> BRANDS
+                        </span>
                         {matchedBrands.map((b) => (
                           <div
                             key={b.id}
@@ -303,7 +338,7 @@ function Navbar() {
                               navigate(`/shop?brand=${encodeURIComponent(b.name)}`);
                             }}
                           >
-                            <span className="brand-emoji-icon">{b.logo}</span>
+                            <Store size={18} color="#ff5200" />
                             <div className="sugg-meta">
                               <strong>{b.name}</strong>
                               <small>{b.count} in {b.category}</small>
@@ -317,7 +352,9 @@ function Navbar() {
                     {/* Matching Restaurants */}
                     {matchedRestaurants.length > 0 && (
                       <div className="results-group">
-                        <span className="group-label">🏬 RESTAURANTS</span>
+                        <span className="group-label">
+                          <Store size={12} className="inline-icon" /> RESTAURANTS
+                        </span>
                         {matchedRestaurants.map((r) => (
                           <div
                             key={r.id}
@@ -330,7 +367,9 @@ function Navbar() {
                             <img src={r.image} alt={r.name} className="sugg-thumb" />
                             <div className="sugg-meta">
                               <strong>{r.name}</strong>
-                              <small>{r.cuisines.join(", ")} • ★ {r.rating}</small>
+                              <small style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                                {r.cuisines.join(", ")} • <Star size={11} fill="#f59e0b" color="#f59e0b" /> {r.rating}
+                              </small>
                             </div>
                             <span className="sugg-tag">Restaurant</span>
                           </div>
@@ -341,7 +380,9 @@ function Navbar() {
                     {/* Matching Dishes */}
                     {matchedDishes.length > 0 ? (
                       <div className="results-group">
-                        <span className="group-label">🍽️ DISHES & PRODUCTS</span>
+                        <span className="group-label">
+                          <UtensilsCrossed size={12} className="inline-icon" /> DISHES & PRODUCTS
+                        </span>
                         {matchedDishes.map((dish) => (
                           <div
                             key={dish.id}
@@ -392,7 +433,7 @@ function Navbar() {
               onClick={() => updatePureVegFilter(!isPureVegOnly)}
               title="Toggle Pure Veg Only dishes"
             >
-              <span className="veg-leaf">🌱</span>
+              <Leaf size={14} className="veg-leaf-icon" color={isPureVegOnly ? "#16a34a" : "#64748b"} />
               <span className="veg-txt">VEG ONLY</span>
               <div className="switch-knob-track">
                 <div className="switch-knob" />
@@ -407,7 +448,8 @@ function Navbar() {
                 title="Track Active Order"
               >
                 <span className="pulse-dot" />
-                <span>Track Order 🛵</span>
+                <Truck size={14} className="inline-icon" />
+                <span>Track Order</span>
               </Link>
             )}
 
@@ -419,7 +461,7 @@ function Navbar() {
                 title="Notifications"
                 aria-label="Notifications"
               >
-                <span className="nav-icon">🔔</span>
+                <Bell size={20} className="nav-icon" />
                 {unreadNotificationsCount > 0 && (
                   <span className="icon-badge notif-badge">{unreadNotificationsCount}</span>
                 )}
@@ -453,13 +495,15 @@ function Navbar() {
 
             {/* Wishlist Link (Desktop) */}
             <Link to="/wishlist" className="nav-icon-link desktop-only" title="Wishlist">
-              <span className="nav-icon">❤️</span>
+              <Heart size={20} className="nav-icon" />
               {wishlist.length > 0 && <span className="icon-badge">{wishlist.length}</span>}
             </Link>
 
             {/* Desktop Cart Pill */}
             <Link to="/cart" className="nav-cart-pill desktop-only" title="View Cart">
-              <div className="cart-pill-icon">🛒</div>
+              <div className="cart-pill-icon">
+                <ShoppingBag size={18} />
+              </div>
               <div className="cart-pill-text">
                 <span className="cart-items-txt">
                   {totalCartItems} {totalCartItems === 1 ? "Item" : "Items"}
@@ -470,7 +514,7 @@ function Navbar() {
 
             {/* Mobile Cart Icon Link */}
             <Link to="/cart" className="mobile-cart-btn" aria-label="Cart">
-              <span className="m-cart-icon">🛒</span>
+              <ShoppingBag size={22} className="m-cart-icon" />
               {totalCartItems > 0 && (
                 <span className="m-cart-badge">{totalCartItems}</span>
               )}
@@ -489,7 +533,7 @@ function Navbar() {
                   <span className="user-firstname">
                     {user?.name ? user.name.split(" ")[0] : "Account"}
                   </span>
-                  <span className="arrow-down">▾</span>
+                  <ChevronDown size={14} className="arrow-down" />
                 </button>
 
                 {userDropdownOpen && (
@@ -507,28 +551,28 @@ function Navbar() {
                       className="dropdown-link"
                       onClick={() => setUserDropdownOpen(false)}
                     >
-                      👤 Account Dashboard
+                      <User size={15} className="inline-icon" /> Account Dashboard
                     </Link>
                     <Link
                       to="/orders"
                       className="dropdown-link"
                       onClick={() => setUserDropdownOpen(false)}
                     >
-                      📦 My Orders
+                      <Package size={15} className="inline-icon" /> My Orders
                     </Link>
                     <Link
                       to="/wishlist"
                       className="dropdown-link"
                       onClick={() => setUserDropdownOpen(false)}
                     >
-                      ❤️ Favorite Dishes
+                      <Heart size={15} className="inline-icon" /> Favorite Dishes
                     </Link>
                     <Link
                       to="/offers"
                       className="dropdown-link"
                       onClick={() => setUserDropdownOpen(false)}
                     >
-                      🎟️ Coupons & Offers
+                      <BadgePercent size={15} className="inline-icon" /> Coupons & Offers
                     </Link>
                     <div className="dropdown-divider" />
                     <button
@@ -538,7 +582,7 @@ function Navbar() {
                         logout();
                       }}
                     >
-                      🚪 Logout
+                      <LogOut size={15} className="inline-icon" /> Logout
                     </button>
                   </div>
                 )}
@@ -555,7 +599,7 @@ function Navbar() {
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="Toggle menu"
             >
-              {menuOpen ? "✕" : "☰"}
+              {menuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </nav>
@@ -564,27 +608,34 @@ function Navbar() {
         <div className="navbar-subnav desktop-only">
           <div className="subnav-container">
             <Link to="/shop" className="subnav-link highlight">
-              <span>📂 All Categories</span>
+              <Layers size={14} />
+              <span>All Categories</span>
             </Link>
             <Link to="/shop?filter=new" className="subnav-link">
-              <span>✨ New Arrivals</span>
+              <Sparkles size={14} color="#2563eb" />
+              <span>New Arrivals</span>
               <span className="subnav-badge new">NEW</span>
             </Link>
             <Link to="/shop?filter=bestseller" className="subnav-link">
-              <span>🔥 Best Sellers</span>
+              <Flame size={14} color="#ea580c" />
+              <span>Best Sellers</span>
             </Link>
             <Link to="/shop?filter=flash" className="subnav-link">
-              <span>⚡ Flash Deals</span>
+              <Zap size={14} color="#dc2626" />
+              <span>Flash Deals</span>
               <span className="subnav-badge hot">HOT</span>
             </Link>
             <Link to="/offers" className="subnav-link">
-              <span>🏷️ Offers & Coupons</span>
+              <Tag size={14} color="#16a34a" />
+              <span>Offers & Coupons</span>
             </Link>
             <Link to="/shop?filter=brands" className="subnav-link">
-              <span>🏬 Top Brands</span>
+              <Store size={14} color="#7c3aed" />
+              <span>Top Brands</span>
             </Link>
             <Link to="/help" className="subnav-link">
-              <span>💬 Customer Support</span>
+              <HelpCircle size={14} color="#64748b" />
+              <span>Customer Support</span>
             </Link>
           </div>
         </div>
@@ -598,7 +649,7 @@ function Navbar() {
               handleSearchSubmit();
             }}
           >
-            <span className="m-search-icon">🔍</span>
+            <Search size={16} className="m-search-icon" color="#94a3b8" />
             <input
               type="text"
               placeholder="Search dishes, restaurants, brands..."
@@ -612,7 +663,7 @@ function Navbar() {
                 className="m-clear-search-btn"
                 onClick={() => setSearchQuery("")}
               >
-                ✕
+                <X size={14} />
               </button>
             )}
           </form>
@@ -622,7 +673,9 @@ function Navbar() {
             <div className="mobile-search-suggestions">
               {searchQuery.trim() === "" ? (
                 <div className="m-trending-searches">
-                  <div className="m-sugg-title">🔥 Popular Searches</div>
+                  <div className="m-sugg-title">
+                    <Flame size={14} className="inline-icon" color="#ea580c" /> Popular Searches
+                  </div>
                   <div className="m-chips-wrap">
                     {trendingTags.map((tag, idx) => (
                       <button
@@ -678,38 +731,38 @@ function Navbar() {
               }}
             >
               <span>
-                📍 Deliver to: <strong>{deliveryLocation?.tag}</strong> ({deliveryLocation?.city})
+                <MapPin size={14} className="inline-icon" color="#ff5200" /> Deliver to: <strong>{deliveryLocation?.tag}</strong> ({deliveryLocation?.city})
               </span>
-              <span>Change ▾</span>
+              <ChevronDown size={14} />
             </div>
 
             <div className="mobile-drawer-links">
               <Link to="/" onClick={() => setMenuOpen(false)}>
-                🏠 Home
+                <UtensilsCrossed size={16} className="inline-icon" /> Home
               </Link>
               <Link to="/shop" onClick={() => setMenuOpen(false)}>
-                📂 Shop / All Categories
+                <Layers size={16} className="inline-icon" /> Shop / All Categories
               </Link>
               <Link to="/shop?filter=flash" onClick={() => setMenuOpen(false)}>
-                ⚡ Flash Sale & Deals
+                <Zap size={16} className="inline-icon" color="#dc2626" /> Flash Sale & Deals
               </Link>
               <Link to="/offers" onClick={() => setMenuOpen(false)}>
-                🏷️ Coupons & Offers
+                <Tag size={16} className="inline-icon" color="#16a34a" /> Coupons & Offers
               </Link>
               <Link to="/account" onClick={() => setMenuOpen(false)}>
-                👤 My Account & Profile
+                <User size={16} className="inline-icon" /> My Account & Profile
               </Link>
               <Link to="/orders" onClick={() => setMenuOpen(false)}>
-                📦 My Orders & Receipts
+                <Package size={16} className="inline-icon" /> My Orders & Receipts
               </Link>
               <Link to="/wishlist" onClick={() => setMenuOpen(false)}>
-                ❤️ Wishlist Favorites ({wishlist.length})
+                <Heart size={16} className="inline-icon" color="#ef4444" /> Wishlist Favorites ({wishlist.length})
               </Link>
               <Link to="/cart" onClick={() => setMenuOpen(false)}>
-                🛒 My Cart ({totalCartItems} items • ₹{finalTotal})
+                <ShoppingBag size={16} className="inline-icon" color="#ff5200" /> My Cart ({totalCartItems} items • ₹{finalTotal})
               </Link>
               <Link to="/help" onClick={() => setMenuOpen(false)}>
-                💬 Help Center & FAQ
+                <HelpCircle size={16} className="inline-icon" /> Help Center & FAQ
               </Link>
               {activeTrackingOrder && (
                 <Link
@@ -717,7 +770,7 @@ function Navbar() {
                   onClick={() => setMenuOpen(false)}
                   className="track-link-mobile"
                 >
-                  🛵 Track Active Order #{activeTrackingOrder.id}
+                  <Truck size={16} className="inline-icon" /> Track Active Order #{activeTrackingOrder.id}
                 </Link>
               )}
             </div>
@@ -731,7 +784,7 @@ function Navbar() {
                     setMenuOpen(false);
                   }}
                 >
-                  Logout ({user?.name ? user.name.split(" ")[0] : "User"})
+                  <LogOut size={16} className="inline-icon" /> Logout ({user?.name ? user.name.split(" ")[0] : "User"})
                 </button>
               ) : (
                 <Link to="/login" className="mobile-signin-btn" onClick={() => setMenuOpen(false)}>

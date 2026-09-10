@@ -1,5 +1,17 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  UtensilsCrossed,
+  Package,
+  LogOut,
+  Lock,
+  Sparkles,
+  Zap
+} from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 import "../css/Login.css";
 
@@ -51,7 +63,7 @@ function Login() {
       setIsSubmitting(false);
 
       if (res.success) {
-        setMessage("Account created & saved in SQL database! 🎉 Redirecting...");
+        setMessage("Account created & saved in SQL database! Redirecting...");
         setIsError(false);
         setTimeout(() => navigate("/"), 1200);
       } else {
@@ -70,7 +82,7 @@ function Login() {
       setIsSubmitting(false);
 
       if (res.success) {
-        setMessage("Welcome back! Login successful 🎉");
+        setMessage("Welcome back! Login successful");
         setIsError(false);
         setTimeout(() => navigate("/"), 1200);
       } else {
@@ -84,21 +96,33 @@ function Login() {
     return (
       <section className="login-page">
         <div className="login-box logged-in-box">
-          <div className="avatar-circle">👤</div>
+          <div className="avatar-circle" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <User size={32} color="#ff4757" />
+          </div>
           <h2>Welcome, {user.name}!</h2>
-          <p className="user-email">📧 {user.email}</p>
-          {user.phone && <p className="user-detail">📞 {user.phone}</p>}
-          {user.address && <p className="user-detail">📍 {user.address}</p>}
+          <p className="user-email" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
+            <Mail size={15} color="#64748b" /> {user.email}
+          </p>
+          {user.phone && (
+            <p className="user-detail" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
+              <Phone size={14} color="#64748b" /> {user.phone}
+            </p>
+          )}
+          {user.address && (
+            <p className="user-detail" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
+              <MapPin size={14} color="#64748b" /> {user.address}
+            </p>
+          )}
 
           <div className="account-actions">
-            <button className="primary-btn" onClick={() => navigate("/")}>
-              Explore Menu 🍔
+            <button className="primary-btn" onClick={() => navigate("/")} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
+              <UtensilsCrossed size={16} /> Explore Menu
             </button>
-            <button className="primary-btn orders-btn" onClick={() => navigate("/orders")}>
-              My Orders 📦
+            <button className="primary-btn orders-btn" onClick={() => navigate("/orders")} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
+              <Package size={16} /> My Orders
             </button>
-            <button className="logout-btn" onClick={logout}>
-              Logout 🚪
+            <button className="logout-btn" onClick={logout} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
+              <LogOut size={16} /> Logout
             </button>
           </div>
         </div>
@@ -118,8 +142,9 @@ function Login() {
               setIsRegisterMode(false);
               setMessage("");
             }}
+            style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px" }}
           >
-            Login 🔐
+            <Lock size={14} /> Login
           </button>
           <button
             type="button"
@@ -128,12 +153,13 @@ function Login() {
               setIsRegisterMode(true);
               setMessage("");
             }}
+            style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px" }}
           >
-            Sign Up ✨
+            <Sparkles size={14} /> Sign Up
           </button>
         </div>
 
-        <h1>{isRegisterMode ? "Create Account 🍔" : "Welcome Back 👋"}</h1>
+        <h1>{isRegisterMode ? "Create Account" : "Welcome Back"}</h1>
         <p className="auth-subtitle">
           {isRegisterMode
             ? "Sign up to track orders & save your favorites permanently in SQL DB."
@@ -213,8 +239,9 @@ function Login() {
               type="button"
               className="demo-btn"
               onClick={fillDemo}
+              style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px" }}
             >
-              ⚡ Fill Demo Account (demo@foodiego.com)
+              <Zap size={14} color="#f59e0b" fill="#f59e0b" /> Fill Demo Account (demo@foodiego.com)
             </button>
           )}
         </form>

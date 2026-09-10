@@ -34,7 +34,7 @@ const initialAddresses = [
 const initialNotifications = [
   {
     id: "notif-1",
-    title: "⚡ Flash Sale Live Now!",
+    title: "Flash Sale Live Now!",
     message: "Get up to 50% OFF on Margherita Pizza and Cheesy Burgers. Limited stock available.",
     time: "10m ago",
     category: "offers",
@@ -43,7 +43,7 @@ const initialNotifications = [
   },
   {
     id: "notif-2",
-    title: "🚚 Order #FGO-8921 Shipped",
+    title: "Order #FGO-8921 Shipped",
     message: "Your rider Rahul Sharma is on the way to your location with your meal.",
     time: "25m ago",
     category: "orders",
@@ -52,7 +52,7 @@ const initialNotifications = [
   },
   {
     id: "notif-3",
-    title: "📉 Price Drop Alert!",
+    title: "Price Drop Alert!",
     message: "Paneer Tikka Pizza dropped by ₹50! Grab yours before the sale ends.",
     time: "2h ago",
     category: "price_drop",
@@ -61,7 +61,7 @@ const initialNotifications = [
   },
   {
     id: "notif-4",
-    title: "🎁 Free Delivery Unlocked!",
+    title: "Free Delivery Unlocked!",
     message: "Enjoy Zero Delivery fee on your next 3 orders above ₹199 using code FREEDEL.",
     time: "1d ago",
     category: "offers",
@@ -155,7 +155,7 @@ export function CartProvider({ children }) {
         pickupDate: "Tomorrow (10 AM - 1 PM)",
         refundMethod: "FoodieGo Wallet",
         refundAmount: 199,
-        status: "Pickup Scheduled 🚚",
+        status: "Pickup Scheduled",
         date: "2026-09-08"
       }
     ];
@@ -183,13 +183,13 @@ export function CartProvider({ children }) {
   const updatePureVegFilter = (value) => {
     setIsPureVegOnly(value);
     localStorage.setItem("foodieGoVegOnly", String(value));
-    showToast(value ? "🌱 Pure Veg mode enabled!" : "🍽️ Showing all dishes", "info");
+    showToast(value ? "Pure Veg mode enabled!" : "Showing all dishes", "info");
   };
 
   const updateDeliveryLocation = (loc) => {
     setDeliveryLocation(loc);
     localStorage.setItem("foodieGoLocation", JSON.stringify(loc));
-    showToast(`📍 Delivering to ${loc.tag} (${loc.city || loc.pincode})`, "success");
+    showToast(`Delivering to ${loc.tag} (${loc.city || loc.pincode})`, "success");
   };
 
   // Fetch Cart from Backend SQL Database
@@ -253,7 +253,7 @@ export function CartProvider({ children }) {
     }
 
     saveCartToStorage(updatedCart);
-    showToast(`Added ${qtyToAdd > 1 ? `${qtyToAdd}x ` : ''}${food.name} to cart! 🛒`, "success");
+    showToast(`Added ${qtyToAdd > 1 ? `${qtyToAdd}x ` : ''}${food.name} to cart!`, "success");
 
     // Sync with backend if authenticated
     if (localStorage.getItem("foodieGoToken")) {
@@ -368,7 +368,7 @@ export function CartProvider({ children }) {
     const updated = [...compareList, product];
     setCompareList(updated);
     localStorage.setItem("foodieGoCompare", JSON.stringify(updated));
-    showToast(`Added ${product.name} to comparison ⚖️`, "success");
+    showToast(`Added ${product.name} to comparison`, "success");
   };
 
   const removeFromCompare = (productId) => {
@@ -422,7 +422,7 @@ export function CartProvider({ children }) {
     const updated = [...priceDropAlerts, product.id];
     setPriceDropAlerts(updated);
     localStorage.setItem("foodieGoPriceAlerts", JSON.stringify(updated));
-    showToast(`🔔 Subscribed! We will notify you when ${product.name} drops in price.`, "success");
+    showToast(`Subscribed! We will notify you when ${product.name} drops in price.`, "success");
   };
 
   const subscribeBackInStock = (product) => {
@@ -433,7 +433,7 @@ export function CartProvider({ children }) {
     const updated = [...backInStockAlerts, product.id];
     setBackInStockAlerts(updated);
     localStorage.setItem("foodieGoStockAlerts", JSON.stringify(updated));
-    showToast(`🔔 Alert set! We'll notify you as soon as ${product.name} is restocked.`, "success");
+    showToast(`Alert set! We'll notify you as soon as ${product.name} is restocked.`, "success");
   };
 
   // Addresses Operations
@@ -481,13 +481,13 @@ export function CartProvider({ children }) {
     const newReq = {
       id: `RET-${Math.floor(1000 + Math.random() * 9000)}`,
       date: new Date().toISOString().split("T")[0],
-      status: "Pickup Scheduled 🚚",
+      status: "Pickup Scheduled",
       ...requestData
     };
     const updated = [newReq, ...returnRequests];
     setReturnRequests(updated);
     localStorage.setItem("foodieGoReturns", JSON.stringify(updated));
-    showToast(`Return Request #${newReq.id} submitted successfully! 🎉`, "success");
+    showToast(`Return Request #${newReq.id} submitted successfully!`, "success");
     return newReq;
   };
 

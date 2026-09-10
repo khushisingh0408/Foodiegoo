@@ -1,5 +1,14 @@
 import { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  Package,
+  UtensilsCrossed,
+  Loader2,
+  Store,
+  Bike,
+  RotateCcw,
+  ArrowRight
+} from "lucide-react";
 import { CartContext } from "../context/CartContext";
 import api from "../services/api";
 import "../css/Orders.css";
@@ -31,7 +40,7 @@ function Orders() {
       order.items.forEach((item) => {
         addToCart(item);
       });
-      showToast(`Added ${order.items.length} items from Order #${order.id} to cart! 🛒`, "success");
+      showToast(`Added ${order.items.length} items from Order #${order.id} to cart!`, "success");
       navigate("/cart");
     }
   };
@@ -40,27 +49,33 @@ function Orders() {
     <div className="orders-page">
       <div className="orders-header">
         <div>
-          <h1>My Orders & Receipts 📦</h1>
+          <h1 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            My Orders & Receipts <Package size={24} color="#ff4757" />
+          </h1>
           <p>Track ongoing deliveries or re-order your favorite meals</p>
         </div>
-        <Link to="/" className="order-more-btn">
-          Explore Menu 🍔
+        <Link to="/" className="order-more-btn" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+          <UtensilsCrossed size={16} /> Explore Menu
         </Link>
       </div>
 
       {loading && (
         <div className="orders-loading-state">
-          <p>Fetching your verified orders from server... ⏳</p>
+          <p style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+            <Loader2 size={18} className="spin-icon" /> Fetching your verified orders from server...
+          </p>
         </div>
       )}
 
       {!loading && orders.length === 0 ? (
         <div className="orders-empty-state">
-          <div className="empty-orders-art">📦</div>
+          <div className="empty-orders-art" style={{ display: "flex", justifyContent: "center", margin: "16px 0" }}>
+            <Package size={56} color="#94a3b8" />
+          </div>
           <h2>No Orders Placed Yet</h2>
           <p>You haven't placed any orders yet. Discover hot delicious meals from top restaurants!</p>
-          <Link to="/" className="start-ordering-btn">
-            Order Now 🍕
+          <Link to="/" className="start-ordering-btn" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+            <UtensilsCrossed size={16} /> Order Now
           </Link>
         </div>
       ) : (
@@ -73,7 +88,9 @@ function Orders() {
                 {/* Header */}
                 <div className="order-card-header">
                   <div className="order-id-group">
-                    <div className="rest-icon-box">🏬</div>
+                    <div className="rest-icon-box" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <Store size={20} color="#ff4757" />
+                    </div>
                     <div>
                       <h3>Order #{order.id}</h3>
                       <span className="order-date-txt">
@@ -84,11 +101,11 @@ function Orders() {
 
                   <div className="status-and-track-btn">
                     <span className={`order-status-badge ${isLive ? "status-live" : "status-delivered"}`}>
-                      {isLive ? "🛵 Out for Delivery" : order.status || "Delivered"}
+                      {isLive ? "Out for Delivery" : order.status || "Delivered"}
                     </span>
 
-                    <Link to={`/track/${order.id}`} className="track-link-btn">
-                      Live Map 🗺️
+                    <Link to={`/track/${order.id}`} className="track-link-btn" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                      <Bike size={14} /> Live Map
                     </Link>
                   </div>
                 </div>
@@ -127,12 +144,13 @@ function Orders() {
                   <button
                     className="reorder-action-btn"
                     onClick={() => handleReorder(order)}
+                    style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
                   >
-                    🔁 Re-Order Meal
+                    <RotateCcw size={14} /> Re-Order Meal
                   </button>
 
-                  <Link to={`/track/${order.id}`} className="view-tracking-btn">
-                    View Live Tracker →
+                  <Link to={`/track/${order.id}`} className="view-tracking-btn" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                    View Live Tracker <ArrowRight size={14} />
                   </Link>
                 </div>
               </div>

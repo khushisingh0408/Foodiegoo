@@ -1,36 +1,59 @@
 import { useState, useEffect, useContext, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
+import {
+  Bike,
+  CookingPot,
+  CheckCircle2,
+  Clock,
+  Store,
+  Home,
+  ShieldCheck,
+  Phone,
+  MessageSquare,
+  MapPin,
+  Package,
+  Send,
+  X,
+  Star,
+  Play,
+  Zap,
+  BellOff,
+  DoorClosed,
+  Heart,
+  Sparkles,
+  Check
+} from "lucide-react";
 import { CartContext } from "../context/CartContext";
 import "../css/OrderTracking.css";
 
 const stages = [
   {
     step: 1,
-    title: "Order Confirmed ⏱️",
+    title: "Order Confirmed",
     desc: "Your order has been received and verified by the restaurant.",
     time: "2 mins ago"
   },
   {
     step: 2,
-    title: "Kitchen Preparing Food 🍳",
+    title: "Kitchen Preparing Food",
     desc: "Chef is cooking your fresh and hot meal with premium ingredients.",
     time: "Just now"
   },
   {
     step: 3,
-    title: "Partner Picked Up Order 🛵",
+    title: "Partner Picked Up Order",
     desc: "Delivery partner Rahul Sharma has picked up your parcel.",
     time: "In 5 mins"
   },
   {
     step: 4,
-    title: "Out for Delivery 🚴",
+    title: "Out for Delivery",
     desc: "Your delivery partner is navigating through traffic towards your home.",
     time: "In 12 mins"
   },
   {
     step: 5,
-    title: "Order Delivered 🎉",
+    title: "Order Delivered",
     desc: "Package delivered safely. Enjoy your hot and delicious food!",
     time: "Completed"
   }
@@ -48,7 +71,7 @@ function OrderTracking() {
   // Driver Chat Modal
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState([
-    { sender: "driver", text: "Hello! I am on my way to pick up your order from the restaurant. 🛵", time: "Just now" }
+    { sender: "driver", text: "Hello! I am on my way to pick up your order from the restaurant.", time: "Just now" }
   ]);
   const [inputMessage, setInputMessage] = useState("");
 
@@ -117,13 +140,13 @@ function OrderTracking() {
 
     // Simulated driver automated response
     setTimeout(() => {
-      let driverReply = "Sure thing! I will take care of that. 👍";
+      let driverReply = "Sure thing! I will take care of that.";
       if (userText.toLowerCase().includes("bell") || userText.toLowerCase().includes("ring")) {
-        driverReply = "Understood! I will call you instead of ringing the doorbell. 🔕";
+        driverReply = "Understood! I will call you instead of ringing the doorbell.";
       } else if (userText.toLowerCase().includes("where") || userText.toLowerCase().includes("location")) {
-        driverReply = "I am at the Sector 62 junction, arriving in about 4-5 minutes! 🛵";
+        driverReply = "I am at the Sector 62 junction, arriving in about 4-5 minutes!";
       } else if (userText.toLowerCase().includes("door") || userText.toLowerCase().includes("leave")) {
-        driverReply = "Got it! Will leave the parcel safely at your doorstep. 🚪📦";
+        driverReply = "Got it! Will leave the parcel safely at your doorstep.";
       }
 
       setChatMessages((prev) => [
@@ -134,12 +157,12 @@ function OrderTracking() {
   };
 
   const handleCallDriver = () => {
-    showToast("📞 Connecting call to Rahul Sharma (+91 98765-43210)...", "info", 4000);
+    showToast("Connecting call to Rahul Sharma (+91 98765-43210)...", "info", 4000);
   };
 
   const handleRatingSubmit = () => {
     setRatingSubmitted(true);
-    showToast("🌟 Thank you! Your feedback has been submitted.", "success");
+    showToast("Thank you! Your feedback has been submitted.", "success");
     setTimeout(() => {
       setShowRatingModal(false);
     }, 1200);
@@ -153,7 +176,9 @@ function OrderTracking() {
       {/* Top Bar with Demo Toggle */}
       <div className="tracking-top-bar">
         <div>
-          <h1>Live Order Tracking 🛵</h1>
+          <h1 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            Live Order Tracking <Bike size={24} color="#ff4757" />
+          </h1>
           <p>Order #{order.id} • {order.restaurantName || "FoodieGo Kitchen"}</p>
         </div>
 
@@ -164,13 +189,14 @@ function OrderTracking() {
               setIsFastDemo(!isFastDemo);
               showToast(
                 !isFastDemo
-                  ? "⚡ Fast-Forward Demo Mode ON (Full delivery cycle in 10s)"
+                  ? "Fast-Forward Demo Mode ON (Full delivery cycle in 10s)"
                   : "Normal Real-Time Speed ON",
                 "info"
               );
             }}
+            style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
           >
-            {isFastDemo ? "⚡ Fast Demo ON" : "▶️ Test Fast Demo"}
+            {isFastDemo ? <><Zap size={14} /> Fast Demo ON</> : <><Play size={14} /> Test Fast Demo</>}
           </button>
         </div>
       </div>
@@ -215,13 +241,13 @@ function OrderTracking() {
 
               {/* Restaurant Marker */}
               <div className="map-marker restaurant-marker" style={{ left: "40px", top: "140px" }}>
-                <span className="marker-icon">🏬</span>
+                <span className="marker-icon"><Store size={18} color="#ff4757" /></span>
                 <span className="marker-label">Restaurant</span>
               </div>
 
               {/* Customer Home Marker */}
               <div className="map-marker home-marker" style={{ right: "30px", top: "35px" }}>
-                <span className="marker-icon">🏠</span>
+                <span className="marker-icon"><Home size={18} color="#10b981" /></span>
                 <span className="marker-label">Your Home</span>
                 <div className="pulse-ring" />
               </div>
@@ -234,7 +260,9 @@ function OrderTracking() {
                   top: `calc(130px - ${Math.sin((bikePercent / 100) * Math.PI) * 70}px)`
                 }}
               >
-                <div className="bike-icon-box">🛵</div>
+                <div className="bike-icon-box" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Bike size={18} color="#fff" />
+                </div>
                 <span className="driver-name-tag">Rahul • {etaMinutes}m</span>
               </div>
 
@@ -257,17 +285,21 @@ function OrderTracking() {
                   src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80"
                   alt="Delivery Partner Rahul Sharma"
                 />
-                <span className="verified-check">✓</span>
+                <span className="verified-check"><Check size={12} /></span>
               </div>
 
               <div className="driver-details">
                 <div className="driver-name-row">
                   <h4>Rahul Sharma</h4>
-                  <span className="driver-rating">★ 4.9</span>
+                  <span className="driver-rating" style={{ display: "inline-flex", alignItems: "center", gap: "2px" }}>
+                    <Star size={13} fill="#f59e0b" stroke="#f59e0b" /> 4.9
+                  </span>
                 </div>
                 <p className="driver-sub">Hero Splendor • DL 04 AB 1234</p>
                 <div className="driver-safety-badge">
-                  <span>🛡️ 100% Sanitized & Vaccinated</span>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                    <ShieldCheck size={14} color="#10b981" /> 100% Sanitized & Vaccinated
+                  </span>
                 </div>
               </div>
 
@@ -276,15 +308,17 @@ function OrderTracking() {
                   className="call-driver-btn"
                   onClick={handleCallDriver}
                   title="Call Delivery Partner"
+                  style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}
                 >
-                  📞 Call
+                  <Phone size={14} /> Call
                 </button>
                 <button
                   className="chat-driver-btn"
                   onClick={() => setIsChatOpen(true)}
                   title="Chat with Driver"
+                  style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}
                 >
-                  💬 Chat
+                  <MessageSquare size={14} /> Chat
                 </button>
               </div>
             </div>
@@ -307,7 +341,7 @@ function OrderTracking() {
                     className={`timeline-item ${isCompleted ? "completed" : ""} ${isCurrent ? "current" : ""}`}
                   >
                     <div className="timeline-icon-wrap">
-                      {isCompleted ? "✓" : idx + 1}
+                      {isCompleted ? <Check size={14} /> : idx + 1}
                     </div>
 
                     <div className="timeline-content">
@@ -323,7 +357,9 @@ function OrderTracking() {
             </div>
 
             <div className="delivery-address-box">
-              <strong>📍 Delivery Destination:</strong>
+              <strong style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                <MapPin size={15} color="#ff4757" /> Delivery Destination:
+              </strong>
               <p>{order.deliveryAddress}</p>
             </div>
           </div>
@@ -349,8 +385,8 @@ function OrderTracking() {
               <strong>₹{order.total}</strong>
             </div>
 
-            <Link to="/orders" className="view-all-orders-btn">
-              View Order History 📦
+            <Link to="/orders" className="view-all-orders-btn" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
+              View Order History <Package size={16} />
             </Link>
           </div>
         </div>
@@ -369,7 +405,7 @@ function OrderTracking() {
                 </div>
               </div>
               <button className="chat-close-btn" onClick={() => setIsChatOpen(false)}>
-                ✕
+                <X size={18} />
               </button>
             </div>
 
@@ -384,14 +420,14 @@ function OrderTracking() {
 
             {/* Quick Suggestions Chips */}
             <div className="quick-suggestions-row">
-              <button onClick={() => setInputMessage("Please don't ring the bell, baby is sleeping.")}>
-                Don't ring bell 🔕
+              <button onClick={() => setInputMessage("Please don't ring the bell, baby is sleeping.")} style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                Don't ring bell <BellOff size={13} />
               </button>
-              <button onClick={() => setInputMessage("Please leave the order at the door.")}>
-                Leave at door 🚪
+              <button onClick={() => setInputMessage("Please leave the order at the door.")} style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                Leave at door <DoorClosed size={13} />
               </button>
-              <button onClick={() => setInputMessage("Where have you reached?")}>
-                Where are you? 📍
+              <button onClick={() => setInputMessage("Where have you reached?")} style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                Where are you? <MapPin size={13} />
               </button>
             </div>
 
@@ -403,8 +439,8 @@ function OrderTracking() {
                 onChange={(e) => setInputMessage(e.target.value)}
                 autoFocus
               />
-              <button type="submit" disabled={!inputMessage.trim()}>
-                Send ➤
+              <button type="submit" disabled={!inputMessage.trim()} style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                Send <Send size={14} />
               </button>
             </form>
           </div>
@@ -415,13 +451,17 @@ function OrderTracking() {
       {showRatingModal && (
         <div className="rating-modal-overlay">
           <div className="rating-modal-box">
-            <div className="confetti-emoji">🎉 🍕 🎉</div>
+            <div className="confetti-emoji" style={{ display: "flex", justifyContent: "center", alignItems: "center", margin: "10px 0" }}>
+              <Sparkles size={40} color="#ff4757" />
+            </div>
             <h2>Order Delivered Successfully!</h2>
             <p>We hope you enjoy your delicious meal from {order.restaurantName || "FoodieGo"}.</p>
 
             {ratingSubmitted ? (
               <div className="rating-thanks">
-                <h3>Thank You for your Review! ❤️</h3>
+                <h3 style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
+                  Thank You for your Review! <Heart size={20} color="#ff4757" fill="#ff4757" />
+                </h3>
                 <p>Your rating helps us keep delivery superfast and food fresh.</p>
               </div>
             ) : (
@@ -435,7 +475,7 @@ function OrderTracking() {
                         className={`star-icon ${star <= driverRating ? "filled" : ""}`}
                         onClick={() => setDriverRating(star)}
                       >
-                        ★
+                        <Star size={24} fill={star <= driverRating ? "#f59e0b" : "none"} stroke="#f59e0b" />
                       </span>
                     ))}
                   </div>
@@ -450,7 +490,7 @@ function OrderTracking() {
                         className={`star-icon ${star <= foodRating ? "filled" : ""}`}
                         onClick={() => setFoodRating(star)}
                       >
-                        ★
+                        <Star size={24} fill={star <= foodRating ? "#f59e0b" : "none"} stroke="#f59e0b" />
                       </span>
                     ))}
                   </div>
@@ -464,8 +504,8 @@ function OrderTracking() {
                 />
 
                 <div className="rating-buttons">
-                  <button className="submit-review-btn" onClick={handleRatingSubmit}>
-                    Submit Review 🚀
+                  <button className="submit-review-btn" onClick={handleRatingSubmit} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
+                    Submit Review <Zap size={15} />
                   </button>
                   <button className="skip-btn" onClick={() => setShowRatingModal(false)}>
                     Close

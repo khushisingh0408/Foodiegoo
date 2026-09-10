@@ -1,4 +1,5 @@
 import { useContext, useState, useEffect } from "react";
+import { Flame, Heart, Star, Clock, Store, Plus, Minus } from "lucide-react";
 import "../css/PopularFoods.css";
 import { CartContext } from "../context/CartContext";
 import { WishlistContext } from "../context/WishlistContext";
@@ -25,7 +26,6 @@ function PopularFoods({ searchTerm, selectedCategory, activeFilter }) {
     async function loadFoods() {
       const res = await api.get("/foods");
       if (res.success && Array.isArray(res.foods) && res.foods.length > 0) {
-        // Merge backend data with rich local metadata (isVeg, sizes, etc.)
         const merged = res.foods.map((serverFood) => {
           const localMatch = localFoods.find((lf) => lf.id === serverFood.id || lf.name === serverFood.name);
           return localMatch ? { ...serverFood, ...localMatch } : serverFood;
@@ -62,12 +62,12 @@ function PopularFoods({ searchTerm, selectedCategory, activeFilter }) {
     // Quick Hero Filters
     let matchesQuickFilter = true;
     if (activeFilter === "rating") {
-      const numRating = parseFloat((food.rating || "").replace("⭐", "").trim()) || 4.5;
+      const numRating = parseFloat(String(food.rating || food.ratingScore || "").replace("⭐", "").trim()) || 4.5;
       matchesQuickFilter = numRating >= 4.8;
     } else if (activeFilter === "fast") {
       matchesQuickFilter = food.prepTime && (food.prepTime.includes("10") || food.prepTime.includes("15") || food.prepTime.includes("5"));
     } else if (activeFilter === "bestseller") {
-      matchesQuickFilter = food.badge === "BESTSELLER" || food.badge === "MUST TRY";
+      matchesQuickFilter = food.badge === "BESTSELLER" || food.badge === "MUST TRY" || food.isBestSeller;
     } else if (activeFilter === "under199") {
       const priceNum = Number(String(food.price).replace("₹", "")) || 200;
       matchesQuickFilter = priceNum <= 199;
@@ -90,7 +90,10 @@ function PopularFoods({ searchTerm, selectedCategory, activeFilter }) {
     <section className="popular-foods">
       <div className="section-title-bar">
         <div>
-          <h2>🔥 Popular & Trending Dishes</h2>
+          <div className="popular-badge-pill">
+            <Flame size={12} color="#ea580c" className="inline-icon" /> TRENDING NOW
+          </div>
+          <h2>Popular & Trending Dishes</h2>
           <p>Freshly prepared meals delivered straight to you in 20 minutes</p>
         </div>
         <span className="dish-count-tag">{filteredFoods.length} Items</span>
@@ -98,14 +101,14 @@ function PopularFoods({ searchTerm, selectedCategory, activeFilter }) {
 
       {loading && (
         <div className="loading-dishes-state">
-          <p>Loading fresh dishes from kitchen... 🍽️</p>
+          <p>Loading fresh dishes from kitchen...</p>
         </div>
       )}
 
       <div className="food-container">
         {filteredFoods.length === 0 ? (
           <div className="no-food-state">
-            <h3>No food found matching your craving 😔</h3>
+            <h3>No food found matching your craving</h3>
             <p>Try clearing filters or search for something else!</p>
           </div>
         ) : (
@@ -119,9 +122,7 @@ function PopularFoods({ searchTerm, selectedCategory, activeFilter }) {
               <div className="food-card" key={food.id}>
                 {/* Top Badge Row */}
                 <div className="card-top-badges">
-                  <span className={`veg-icon ${food.isVeg ? "veg" : "non-veg"}`}>
-                    {food.isVeg ? "🟢" : "🔴"}
-                  </span>
+                  <span className={`veg-icon-dot ${food.isVeg ? "veg" : "non-veg"}`} />
                   {food.badge && <span className="dish-badge-pill">{food.badge}</span>}
                   
                   <button
@@ -135,7 +136,7 @@ function PopularFoods({ searchTerm, selectedCategory, activeFilter }) {
                     }}
                     aria-label="Wishlist"
                   >
-                    {wishActive ? "❤️" : "🤍"}
+                    <Heart size={15} fill={wishActive ? "#ef4444" : "none"} color={wishActive ? "#ef4444" : "#64748b"} />
                   </button>
                 </div>
 
@@ -160,9 +161,13 @@ function PopularFoods({ searchTerm, selectedCategory, activeFilter }) {
                 {/* Dish Info */}
                 <div className="food-card-info">
                   <div className="food-rating-row">
-                    <span className="star-rating">{food.rating}</span>
+                    <span className="star-rating">
+                      <Star size={12} fill="#16a34a" color="#16a34a" className="inline-icon" /> {food.ratingScore || 4.8}
+                    </span>
                     <span className="dot-sep">•</span>
-                    <span className="prep-time">⏱️ {food.prepTime || "20 mins"}</span>
+                    <span className="prep-time">
+                      <Clock size={11} className="inline-icon" /> {food.prepTime || "20 mins"}
+                    </span>
                   </div>
 
                   <h3
@@ -173,7 +178,9 @@ function PopularFoods({ searchTerm, selectedCategory, activeFilter }) {
                   </h3>
 
                   {food.restaurantName && (
-                    <span className="restaurant-tag">🏬 {food.restaurantName}</span>
+                    <span className="restaurant-tag">
+                      <Store size={11} className="inline-icon" /> {food.restaurantName}
+                    </span>
                   )}
 
                   <p className="food-card-desc">{food.description}</p>
@@ -188,13 +195,17 @@ function PopularFoods({ searchTerm, selectedCategory, activeFilter }) {
                           className="add-to-cart-btn"
                           onClick={() => handleAddClick(foodObj)}
                         >
-                          + ADD
+                          <Plus size={13} className="inline-icon" /> ADD
                         </button>
                       ) : (
                         <div className="card-qty-stepper">
-                          <button onClick={() => decreaseQuantity(food.id)}>−</button>
+                          <button onClick={() => decreaseQuantity(food.id)}>
+                            <Minus size={13} />
+                          </button>
                           <span>{qty}</span>
-                          <button onClick={() => increaseQuantity(food.id)}>+</button>
+                          <button onClick={() => increaseQuantity(food.id)}>
+                            <Plus size={13} />
+                          </button>
                         </div>
                       )}
 

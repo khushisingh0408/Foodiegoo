@@ -85,6 +85,6 @@ export function calculateDiscount(couponCode, cartTotal, deliveryFee = 40) {
     discount,
     isValid: true,
     coupon,
-    message: `Coupon ${coupon.code} applied successfully! You saved ₹${discount}. 🎉`
+    message: `Coupon ${coupon.code} applied successfully! You saved ₹${discount}.`
   };
 }

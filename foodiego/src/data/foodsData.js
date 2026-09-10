@@ -80,7 +80,7 @@ export const foods = [
     crusts: [
       { name: "Pan Hand Tossed", price: 0 },
       { name: "Thin & Crispy", price: 20 },
-      { name: "Cheese Burst 🧀", price: 60 }
+      { name: "Cheese Burst", price: 60 }
     ],
     addOns: [
       { name: "Extra Mozzarella Cheese", price: 45 },
@@ -187,7 +187,7 @@ export const foods = [
     crusts: [
       { name: "Pan Hand Tossed", price: 0 },
       { name: "Thin & Crispy", price: 20 },
-      { name: "Cheese Burst 🧀", price: 60 }
+      { name: "Cheese Burst", price: 60 }
     ],
     addOns: [
       { name: "Extra Black Olives", price: 35 },
@@ -255,7 +255,7 @@ export const foods = [
     ],
     crusts: [
       { name: "Pan Hand Tossed", price: 0 },
-      { name: "Cheese Burst 🧀", price: 60 }
+      { name: "Cheese Burst", price: 60 }
     ],
     addOns: [
       { name: "Extra Paneer", price: 50 },
@@ -310,7 +310,7 @@ export const foods = [
       { name: "Medium (10\")", price: 180 },
       { name: "Large (12\")", price: 340 }
     ],
-    crusts: [{ name: "Pan Hand Tossed", price: 0 }, { name: "Cheese Burst 🧀", price: 60 }],
+    crusts: [{ name: "Pan Hand Tossed", price: 0 }, { name: "Cheese Burst", price: 60 }],
     addOns: [{ name: "Extra Pepperoni", price: 60 }, { name: "Smoky BBQ Dip", price: 30 }],
     specifications: { servingSize: "2 Persons", calories: "360 kcal/slice", allergens: "Gluten, Dairy, Meat", spiceLevel: "Medium (Level 3/5)" },
     features: ["Smoked premium cured pepperoni", "Double layer cheese blend"],
@@ -403,8 +403,8 @@ export const foods = [
     customizable: true,
     sizes: [
       { name: "Single Patty", price: 0 },
-      { name: "Double Patty 🍔🍔", price: 70 },
-      { name: "Meal with Fries & Drink 🍟🥤", price: 120 }
+      { name: "Double Patty", price: 70 },
+      { name: "Meal with Fries & Drink", price: 120 }
     ],
     crusts: [
       { name: "Toasted Brioche Bun", price: 0 },
@@ -571,7 +571,7 @@ export const foods = [
     calories: "580 kcal",
     description: "Two stacked smashed patties glazed in smoky hickory BBQ sauce, caramelized onions, double cheddar cheese, and crisp lettuce.",
     customizable: true,
-    sizes: [{ name: "Double Smash", price: 0 }, { name: "Triple Monster 🍔🍔🍔", price: 80 }],
+    sizes: [{ name: "Double Smash", price: 0 }, { name: "Triple Monster", price: 80 }],
     crusts: [{ name: "Brioche Bun", price: 0 }],
     addOns: [{ name: "Crispy Bacon-Style Strips (Veg)", price: 40 }],
     specifications: { servingSize: "1 Person", calories: "580 kcal", allergens: "Gluten, Dairy", spiceLevel: "Medium (Level 2/5)" },
@@ -1484,12 +1484,12 @@ export const foods = [
 
 // Helper Brand List
 export const brandsList = [
-  { id: "b1", name: "La Pino'z Pizza", logo: "🍕", rating: "4.8", count: "5 dishes", category: "Pizza" },
-  { id: "b2", name: "Burger King", logo: "🍔", rating: "4.7", count: "5 dishes", category: "Burger" },
-  { id: "b3", name: "The Belgian Waffle Co.", logo: "🧇", rating: "4.9", count: "5 dishes", category: "Dessert" },
-  { id: "b4", name: "Wow! Momo & Chinese", logo: "🥟", rating: "4.8", count: "5 dishes", category: "Noodles" },
-  { id: "b5", name: "Subway & FastBites", logo: "🍟", rating: "4.7", count: "5 dishes", category: "Fries" },
-  { id: "b6", name: "Starbucks / Chai Point", logo: "☕", rating: "4.9", count: "5 dishes", category: "Drinks" }
+  { id: "b1", name: "La Pino'z Pizza", rating: "4.8", count: "5 dishes", category: "Pizza" },
+  { id: "b2", name: "Burger King", rating: "4.7", count: "5 dishes", category: "Burger" },
+  { id: "b3", name: "The Belgian Waffle Co.", rating: "4.9", count: "5 dishes", category: "Dessert" },
+  { id: "b4", name: "Wow! Momo & Chinese", rating: "4.8", count: "5 dishes", category: "Noodles" },
+  { id: "b5", name: "Subway & FastBites", rating: "4.7", count: "5 dishes", category: "Fries" },
+  { id: "b6", name: "Starbucks / Chai Point", rating: "4.9", count: "5 dishes", category: "Drinks" }
 ];
 
 // Customer Testimonials for Homepage
@@ -1529,22 +1529,22 @@ export const customerTestimonials = [
 // Why Choose Us Trust Pillars
 export const whyChooseUsData = [
   {
-    icon: "⚡",
+    icon: "Zap",
     title: "20-Minute Lightning Delivery",
     desc: "Smart rider dispatch algorithms deliver your hot meal faster than anyone else."
   },
   {
-    icon: "🌿",
+    icon: "Leaf",
     title: "100% Fresh & Hygienic",
     desc: "Prepared in certified hygienic kitchens using fresh daily sourced ingredients."
   },
   {
-    icon: "💰",
+    icon: "BadgePercent",
     title: "Best Price & Discount Guarantee",
     desc: "Enjoy daily flash sales, bank discounts, and up to 50% off on your cravings."
   },
   {
-    icon: "🛡️",
+    icon: "ShieldCheck",
     title: "Contactless & Temperature Safe",
     desc: "Triple-layer insulated packaging ensures food remains piping hot at 65°C."
   }

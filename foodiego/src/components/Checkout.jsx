@@ -1,5 +1,26 @@
 import { useContext, useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import {
+  Lock,
+  Check,
+  Pencil,
+  Home,
+  Briefcase,
+  MapPin,
+  Phone,
+  Zap,
+  CreditCard,
+  Building2,
+  Wallet,
+  Banknote,
+  BarChart3,
+  QrCode,
+  ShieldCheck,
+  ArrowRight,
+  Clock,
+  Loader2,
+  Smartphone
+} from "lucide-react";
 import { CartContext } from "../context/CartContext";
 import { AuthContext } from "../context/AuthContext";
 import api from "../services/api";
@@ -181,13 +202,15 @@ function Checkout() {
     <div className="checkout-page">
       {/* Checkout Header & Steps Indicator */}
       <div className="checkout-header-area">
-        <h1>Secure Checkout 🔒</h1>
+        <h1 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          Secure Checkout <Lock size={24} color="#10b981" />
+        </h1>
         <div className="checkout-steps-tracker">
           <div
             className={`step-bubble ${currentStep >= 1 ? "active" : ""} ${currentStep > 1 ? "completed" : ""}`}
             onClick={() => setCurrentStep(1)}
           >
-            <span className="step-num">{currentStep > 1 ? "✓" : "1"}</span>
+            <span className="step-num">{currentStep > 1 ? <Check size={14} /> : "1"}</span>
             <span className="step-text">Delivery Address</span>
           </div>
 
@@ -197,7 +220,7 @@ function Checkout() {
             className={`step-bubble ${currentStep >= 2 ? "active" : ""} ${currentStep > 2 ? "completed" : ""}`}
             onClick={() => setCurrentStep(2)}
           >
-            <span className="step-num">{currentStep > 2 ? "✓" : "2"}</span>
+            <span className="step-num">{currentStep > 2 ? <Check size={14} /> : "2"}</span>
             <span className="step-text">Delivery Speed</span>
           </div>
 
@@ -224,7 +247,11 @@ function Checkout() {
                 <h3>1. Select Delivery Address</h3>
                 <p className="step-subtitle">Where should we deliver your hot food?</p>
               </div>
-              {currentStep !== 1 && <span className="step-edit-link">Edit ✎</span>}
+              {currentStep !== 1 && (
+                <span className="step-edit-link" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                  <Pencil size={13} /> Edit
+                </span>
+              )}
             </div>
 
             {currentStep === 1 && (
@@ -239,15 +266,21 @@ function Checkout() {
                         onClick={() => handleSelectSavedAddress(addr)}
                       >
                         <div className="saved-addr-top">
-                          <span className="addr-tag-pill">
-                            {addr.tag === "Home" ? "🏠 Home" : addr.tag === "Work" ? "💼 Work" : "📍 Other"}
+                          <span className="addr-tag-pill" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                            {addr.tag === "Home" ? <><Home size={13} /> Home</> : addr.tag === "Work" ? <><Briefcase size={13} /> Work</> : <><MapPin size={13} /> Other</>}
                           </span>
-                          {selectedAddressId === addr.id && <span className="selected-check">✓ Selected</span>}
+                          {selectedAddressId === addr.id && (
+                            <span className="selected-check" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                              <Check size={13} /> Selected
+                            </span>
+                          )}
                         </div>
                         <strong>{addr.fullName}</strong>
                         <p>{addr.houseFlat}, {addr.street}</p>
                         <small>{addr.city}, {addr.state} - {addr.pincode}</small>
-                        <small className="addr-phone">📱 {addr.mobile}</small>
+                        <small className="addr-phone" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                          <Smartphone size={13} /> {addr.mobile}
+                        </small>
                       </div>
                     ))}
                   </div>
@@ -336,16 +369,21 @@ function Checkout() {
                           type="button"
                           className={`tag-btn ${addressTag === t ? "active" : ""}`}
                           onClick={() => setAddressTag(t)}
+                          style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}
                         >
-                          {t === "Home" ? "🏠" : t === "Work" ? "💼" : "📍"} {t}
+                          {t === "Home" ? <Home size={14} /> : t === "Work" ? <Briefcase size={14} /> : <MapPin size={14} />} {t}
                         </button>
                       ))}
                     </div>
                   </div>
                 </div>
 
-                <button className="step-continue-btn" onClick={() => setCurrentStep(2)}>
-                  Continue to Delivery Speed →
+                <button
+                  className="step-continue-btn"
+                  onClick={() => setCurrentStep(2)}
+                  style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px" }}
+                >
+                  Continue to Delivery Speed <ArrowRight size={16} />
                 </button>
               </div>
             )}
@@ -357,9 +395,13 @@ function Checkout() {
               <div className="step-badge">2</div>
               <div>
                 <h3>2. Choose Delivery Speed & Method</h3>
-                <p className="step-subtitle">Selected: {deliverySpeed === "express" ? "⚡ Priority Express" : "Standard Delivery"}</p>
+                <p className="step-subtitle">Selected: {deliverySpeed === "express" ? "Priority Express" : "Standard Delivery"}</p>
               </div>
-              {currentStep !== 2 && <span className="step-edit-link">Edit ✎</span>}
+              {currentStep !== 2 && (
+                <span className="step-edit-link" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                  <Pencil size={13} /> Edit
+                </span>
+              )}
             </div>
 
             {currentStep === 2 && (
@@ -393,15 +435,21 @@ function Checkout() {
                       onChange={() => setDeliverySpeed("express")}
                     />
                     <div className="speed-choice-text">
-                      <strong>⚡ Priority Express Rider (15-20 mins)</strong>
+                      <strong style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                        <Zap size={14} color="#f59e0b" /> Priority Express Rider (15-20 mins)
+                      </strong>
                       <p>Dedicated single-drop express rider assigned directly to your kitchen.</p>
                     </div>
                     <span className="choice-fee">+₹25</span>
                   </div>
                 </div>
 
-                <button className="step-continue-btn" onClick={() => setCurrentStep(3)}>
-                  Continue to Payment →
+                <button
+                  className="step-continue-btn"
+                  onClick={() => setCurrentStep(3)}
+                  style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px" }}
+                >
+                  Continue to Payment <ArrowRight size={16} />
                 </button>
               </div>
             )}
@@ -425,43 +473,49 @@ function Checkout() {
                     type="button"
                     className={`payment-tab ${paymentMethod === "upi" ? "active" : ""}`}
                     onClick={() => setPaymentMethod("upi")}
+                    style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
                   >
-                    ⚡ UPI / QR
+                    <Zap size={14} color="#f59e0b" /> UPI / QR
                   </button>
                   <button
                     type="button"
                     className={`payment-tab ${paymentMethod === "card" ? "active" : ""}`}
                     onClick={() => setPaymentMethod("card")}
+                    style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
                   >
-                    💳 Card
+                    <CreditCard size={14} color="#3b82f6" /> Card
                   </button>
                   <button
                     type="button"
                     className={`payment-tab ${paymentMethod === "netbanking" ? "active" : ""}`}
                     onClick={() => setPaymentMethod("netbanking")}
+                    style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
                   >
-                    🏦 Net Banking
+                    <Building2 size={14} color="#8b5cf6" /> Net Banking
                   </button>
                   <button
                     type="button"
                     className={`payment-tab ${paymentMethod === "wallet" ? "active" : ""}`}
                     onClick={() => setPaymentMethod("wallet")}
+                    style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
                   >
-                    👛 Wallet
+                    <Wallet size={14} color="#ec4899" /> Wallet
                   </button>
                   <button
                     type="button"
                     className={`payment-tab ${paymentMethod === "cod" ? "active" : ""}`}
                     onClick={() => setPaymentMethod("cod")}
+                    style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
                   >
-                    💵 Cash on Delivery
+                    <Banknote size={14} color="#10b981" /> Cash on Delivery
                   </button>
                   <button
                     type="button"
                     className={`payment-tab ${paymentMethod === "emi" ? "active" : ""}`}
                     onClick={() => setPaymentMethod("emi")}
+                    style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
                   >
-                    📊 EMI
+                    <BarChart3 size={14} color="#f97316" /> EMI
                   </button>
                 </div>
 
@@ -471,10 +525,10 @@ function Checkout() {
                     <label className="panel-label">Choose UPI App or Scan QR:</label>
                     <div className="upi-apps-grid">
                       {[
-                        { id: "gpay", name: "Google Pay", icon: "🌐" },
-                        { id: "phonepe", name: "PhonePe", icon: "🟣" },
-                        { id: "paytm", name: "Paytm UPI", icon: "🔵" },
-                        { id: "qrcode", name: "Scan QR Code", icon: "📱" }
+                        { id: "gpay", name: "Google Pay", icon: <Smartphone size={20} color="#4285F4" /> },
+                        { id: "phonepe", name: "PhonePe", icon: <Smartphone size={20} color="#6739B7" /> },
+                        { id: "paytm", name: "Paytm UPI", icon: <Smartphone size={20} color="#00BAF2" /> },
+                        { id: "qrcode", name: "Scan QR Code", icon: <QrCode size={20} color="#10b981" /> }
                       ].map((app) => (
                         <div
                           key={app.id}
@@ -499,8 +553,10 @@ function Checkout() {
                         <small>A payment request will be sent to your UPI app.</small>
                       </div>
                     ) : (
-                      <div className="upi-qr-display-box">
-                        <div className="qr-box-pattern">📱 [FOODIEGO-UPI-QR]</div>
+                      <div className="upi-qr-display-box" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
+                        <div className="qr-box-pattern" style={{ padding: "16px", background: "#f8fafc", borderRadius: "12px", display: "flex", alignItems: "center", gap: "8px" }}>
+                          <QrCode size={48} color="#0f172a" />
+                        </div>
                         <strong>Scan with any UPI app to pay ₹{finalTotal}</strong>
                       </div>
                     )}
@@ -512,7 +568,7 @@ function Checkout() {
                   <div className="payment-panel-content">
                     {/* Interactive 3D Card Preview */}
                     <div className="visual-card-preview">
-                      <div className="card-chip">💳</div>
+                      <div className="card-chip"><CreditCard size={28} /></div>
                       <div className="card-number-display">{cardNumber || "•••• •••• •••• ••••"}</div>
                       <div className="card-bottom-display">
                         <div>
@@ -580,8 +636,9 @@ function Checkout() {
                           key={bank}
                           className={`bank-card ${selectedBank === bank ? "selected" : ""}`}
                           onClick={() => setSelectedBank(bank)}
+                          style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}
                         >
-                          <span>🏦</span>
+                          <Building2 size={18} color="#8b5cf6" />
                           <strong>{bank}</strong>
                         </div>
                       ))}
@@ -599,8 +656,9 @@ function Checkout() {
                           key={w}
                           className={`bank-card ${selectedWallet === w ? "selected" : ""}`}
                           onClick={() => setSelectedWallet(w)}
+                          style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}
                         >
-                          <span>👛</span>
+                          <Wallet size={18} color="#ec4899" />
                           <strong>{w}</strong>
                         </div>
                       ))}
@@ -611,7 +669,9 @@ function Checkout() {
                 {/* 5. Cash on Delivery */}
                 {paymentMethod === "cod" && (
                   <div className="payment-panel-content cod-box">
-                    <div className="cod-icon">💵</div>
+                    <div className="cod-icon" style={{ display: "flex", justifyContent: "center", marginBottom: "8px" }}>
+                      <Banknote size={36} color="#10b981" />
+                    </div>
                     <h4>Pay Cash or UPI upon Delivery</h4>
                     <p>
                       Please keep exact cash ready or scan the delivery rider's QR code upon arrival.
@@ -647,9 +707,15 @@ function Checkout() {
 
                 {/* Trust Seals */}
                 <div className="checkout-trust-seals">
-                  <span>🔒 256-Bit SSL Encryption</span>
-                  <span>🛡️ 100% Genuine Quality Guarantee</span>
-                  <span>⚡ RBI Approved Gateway</span>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                    <Lock size={14} color="#10b981" /> 256-Bit SSL Encryption
+                  </span>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                    <ShieldCheck size={14} color="#3b82f6" /> 100% Genuine Quality Guarantee
+                  </span>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                    <Zap size={14} color="#f59e0b" /> RBI Approved Gateway
+                  </span>
                 </div>
 
                 {/* Place Order CTA Button */}
@@ -657,11 +723,16 @@ function Checkout() {
                   className="place-order-big-btn"
                   onClick={handlePlaceOrder}
                   disabled={isSubmitting}
+                  style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
                 >
                   {isSubmitting ? (
-                    <span>Processing Order... ⏳</span>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+                      Processing Order... <Loader2 size={16} className="spin-icon" />
+                    </span>
                   ) : (
-                    <span>Place Order • ₹{finalTotal} ⚡</span>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+                      Place Order • ₹{finalTotal} <Zap size={16} />
+                    </span>
                   )}
                 </button>
               </div>

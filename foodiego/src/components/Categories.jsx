@@ -1,3 +1,4 @@
+import { UtensilsCrossed, Sparkles } from "lucide-react";
 import "../css/Categories.css";
 import pizzaImg from "../assets/images/margherita-pizza.png";
 import burgerImg from "../assets/images/classic Cheeseburger.png";
@@ -55,8 +56,10 @@ function Categories({ selectedCategory, setSelectedCategory }) {
   return (
     <section className="categories-section">
       <div className="cat-header-wrap">
-        <div className="cat-title-badge">FOOD CATEGORIES</div>
-        <h2>Inspiration for Your Order ✨</h2>
+        <div className="cat-title-badge">
+          <Sparkles size={12} className="inline-icon" /> FOOD CATEGORIES
+        </div>
+        <h2>Inspiration for Your Order</h2>
         <p>Explore top curated dishes by craving</p>
       </div>
 
@@ -75,20 +78,7 @@ function Categories({ selectedCategory, setSelectedCategory }) {
               <div className="category-img-bubble">
                 {item.isIcon ? (
                   <div className="cat-all-icon">
-                    <svg
-                      width="34"
-                      height="34"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" />
-                      <path d="M7 2v20" />
-                      <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7" />
-                    </svg>
+                    <UtensilsCrossed size={28} />
                   </div>
                 ) : (
                   <img

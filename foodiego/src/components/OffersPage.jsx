@@ -1,5 +1,14 @@
 import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
+import {
+  Ticket,
+  Tag,
+  UtensilsCrossed,
+  CreditCard,
+  Building2,
+  Zap,
+  Copy
+} from "lucide-react";
 import { coupons } from "../data/couponsData";
 import { CartContext } from "../context/CartContext";
 import "../css/OffersPage.css";
@@ -12,7 +21,7 @@ function OffersPage() {
     {
       id: "bank-1",
       bank: "HDFC Bank",
-      logo: "🏦",
+      logo: <Building2 size={20} color="#004c8f" />,
       offer: "10% Instant Discount up to ₹150 on Credit & Debit Cards",
       code: "HDFC10",
       minOrder: 499
@@ -20,7 +29,7 @@ function OffersPage() {
     {
       id: "bank-2",
       bank: "ICICI Bank",
-      logo: "💳",
+      logo: <CreditCard size={20} color="#b3282d" />,
       offer: "Flat ₹100 Cashback on Net Banking transactions",
       code: "ICICI100",
       minOrder: 399
@@ -28,7 +37,7 @@ function OffersPage() {
     {
       id: "bank-3",
       bank: "Axis Bank",
-      logo: "⚡",
+      logo: <Zap size={20} color="#97144d" />,
       offer: "Flat 15% OFF on Neo Credit Cards",
       code: "AXISNEO",
       minOrder: 299
@@ -40,7 +49,9 @@ function OffersPage() {
       {/* Top Banner */}
       <div className="offers-hero-banner">
         <span className="offers-badge">EXCLUSIVE SAVINGS HUB</span>
-        <h1>Today's Hot Deals, Coupons & Bank Offers 🎟️</h1>
+        <h1 style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+          Today's Hot Deals, Coupons & Bank Offers <Ticket size={28} color="#ff4757" />
+        </h1>
         <p>Apply these verified coupon codes at checkout to save big on your cravings</p>
       </div>
 
@@ -49,20 +60,23 @@ function OffersPage() {
         <button
           className={`offers-tab-btn ${activeCategory === "all" ? "active" : ""}`}
           onClick={() => setActiveCategory("all")}
+          style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
         >
-          🏷️ All Offers ({coupons.length + bankOffers.length})
+          <Tag size={15} /> All Offers ({coupons.length + bankOffers.length})
         </button>
         <button
           className={`offers-tab-btn ${activeCategory === "coupons" ? "active" : ""}`}
           onClick={() => setActiveCategory("coupons")}
+          style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
         >
-          🍕 Restaurant Coupons ({coupons.length})
+          <UtensilsCrossed size={15} /> Restaurant Coupons ({coupons.length})
         </button>
         <button
           className={`offers-tab-btn ${activeCategory === "bank" ? "active" : ""}`}
           onClick={() => setActiveCategory("bank")}
+          style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
         >
-          💳 Bank & Card Discounts ({bankOffers.length})
+          <CreditCard size={15} /> Bank & Card Discounts ({bankOffers.length})
         </button>
       </div>
 
@@ -84,10 +98,11 @@ function OffersPage() {
                     className="copy-code-action"
                     onClick={() => {
                       navigator.clipboard.writeText(coupon.code);
-                      showToast(`Copied code ${coupon.code}! 📋`, "success");
+                      showToast(`Copied code ${coupon.code}!`, "success");
                     }}
+                    style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}
                   >
-                    Copy Code
+                    <Copy size={13} /> Copy Code
                   </button>
                 </div>
 
@@ -122,10 +137,11 @@ function OffersPage() {
                     className="copy-bank-btn"
                     onClick={() => {
                       navigator.clipboard.writeText(b.code);
-                      showToast(`Copied code ${b.code}! 📋`, "success");
+                      showToast(`Copied code ${b.code}!`, "success");
                     }}
+                    style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}
                   >
-                    Copy
+                    <Copy size={13} /> Copy
                   </button>
                 </div>
               </div>

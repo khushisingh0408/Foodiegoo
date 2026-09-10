@@ -1,5 +1,6 @@
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
+import { SlidersHorizontal, X, Plus, Clock, Star, ShoppingCart } from "lucide-react";
 import { CartContext } from "../context/CartContext";
 import "../css/CompareDrawer.css";
 
@@ -23,7 +24,7 @@ function CompareDrawer() {
                   onClick={() => removeFromCompare(item.id)}
                   title="Remove"
                 >
-                  ✕
+                  <X size={12} />
                 </button>
               </div>
             ))}
@@ -36,7 +37,7 @@ function CompareDrawer() {
 
           <div className="compare-actions-row">
             <button className="open-compare-btn" onClick={() => setIsOpenModal(true)}>
-              Compare ({compareList.length}/4) ⚖️
+              <SlidersHorizontal size={14} className="inline-icon" /> Compare ({compareList.length}/4)
             </button>
             <button className="clear-compare-btn" onClick={clearCompare}>
               Clear
@@ -50,9 +51,9 @@ function CompareDrawer() {
         <div className="compare-modal-overlay" onClick={() => setIsOpenModal(false)}>
           <div className="compare-modal-box" onClick={(e) => e.stopPropagation()}>
             <div className="compare-modal-header">
-              <h2>Product Comparison ({compareList.length} Items) ⚖️</h2>
+              <h2>Product Comparison ({compareList.length} Items)</h2>
               <button className="modal-close-btn" onClick={() => setIsOpenModal(false)}>
-                ✕
+                <X size={18} />
               </button>
             </div>
 
@@ -67,7 +68,7 @@ function CompareDrawer() {
                           className="table-remove-btn"
                           onClick={() => removeFromCompare(item.id)}
                         >
-                          ✕ Remove
+                          <X size={12} className="inline-icon" /> Remove
                         </button>
                         <img src={item.image} alt={item.name} className="compare-table-img" />
                         <Link to={`/product/${item.id}`} onClick={() => setIsOpenModal(false)}>
@@ -79,7 +80,7 @@ function CompareDrawer() {
                           className="table-add-btn"
                           onClick={() => addToCart(item)}
                         >
-                          + Add to Cart
+                          <Plus size={13} className="inline-icon" /> Add to Cart
                         </button>
                       </th>
                     ))}
@@ -103,9 +104,13 @@ function CompareDrawer() {
                     {compareList.map((item) => (
                       <td key={item.id}>
                         {item.isVeg ? (
-                          <span className="veg-badge-pill">🟢 100% Pure Veg</span>
+                          <span className="veg-badge-pill">
+                            <span className="diet-indicator-dot veg" /> 100% Pure Veg
+                          </span>
                         ) : (
-                          <span className="nonveg-badge-pill">🔴 Non-Veg</span>
+                          <span className="nonveg-badge-pill">
+                            <span className="diet-indicator-dot non-veg" /> Non-Veg
+                          </span>
                         )}
                       </td>
                     ))}
@@ -114,14 +119,19 @@ function CompareDrawer() {
                     <td className="row-label">Rating</td>
                     {compareList.map((item) => (
                       <td key={item.id}>
-                        <strong>{item.rating}</strong> ({item.ratingCount || "1k+"} reviews)
+                        <strong>
+                          <Star size={12} fill="#ca8a04" color="#ca8a04" className="inline-icon" /> {item.ratingScore || 4.8}
+                        </strong>{" "}
+                        ({item.ratingCount || "1k+"} reviews)
                       </td>
                     ))}
                   </tr>
                   <tr>
                     <td className="row-label">Prep / Delivery Time</td>
                     {compareList.map((item) => (
-                      <td key={item.id}>⏱️ {item.prepTime || "20 mins"}</td>
+                      <td key={item.id}>
+                        <Clock size={12} className="inline-icon" /> {item.prepTime || "20 mins"}
+                      </td>
                     ))}
                   </tr>
                   <tr>

@@ -1,39 +1,48 @@
 import { useState, useContext } from "react";
+import {
+  MapPin,
+  Search,
+  Crosshair,
+  X,
+  Home,
+  Briefcase,
+  Building2
+} from "lucide-react";
 import { CartContext } from "../context/CartContext";
 import "../css/LocationModal.css";
 
 const popularLocations = [
   {
     tag: "Home",
-    emoji: "🏠",
+    iconType: "home",
     address: "Flat 402, Sunshine Heights, Sector 62",
     city: "Noida, Uttar Pradesh",
     pincode: "201309"
   },
   {
     tag: "Work",
-    emoji: "💼",
+    iconType: "work",
     address: "Tower B, Cyber City, DLF Phase 2",
     city: "Gurugram, Haryana",
     pincode: "122002"
   },
   {
     tag: "Bengaluru",
-    emoji: "📍",
+    iconType: "city",
     address: "100 Feet Road, HAL 2nd Stage, Indiranagar",
     city: "Bengaluru, Karnataka",
     pincode: "560038"
   },
   {
     tag: "Mumbai",
-    emoji: "📍",
+    iconType: "city",
     address: "Linking Road, Bandra West",
     city: "Mumbai, Maharashtra",
     pincode: "400050"
   },
   {
     tag: "Delhi",
-    emoji: "📍",
+    iconType: "city",
     address: "Inner Circle, Connaught Place",
     city: "New Delhi, Delhi",
     pincode: "110001"
@@ -58,13 +67,13 @@ function LocationModal({ isOpen, onClose }) {
       setIsLocating(false);
       const liveLoc = {
         tag: "Current Location",
-        emoji: "🎯",
+        iconType: "gps",
         address: "Sector 18 Market, Metro Station Gate 2",
         city: "Noida, Delhi NCR",
         pincode: "201301"
       };
       updateDeliveryLocation(liveLoc);
-      showToast("📍 Geolocation detected successfully!", "success");
+      showToast("Geolocation detected successfully!", "success");
       onClose();
     }, 900);
   };
@@ -81,16 +90,18 @@ function LocationModal({ isOpen, onClose }) {
       <div className="location-modal-box" onClick={(e) => e.stopPropagation()}>
         <div className="location-modal-header">
           <div>
-            <h3>Choose Delivery Location 📍</h3>
+            <h3 style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              Choose Delivery Location <MapPin size={18} color="#ff4757" />
+            </h3>
             <p>Select your address for accurate delivery time and restaurant offers</p>
           </div>
           <button className="close-btn" onClick={onClose} aria-label="Close modal">
-            ✕
+            <X size={18} />
           </button>
         </div>
 
         <div className="location-search-input-wrap">
-          <span>🔍</span>
+          <Search size={18} color="#94a3b8" />
           <input
             type="text"
             placeholder="Search for area, street, landmark, pincode..."
@@ -100,7 +111,7 @@ function LocationModal({ isOpen, onClose }) {
           />
           {searchQuery && (
             <button className="clear-search" onClick={() => setSearchQuery("")}>
-              ✕
+              <X size={14} />
             </button>
           )}
         </div>
@@ -109,8 +120,9 @@ function LocationModal({ isOpen, onClose }) {
           className={`gps-locate-btn ${isLocating ? "locating" : ""}`}
           onClick={handleGpsLocate}
           disabled={isLocating}
+          style={{ display: "flex", alignItems: "center", gap: "10px" }}
         >
-          <span className="gps-icon">🎯</span>
+          <span className="gps-icon"><Crosshair size={20} color="#ff4757" /></span>
           <div className="gps-text">
             <strong>{isLocating ? "Detecting location..." : "Use Current Location"}</strong>
             <small>Using GPS for 15-minute quick delivery</small>
@@ -130,7 +142,15 @@ function LocationModal({ isOpen, onClose }) {
                 key={idx}
                 onClick={() => handleSelect(loc)}
               >
-                <span className="loc-emoji">{loc.emoji}</span>
+                <span className="loc-emoji" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  {loc.iconType === "home" ? (
+                    <Home size={18} color="#ff4757" />
+                  ) : loc.iconType === "work" ? (
+                    <Briefcase size={18} color="#3b82f6" />
+                  ) : (
+                    <MapPin size={18} color="#10b981" />
+                  )}
+                </span>
                 <div className="loc-info">
                   <div className="loc-tag-row">
                     <strong>{loc.tag}</strong>

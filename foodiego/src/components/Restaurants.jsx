@@ -1,5 +1,6 @@
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
+import { Zap, Leaf, Star, Clock, ArrowRight, Building2 } from "lucide-react";
 import { restaurants as allRestaurants } from "../data/restaurantsData";
 import { CartContext } from "../context/CartContext";
 import "../css/Restaurants.css";
@@ -20,7 +21,9 @@ function Restaurants() {
     <section className="restaurants-section">
       <div className="section-header-wrap">
         <div>
-          <div className="rest-badge-pill">CURATED CHAINS</div>
+          <div className="rest-badge-pill">
+            <Building2 size={12} className="inline-icon" /> CURATED CHAINS
+          </div>
           <h2>Top Restaurant Chains in {deliveryLocation?.city?.split(",")[0] || "Your Area"}</h2>
           <p>Handpicked top-rated restaurants with lightning fast delivery</p>
         </div>
@@ -41,7 +44,7 @@ function Restaurants() {
 
       {filteredRestaurants.length === 0 ? (
         <div className="no-restaurants">
-          <p>No restaurants found matching your active filter 😔</p>
+          <p>No restaurants found matching your active filter</p>
           <button onClick={() => setSelectedCuisine("All")} className="reset-btn">
             View All Restaurants
           </button>
@@ -58,12 +61,14 @@ function Restaurants() {
                 <img src={rest.image} alt={rest.name} loading="lazy" />
                 {rest.discount && (
                   <div className="discount-tag">
-                    <span>⚡ {rest.discount}</span>
+                    <Zap size={11} fill="#ffffff" color="#ffffff" className="inline-icon" />
+                    <span>{rest.discount}</span>
                   </div>
                 )}
                 {rest.isVegOnly && (
                   <div className="pure-veg-badge">
-                    <span>🌱 PURE VEG</span>
+                    <Leaf size={11} color="#15803d" className="inline-icon" />
+                    <span>PURE VEG</span>
                   </div>
                 )}
               </div>
@@ -72,12 +77,15 @@ function Restaurants() {
                 <div className="rest-title-row">
                   <h3>{rest.name}</h3>
                   <div className="rating-badge">
-                    <span>★ {rest.rating}</span>
+                    <Star size={11} fill="#ffffff" color="#ffffff" className="inline-icon" />
+                    <span>{rest.rating}</span>
                   </div>
                 </div>
 
                 <div className="rest-meta-row">
-                  <span className="delivery-time">⏱️ {rest.deliveryTime}</span>
+                  <span className="delivery-time">
+                    <Clock size={11} className="inline-icon" /> {rest.deliveryTime}
+                  </span>
                   <span className="dot-sep">•</span>
                   <span className="distance">{rest.distance}</span>
                 </div>
@@ -85,7 +93,9 @@ function Restaurants() {
                 <p className="rest-cuisines">{rest.cuisines.join(", ")}</p>
                 <div className="rest-bottom-row">
                   <span className="price-for-two">{rest.priceForTwo}</span>
-                  <span className="view-menu-txt">Menu →</span>
+                  <span className="view-menu-txt">
+                    Menu <ArrowRight size={12} className="inline-icon" />
+                  </span>
                 </div>
               </div>
             </Link>

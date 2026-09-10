@@ -1,5 +1,36 @@
 import { useState, useContext, useEffect } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import {
+  LayoutDashboard,
+  Package,
+  Bike,
+  Heart,
+  MapPin,
+  CreditCard,
+  Ticket,
+  Star,
+  RotateCcw,
+  Bell,
+  User,
+  Lock,
+  LogOut,
+  CheckCircle2,
+  Wallet,
+  UtensilsCrossed,
+  Tag,
+  HelpCircle,
+  Trash2,
+  Copy,
+  Plus,
+  X,
+  Smartphone,
+  Briefcase,
+  Home,
+  Zap,
+  DollarSign,
+  Check,
+  ArrowRight
+} from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 import { CartContext } from "../context/CartContext";
 import { WishlistContext } from "../context/WishlistContext";
@@ -94,7 +125,7 @@ function UserAccount() {
   const handleSaveProfile = (e) => {
     e.preventDefault();
     updateProfile({ name: editName, phone: editPhone });
-    showToast("Profile information updated successfully! ✓", "success");
+    showToast("Profile information updated successfully!", "success");
   };
 
   const handleAddNewAddress = (e) => {
@@ -125,31 +156,31 @@ function UserAccount() {
     if (num > 0) {
       setWalletBalance((prev) => prev + num);
       setAddWalletAmount("");
-      showToast(`Added ₹${num} to your FoodieGo Wallet! 🎉`, "success");
+      showToast(`Added ₹${num} to your FoodieGo Wallet!`, "success");
     }
   };
 
   const handleReorder = (order) => {
     if (order.items && order.items.length > 0) {
       order.items.forEach((item) => addToCart(item));
-      showToast(`Added ${order.items.length} items to your cart! 🛒`, "success");
+      showToast(`Added ${order.items.length} items to your cart!`, "success");
       navigate("/cart");
     }
   };
 
   const menuItems = [
-    { id: "overview", label: "Dashboard Overview", icon: "📊" },
-    { id: "orders", label: "My Orders & Receipts", icon: "📦", count: orders.length },
-    { id: "track", label: "Track Live Orders", icon: "🛵", count: pendingOrders > 0 ? pendingOrders : null },
-    { id: "wishlist", label: "Wishlist Favorites", icon: "❤️", count: wishlist.length },
-    { id: "addresses", label: "Saved Addresses", icon: "📍", count: savedAddresses.length },
-    { id: "payments", label: "Payment & Wallet", icon: "💳" },
-    { id: "coupons", label: "Offers & Vouchers", icon: "🎟️" },
-    { id: "reviews", label: "My Ratings & Reviews", icon: "⭐" },
-    { id: "returns", label: "Returns & Refunds", icon: "🔄", count: returnRequests.length },
-    { id: "notifications", label: "Notifications", icon: "🔔", count: notifications.filter((n) => !n.read).length },
-    { id: "profile", label: "Profile Settings", icon: "👤" },
-    { id: "security", label: "Security & 2FA", icon: "🔒" }
+    { id: "overview", label: "Dashboard Overview", icon: <LayoutDashboard size={18} /> },
+    { id: "orders", label: "My Orders & Receipts", icon: <Package size={18} />, count: orders.length },
+    { id: "track", label: "Track Live Orders", icon: <Bike size={18} />, count: pendingOrders > 0 ? pendingOrders : null },
+    { id: "wishlist", label: "Wishlist Favorites", icon: <Heart size={18} />, count: wishlist.length },
+    { id: "addresses", label: "Saved Addresses", icon: <MapPin size={18} />, count: savedAddresses.length },
+    { id: "payments", label: "Payment & Wallet", icon: <CreditCard size={18} /> },
+    { id: "coupons", label: "Offers & Vouchers", icon: <Ticket size={18} /> },
+    { id: "reviews", label: "My Ratings & Reviews", icon: <Star size={18} /> },
+    { id: "returns", label: "Returns & Refunds", icon: <RotateCcw size={18} />, count: returnRequests.length },
+    { id: "notifications", label: "Notifications", icon: <Bell size={18} />, count: notifications.filter((n) => !n.read).length },
+    { id: "profile", label: "Profile Settings", icon: <User size={18} /> },
+    { id: "security", label: "Security & 2FA", icon: <Lock size={18} /> }
   ];
 
   return (
@@ -164,7 +195,9 @@ function UserAccount() {
             </div>
             <div className="sidebar-user-meta">
               <h3>{user?.name || "Alex Morgan"}</h3>
-              <span className="user-tier-badge">⚡ VIP Platinum Foodie</span>
+              <span className="user-tier-badge" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                <Zap size={12} color="#f59e0b" fill="#f59e0b" /> VIP Platinum Foodie
+              </span>
               <small>{user?.email || "alex.morgan@foodiego.com"}</small>
             </div>
           </div>
@@ -195,7 +228,7 @@ function UserAccount() {
                 navigate("/");
               }}
             >
-              <span className="nav-item-icon">🚪</span>
+              <span className="nav-item-icon"><LogOut size={18} /></span>
               <span>Logout Account</span>
             </button>
           </nav>
@@ -207,14 +240,16 @@ function UserAccount() {
           {activeTab === "overview" && (
             <div className="tab-view-pane">
               <div className="pane-header-row">
-                <h2>Account Dashboard 📊</h2>
+                <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  Account Dashboard <LayoutDashboard size={22} color="#ff4757" />
+                </h2>
                 <p>Welcome back! Manage your food orders, delivery addresses and wallets.</p>
               </div>
 
               {/* Metric Cards Grid */}
               <div className="metric-cards-grid">
                 <div className="metric-stat-card">
-                  <span className="stat-icon">📦</span>
+                  <span className="stat-icon"><Package size={24} color="#ff4757" /></span>
                   <div>
                     <h3>{orders.length}</h3>
                     <small>Total Orders</small>
@@ -222,7 +257,7 @@ function UserAccount() {
                 </div>
 
                 <div className="metric-stat-card">
-                  <span className="stat-icon">🛵</span>
+                  <span className="stat-icon"><Bike size={24} color="#f59e0b" /></span>
                   <div>
                     <h3 className="orange-stat">{pendingOrders}</h3>
                     <small>Active Deliveries</small>
@@ -230,7 +265,7 @@ function UserAccount() {
                 </div>
 
                 <div className="metric-stat-card">
-                  <span className="stat-icon">✅</span>
+                  <span className="stat-icon"><CheckCircle2 size={24} color="#10b981" /></span>
                   <div>
                     <h3 className="green-stat">{totalDeliveredOrders}</h3>
                     <small>Completed Meals</small>
@@ -238,7 +273,7 @@ function UserAccount() {
                 </div>
 
                 <div className="metric-stat-card">
-                  <span className="stat-icon">💰</span>
+                  <span className="stat-icon"><Wallet size={24} color="#8b5cf6" /></span>
                   <div>
                     <h3 className="purple-stat">₹{totalSavedWithCoupons}</h3>
                     <small>Total Saved</small>
@@ -250,7 +285,9 @@ function UserAccount() {
               <div className="overview-section-box">
                 <div className="sec-head-row">
                   <h3>Recent Orders</h3>
-                  <button onClick={() => setActiveTab("orders")}>View All →</button>
+                  <button onClick={() => setActiveTab("orders")} style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                    View All <ArrowRight size={14} />
+                  </button>
                 </div>
 
                 <div className="recent-orders-overview-list">
@@ -265,8 +302,8 @@ function UserAccount() {
                       </div>
                       <div className="o-right">
                         <span className="o-total">₹{order.total}</span>
-                        <Link to={`/track/${order.id}`} className="o-track-btn">
-                          Track Live 🗺️
+                        <Link to={`/track/${order.id}`} className="o-track-btn" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                          Track Live <Bike size={14} />
                         </Link>
                       </div>
                     </div>
@@ -276,14 +313,14 @@ function UserAccount() {
 
               {/* Quick Actions Bar */}
               <div className="quick-actions-bar">
-                <Link to="/shop" className="quick-action-pill">
-                  <span>🍕 Order Food</span>
+                <Link to="/shop" className="quick-action-pill" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                  <UtensilsCrossed size={16} /> <span>Order Food</span>
                 </Link>
-                <Link to="/offers" className="quick-action-pill">
-                  <span>🏷️ View Coupons</span>
+                <Link to="/offers" className="quick-action-pill" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                  <Tag size={16} /> <span>View Coupons</span>
                 </Link>
-                <Link to="/help" className="quick-action-pill">
-                  <span>💬 24/7 Support</span>
+                <Link to="/help" className="quick-action-pill" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                  <HelpCircle size={16} /> <span>24/7 Support</span>
                 </Link>
               </div>
             </div>
@@ -293,7 +330,9 @@ function UserAccount() {
           {activeTab === "orders" && (
             <div className="tab-view-pane">
               <div className="pane-header-row">
-                <h2>My Orders & Receipts ({orders.length}) 📦</h2>
+                <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  My Orders & Receipts ({orders.length}) <Package size={22} color="#ff4757" />
+                </h2>
                 <p>Detailed receipt breakdown and 1-click reordering</p>
               </div>
 
@@ -331,11 +370,11 @@ function UserAccount() {
                         <strong className="order-grand-total">₹{order.total}</strong>
                       </div>
                       <div className="order-btns-group">
-                        <button className="reorder-mini-btn" onClick={() => handleReorder(order)}>
-                          🔁 Reorder
+                        <button className="reorder-mini-btn" onClick={() => handleReorder(order)} style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                          <RotateCcw size={13} /> Reorder
                         </button>
-                        <Link to={`/track/${order.id}`} className="track-mini-btn">
-                          Live Track 🛵
+                        <Link to={`/track/${order.id}`} className="track-mini-btn" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                          Live Track <Bike size={13} />
                         </Link>
                       </div>
                     </div>
@@ -349,17 +388,21 @@ function UserAccount() {
           {activeTab === "track" && (
             <div className="tab-view-pane">
               <div className="pane-header-row">
-                <h2>Live Order Tracker 🛵</h2>
+                <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  Live Order Tracker <Bike size={22} color="#ff4757" />
+                </h2>
                 <p>Real-time GPS dispatch and courier progression</p>
               </div>
 
               {orders.filter((o) => o.status !== "Delivered").length === 0 ? (
                 <div className="account-empty-state">
-                  <div className="empty-icon">🛵</div>
+                  <div className="empty-icon" style={{ display: "flex", justifyContent: "center", margin: "16px 0" }}>
+                    <Bike size={48} color="#ff4757" />
+                  </div>
                   <h3>No Active Orders Right Now</h3>
                   <p>All your past cravings have been delivered safely!</p>
-                  <Link to="/shop" className="pane-cta-btn">
-                    Order a Delicious Meal 🍕
+                  <Link to="/shop" className="pane-cta-btn" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                    Order a Delicious Meal <UtensilsCrossed size={16} />
                   </Link>
                 </div>
               ) : (
@@ -373,7 +416,9 @@ function UserAccount() {
                             <span className="live-pulse-badge">● LIVE DISPATCH</span>
                             <h3>Order #{order.id}</h3>
                           </div>
-                          <span className="eta-badge">⚡ ETA: 18 Mins</span>
+                          <span className="eta-badge" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                            <Zap size={13} color="#f59e0b" /> ETA: 18 Mins
+                          </span>
                         </div>
 
                         <p className="rider-status-text">
@@ -384,8 +429,8 @@ function UserAccount() {
                           <div className="progress-fill-bar" style={{ width: "65%" }} />
                         </div>
 
-                        <Link to={`/track/${order.id}`} className="open-full-tracker-btn">
-                          Open Live Map & Driver Chat →
+                        <Link to={`/track/${order.id}`} className="open-full-tracker-btn" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
+                          Open Live Map & Driver Chat <ArrowRight size={15} />
                         </Link>
                       </div>
                     ))}
@@ -398,13 +443,17 @@ function UserAccount() {
           {activeTab === "wishlist" && (
             <div className="tab-view-pane">
               <div className="pane-header-row">
-                <h2>My Favorite Dishes ({wishlist.length}) ❤️</h2>
+                <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  My Favorite Dishes ({wishlist.length}) <Heart size={22} color="#ff4757" fill="#ff4757" />
+                </h2>
                 <p>Quick access to your most-loved foods</p>
               </div>
 
               {wishlist.length === 0 ? (
                 <div className="account-empty-state">
-                  <div className="empty-icon">❤️</div>
+                  <div className="empty-icon" style={{ display: "flex", justifyContent: "center", margin: "16px 0" }}>
+                    <Heart size={48} color="#ff4757" />
+                  </div>
                   <h3>Your Wishlist is Empty</h3>
                   <p>Heart your favorite pizzas, burgers, and desserts for quick access!</p>
                   <Link to="/shop" className="pane-cta-btn">
@@ -427,14 +476,16 @@ function UserAccount() {
                             addToCart(item);
                             removeFromWishlist(item.id);
                           }}
+                          style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}
                         >
-                          + Add to Cart
+                          <Plus size={14} /> Add to Cart
                         </button>
                         <button
                           className="wish-delete-btn"
                           onClick={() => removeFromWishlist(item.id)}
+                          style={{ display: "inline-flex", alignItems: "center", justifyContent: "center" }}
                         >
-                          🗑️
+                          <Trash2 size={16} color="#ef4444" />
                         </button>
                       </div>
                     </div>
@@ -449,11 +500,13 @@ function UserAccount() {
             <div className="tab-view-pane">
               <div className="pane-header-row">
                 <div>
-                  <h2>Saved Delivery Addresses ({savedAddresses.length}) 📍</h2>
+                  <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    Saved Delivery Addresses ({savedAddresses.length}) <MapPin size={22} color="#ff4757" />
+                  </h2>
                   <p>Manage your home, office, and frequent delivery spots</p>
                 </div>
-                <button className="add-new-addr-btn" onClick={() => setShowAddressModal(true)}>
-                  + Add New Address
+                <button className="add-new-addr-btn" onClick={() => setShowAddressModal(true)} style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                  <Plus size={15} /> Add New Address
                 </button>
               </div>
 
@@ -461,8 +514,8 @@ function UserAccount() {
                 {savedAddresses.map((addr) => (
                   <div className="address-box-card" key={addr.id}>
                     <div className="addr-card-top">
-                      <span className="addr-tag">
-                        {addr.tag === "Home" ? "🏠 Home" : addr.tag === "Work" ? "💼 Work" : "📍 Other"}
+                      <span className="addr-tag" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                        {addr.tag === "Home" ? <><Home size={13} /> Home</> : addr.tag === "Work" ? <><Briefcase size={13} /> Work</> : <><MapPin size={13} /> Other</>}
                       </span>
                       {addr.isDefault && <span className="default-pill">Default Address</span>}
                     </div>
@@ -470,7 +523,9 @@ function UserAccount() {
                     <strong>{addr.fullName}</strong>
                     <p>{addr.houseFlat}, {addr.street}</p>
                     <small>{addr.city}, {addr.state} - {addr.pincode}</small>
-                    <small className="addr-phone">📱 Mobile: {addr.mobile}</small>
+                    <small className="addr-phone" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                      <Smartphone size={13} /> Mobile: {addr.mobile}
+                    </small>
 
                     <div className="addr-card-actions">
                       {!addr.isDefault && (
@@ -498,7 +553,9 @@ function UserAccount() {
           {activeTab === "payments" && (
             <div className="tab-view-pane">
               <div className="pane-header-row">
-                <h2>Payment Methods & FoodieGo Wallet 💳</h2>
+                <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  Payment Methods & FoodieGo Wallet <CreditCard size={22} color="#ff4757" />
+                </h2>
                 <p>Manage cards, UPI VPAs, and fast 1-click checkout wallet</p>
               </div>
 
@@ -517,7 +574,9 @@ function UserAccount() {
                     value={addWalletAmount}
                     onChange={(e) => setAddWalletAmount(e.target.value)}
                   />
-                  <button type="submit">+ Add Funds</button>
+                  <button type="submit" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                    <Plus size={14} /> Add Funds
+                  </button>
                 </form>
               </div>
 
@@ -526,21 +585,25 @@ function UserAccount() {
                 <h3>Saved Cards & UPI IDs</h3>
                 <div className="cards-list">
                   <div className="saved-payment-item">
-                    <span className="pay-icon">💳</span>
+                    <span className="pay-icon"><CreditCard size={20} color="#3b82f6" /></span>
                     <div>
                       <strong>Visa Credit Card •••• 6512</strong>
                       <small>Expires 08/29</small>
                     </div>
-                    <span className="verified-tag">✓ Verified</span>
+                    <span className="verified-tag" style={{ display: "inline-flex", alignItems: "center", gap: "2px" }}>
+                      <Check size={12} /> Verified
+                    </span>
                   </div>
 
                   <div className="saved-payment-item">
-                    <span className="pay-icon">🟣</span>
+                    <span className="pay-icon"><Smartphone size={20} color="#8b5cf6" /></span>
                     <div>
                       <strong>Google Pay UPI</strong>
                       <small>alex@okaxis</small>
                     </div>
-                    <span className="verified-tag">✓ Default UPI</span>
+                    <span className="verified-tag" style={{ display: "inline-flex", alignItems: "center", gap: "2px" }}>
+                      <Check size={12} /> Default UPI
+                    </span>
                   </div>
                 </div>
               </div>
@@ -551,7 +614,9 @@ function UserAccount() {
           {activeTab === "coupons" && (
             <div className="tab-view-pane">
               <div className="pane-header-row">
-                <h2>Available Offers & Vouchers 🎟️</h2>
+                <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  Available Offers & Vouchers <Ticket size={22} color="#ff4757" />
+                </h2>
                 <p>Copy promo codes for instant savings on your next feast</p>
               </div>
 
@@ -564,10 +629,11 @@ function UserAccount() {
                         className="copy-btn"
                         onClick={() => {
                           navigator.clipboard.writeText(c.code);
-                          showToast(`Copied code ${c.code}! 📋`, "success");
+                          showToast(`Copied code ${c.code}!`, "success");
                         }}
+                        style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}
                       >
-                        Copy Code
+                        <Copy size={13} /> Copy Code
                       </button>
                     </div>
                     <h4>{c.title}</h4>
@@ -583,15 +649,21 @@ function UserAccount() {
           {activeTab === "reviews" && (
             <div className="tab-view-pane">
               <div className="pane-header-row">
-                <h2>My Ratings & Reviews (2) ⭐</h2>
+                <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  My Ratings & Reviews (2) <Star size={22} color="#f59e0b" fill="#f59e0b" />
+                </h2>
                 <p>Your culinary feedback shared with the community</p>
               </div>
 
               <div className="account-reviews-list">
                 <div className="account-review-item">
                   <div className="rev-dish-header">
-                    <strong>🍕 Margherita Pizza (La Pino'z)</strong>
-                    <span>⭐⭐⭐⭐⭐</span>
+                    <strong>Margherita Pizza (La Pino'z)</strong>
+                    <span style={{ display: "inline-flex", gap: "2px" }}>
+                      {[1, 2, 3, 4, 5].map((s) => (
+                        <Star key={s} size={14} fill="#f59e0b" stroke="#f59e0b" />
+                      ))}
+                    </span>
                   </div>
                   <p>"Best cheese pull in town! The dough was crispy and fresh."</p>
                   <small>Reviewed on 2026-09-06 • Verified Purchase</small>
@@ -599,8 +671,12 @@ function UserAccount() {
 
                 <div className="account-review-item">
                   <div className="rev-dish-header">
-                    <strong>🍟 Peri-Peri Masala Fries</strong>
-                    <span>⭐⭐⭐⭐⭐</span>
+                    <strong>Peri-Peri Masala Fries</strong>
+                    <span style={{ display: "inline-flex", gap: "2px" }}>
+                      {[1, 2, 3, 4, 5].map((s) => (
+                        <Star key={s} size={14} fill="#f59e0b" stroke="#f59e0b" />
+                      ))}
+                    </span>
                   </div>
                   <p>"Super spicy and crunchy. Great portion size for sharing."</p>
                   <small>Reviewed on 2026-09-02 • Verified Purchase</small>
@@ -613,7 +689,9 @@ function UserAccount() {
           {activeTab === "returns" && (
             <div className="tab-view-pane">
               <div className="pane-header-row">
-                <h2>Returns & Refund Requests 🔄</h2>
+                <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  Returns & Refund Requests <RotateCcw size={22} color="#ff4757" />
+                </h2>
                 <p>Track return pickups, quality replacements, and refund settlements</p>
               </div>
 
@@ -653,7 +731,9 @@ function UserAccount() {
             <div className="tab-view-pane">
               <div className="pane-header-row">
                 <div>
-                  <h2>Notifications Center 🔔</h2>
+                  <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    Notifications Center <Bell size={22} color="#ff4757" />
+                  </h2>
                   <p>Order alerts, delivery milestones, and flash discounts</p>
                 </div>
                 <button className="mark-read-btn" onClick={markAllNotificationsRead}>
@@ -670,8 +750,8 @@ function UserAccount() {
                       <small>{n.time}</small>
                     </div>
                     {n.link && (
-                      <Link to={n.link} className="n-action-link">
-                        View →
+                      <Link to={n.link} className="n-action-link" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                        View <ArrowRight size={13} />
                       </Link>
                     )}
                   </div>
@@ -684,7 +764,9 @@ function UserAccount() {
           {activeTab === "profile" && (
             <div className="tab-view-pane">
               <div className="pane-header-row">
-                <h2>Profile Settings 👤</h2>
+                <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  Profile Settings <User size={22} color="#ff4757" />
+                </h2>
                 <p>Update personal information and contact details</p>
               </div>
 
@@ -725,8 +807,8 @@ function UserAccount() {
                   <input type="text" value="VIP Platinum Member (500+ Points)" disabled />
                 </div>
 
-                <button type="submit" className="save-profile-btn">
-                  Save Changes ✓
+                <button type="submit" className="save-profile-btn" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
+                  Save Changes <Check size={16} />
                 </button>
               </form>
             </div>
@@ -736,7 +818,9 @@ function UserAccount() {
           {activeTab === "security" && (
             <div className="tab-view-pane">
               <div className="pane-header-row">
-                <h2>Security & Account Protection 🔒</h2>
+                <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  Security & Account Protection <Lock size={22} color="#10b981" />
+                </h2>
                 <p>Protect your account with Two-Factor Authentication and password controls</p>
               </div>
 
@@ -752,8 +836,9 @@ function UserAccount() {
                       setTwoFactorAuth(!twoFactorAuth);
                       showToast(`Two-Factor Authentication ${!twoFactorAuth ? "Enabled" : "Disabled"}`, "info");
                     }}
+                    style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px" }}
                   >
-                    {twoFactorAuth ? "ENABLED ✓" : "DISABLED"}
+                    {twoFactorAuth ? <><Check size={14} /> ENABLED</> : "DISABLED"}
                   </button>
                 </div>
 
@@ -783,7 +868,7 @@ function UserAccount() {
           <div className="account-modal-box" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h3>Add New Delivery Address</h3>
-              <button onClick={() => setShowAddressModal(false)}>✕</button>
+              <button onClick={() => setShowAddressModal(false)}><X size={18} /></button>
             </div>
             <form onSubmit={handleAddNewAddress} className="modal-addr-form">
               <div className="tag-toggle-row">
@@ -793,8 +878,9 @@ function UserAccount() {
                     type="button"
                     className={`tag-btn ${newAddrTag === t ? "active" : ""}`}
                     onClick={() => setNewAddrTag(t)}
+                    style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}
                   >
-                    {t}
+                    {t === "Home" ? <Home size={13} /> : t === "Work" ? <Briefcase size={13} /> : <MapPin size={13} />} {t}
                   </button>
                 ))}
               </div>

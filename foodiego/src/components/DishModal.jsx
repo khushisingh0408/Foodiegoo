@@ -1,4 +1,13 @@
 import { useState, useContext } from "react";
+import {
+  X,
+  CircleDot,
+  Clock,
+  Flame,
+  Store,
+  ShoppingBag,
+  Star
+} from "lucide-react";
 import { CartContext } from "../context/CartContext";
 import "../css/DishModal.css";
 
@@ -48,7 +57,7 @@ function DishModal({ food, isOpen, onClose }) {
     <div className="dish-modal-overlay" onClick={onClose}>
       <div className="dish-modal-container" onClick={(e) => e.stopPropagation()}>
         <button className="dish-modal-close" onClick={onClose} aria-label="Close">
-          ✕
+          <X size={18} />
         </button>
 
         {/* Top Dish Banner */}
@@ -58,20 +67,34 @@ function DishModal({ food, isOpen, onClose }) {
           </div>
           <div className="dish-hero-info">
             <div className="dish-badge-row">
-              <span className={`diet-pill ${food.isVeg ? "veg" : "non-veg"}`}>
-                {food.isVeg ? "🟢 Pure Veg" : "🔴 Non-Veg"}
+              <span className={`diet-pill ${food.isVeg ? "veg" : "non-veg"}`} style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                <CircleDot size={12} color={food.isVeg ? "#10b981" : "#ef4444"} />
+                {food.isVeg ? "Pure Veg" : "Non-Veg"}
               </span>
               {food.badge && <span className="highlight-tag">{food.badge}</span>}
-              <span className="rating-pill">{food.rating} ({food.ratingCount || "500+"})</span>
+              <span className="rating-pill" style={{ display: "inline-flex", alignItems: "center", gap: "3px" }}>
+                <Star size={12} fill="#f59e0b" stroke="#f59e0b" />
+                {food.rating ? String(food.rating).replace("⭐", "").trim() : "4.8"} ({food.ratingCount || "500+"})
+              </span>
             </div>
 
             <h2>{food.name}</h2>
             <p className="dish-desc">{food.description}</p>
 
             <div className="dish-quick-meta">
-              <span>⏱️ {food.prepTime || "20 mins"}</span>
-              {food.calories && <span>🔥 {food.calories}</span>}
-              {food.restaurantName && <span>🏬 {food.restaurantName}</span>}
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                <Clock size={14} color="#ff4757" /> {food.prepTime || "20 mins"}
+              </span>
+              {food.calories && (
+                <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                  <Flame size={14} color="#f97316" /> {food.calories}
+                </span>
+              )}
+              {food.restaurantName && (
+                <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                  <Store size={14} color="#64748b" /> {food.restaurantName}
+                </span>
+              )}
             </div>
           </div>
         </div>
@@ -190,8 +213,8 @@ function DishModal({ food, isOpen, onClose }) {
             <h3>₹{calculatedTotal}</h3>
           </div>
 
-          <button className="add-item-btn" onClick={handleAddToCart}>
-            Add Item to Cart • ₹{calculatedTotal} 🛒
+          <button className="add-item-btn" onClick={handleAddToCart} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
+            Add Item to Cart • ₹{calculatedTotal} <ShoppingBag size={16} />
           </button>
         </div>
       </div>

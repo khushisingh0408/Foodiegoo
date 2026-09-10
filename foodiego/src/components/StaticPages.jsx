@@ -1,5 +1,23 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import {
+  Zap,
+  Phone,
+  Mail,
+  MapPin,
+  Clock,
+  Lock,
+  FileText,
+  Truck,
+  RotateCcw,
+  XCircle,
+  ShieldCheck,
+  Store,
+  Send,
+  CheckCircle2,
+  ArrowRight,
+  Star
+} from "lucide-react";
 import "../css/StaticPages.css";
 
 export function StaticPages({ pageType }) {
@@ -32,7 +50,9 @@ export function StaticPages({ pageType }) {
       <div className="static-page-wrapper">
         <div className="static-hero-banner">
           <span className="static-badge">OUR CULINARY MISSION</span>
-          <h1>About FoodieGo ⚡</h1>
+          <h1 style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+            About FoodieGo <Zap size={28} color="#ff4757" fill="#ff4757" />
+          </h1>
           <p>Delivering lightning-fast gastronomic happiness to doorsteps across the nation</p>
         </div>
 
@@ -56,7 +76,9 @@ export function StaticPages({ pageType }) {
               <p>Fresh & Certified Kitchens</p>
             </div>
             <div className="stat-highlight">
-              <h3>4.9 ★</h3>
+              <h3 style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
+                4.9 <Star size={20} fill="#f59e0b" color="#f59e0b" />
+              </h3>
               <p>Customer Satisfaction</p>
             </div>
           </div>
@@ -78,29 +100,39 @@ export function StaticPages({ pageType }) {
       <div className="static-page-wrapper">
         <div className="static-hero-banner">
           <span className="static-badge">GET IN TOUCH</span>
-          <h1>Contact Customer Care 📞</h1>
+          <h1 style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+            Contact Customer Care <Phone size={28} color="#ff4757" />
+          </h1>
           <p>We are available 24 hours a day, 7 days a week to support you</p>
         </div>
 
         <div className="contact-page-layout">
           <div className="contact-info-column">
             <div className="contact-card">
-              <h3>📍 Corporate Headquarters</h3>
+              <h3 style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                <MapPin size={18} color="#ff4757" /> Corporate Headquarters
+              </h3>
               <p>FoodieGo Technologies Pvt. Ltd.<br />Sector 62, Electronic City, Noida, Uttar Pradesh, India - 201309</p>
             </div>
 
             <div className="contact-card">
-              <h3>📞 24/7 Helpline</h3>
+              <h3 style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                <Phone size={18} color="#ff4757" /> 24/7 Helpline
+              </h3>
               <p><a href="tel:+918863033031">+91 8863033031</a> (Toll Free)</p>
             </div>
 
             <div className="contact-card">
-              <h3>📧 Email Enquiries</h3>
+              <h3 style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                <Mail size={18} color="#ff4757" /> Email Enquiries
+              </h3>
               <p><a href="mailto:support@foodiego.com">support@foodiego.com</a></p>
             </div>
 
             <div className="contact-card">
-              <h3>🕒 Operating Hours</h3>
+              <h3 style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                <Clock size={18} color="#ff4757" /> Operating Hours
+              </h3>
               <p>Kitchens & Dispatch: Mon – Sun: 08:00 AM – 11:30 PM</p>
             </div>
           </div>
@@ -108,7 +140,9 @@ export function StaticPages({ pageType }) {
           <div className="contact-form-column">
             {formSent ? (
               <div className="form-success-box">
-                <div className="success-icon">💌</div>
+                <div className="success-icon" style={{ display: "flex", justifyContent: "center", margin: "12px 0" }}>
+                  <CheckCircle2 size={44} color="#10b981" />
+                </div>
                 <h3>Message Sent Successfully!</h3>
                 <p>Our customer operations team will respond to your email within 2 hours.</p>
               </div>
@@ -156,8 +190,8 @@ export function StaticPages({ pageType }) {
                   />
                 </div>
 
-                <button type="submit" className="contact-submit-btn">
-                  Send Message →
+                <button type="submit" className="contact-submit-btn" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
+                  Send Message <ArrowRight size={16} />
                 </button>
               </form>
             )}
@@ -173,7 +207,9 @@ export function StaticPages({ pageType }) {
       <div className="static-page-wrapper">
         <div className="static-hero-banner">
           <span className="static-badge">LEGAL COMPLIANCE</span>
-          <h1>Privacy Policy 🔒</h1>
+          <h1 style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+            Privacy Policy <Lock size={28} color="#ff4757" />
+          </h1>
           <p>Last updated: September 2026</p>
         </div>
 
@@ -197,7 +233,9 @@ export function StaticPages({ pageType }) {
       <div className="static-page-wrapper">
         <div className="static-hero-banner">
           <span className="static-badge">TERMS OF USE</span>
-          <h1>Terms & Conditions 📄</h1>
+          <h1 style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+            Terms & Conditions <FileText size={28} color="#ff4757" />
+          </h1>
           <p>Please read these terms before ordering from FoodieGo</p>
         </div>
 
@@ -221,7 +259,9 @@ export function StaticPages({ pageType }) {
       <div className="static-page-wrapper">
         <div className="static-hero-banner">
           <span className="static-badge">DISPATCH & LOGISTICS</span>
-          <h1>Shipping & Delivery Policy 🚚</h1>
+          <h1 style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+            Shipping & Delivery Policy <Truck size={28} color="#ff4757" />
+          </h1>
           <p>Fast, temperature-controlled transit engineered for peak flavor</p>
         </div>
 
@@ -245,7 +285,9 @@ export function StaticPages({ pageType }) {
       <div className="static-page-wrapper">
         <div className="static-hero-banner">
           <span className="static-badge">CUSTOMER SATISFACTION</span>
-          <h1>Return, Replacement & Refund Policy 🔄</h1>
+          <h1 style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+            Return, Replacement & Refund Policy <RotateCcw size={28} color="#ff4757" />
+          </h1>
           <p>100% money-back guarantee if you are not delighted with your meal</p>
         </div>
 
@@ -270,7 +312,9 @@ export function StaticPages({ pageType }) {
       <div className="static-page-wrapper">
         <div className="static-hero-banner">
           <span className="static-badge">ORDER CHANGES</span>
-          <h1>Cancellation Policy ❌</h1>
+          <h1 style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+            Cancellation Policy <XCircle size={28} color="#ff4757" />
+          </h1>
           <p>Guidelines for canceling or modifying active kitchen orders</p>
         </div>
 
@@ -291,7 +335,9 @@ export function StaticPages({ pageType }) {
       <div className="static-page-wrapper">
         <div className="static-hero-banner">
           <span className="static-badge">QUALITY ASSURANCE</span>
-          <h1>Freshness & Quality Guarantee 🛡️</h1>
+          <h1 style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+            Freshness & Quality Guarantee <ShieldCheck size={28} color="#ff4757" />
+          </h1>
           <p>Our commitment to culinary excellence and kitchen hygiene</p>
         </div>
 
@@ -312,7 +358,9 @@ export function StaticPages({ pageType }) {
       <div className="static-page-wrapper">
         <div className="static-hero-banner">
           <span className="static-badge">PARTNER WITH US</span>
-          <h1>Restaurant Partner Information 🏬</h1>
+          <h1 style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+            Restaurant Partner Information <Store size={28} color="#ff4757" />
+          </h1>
           <p>Grow your culinary brand with FoodieGo's high-speed delivery network</p>
         </div>
 

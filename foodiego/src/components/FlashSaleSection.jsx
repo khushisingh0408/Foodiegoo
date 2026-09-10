@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
+import { Zap, Heart, SlidersHorizontal, Eye, Flame, Star, Plus, Minus } from "lucide-react";
 import { foods } from "../data/foodsData";
 import { CartContext } from "../context/CartContext";
 import { WishlistContext } from "../context/WishlistContext";
@@ -47,7 +48,9 @@ function FlashSaleSection() {
     <section className="flash-sale-section">
       <div className="flash-sale-header">
         <div className="flash-title-wrap">
-          <div className="flash-icon-box">⚡</div>
+          <div className="flash-icon-box">
+            <Zap size={22} fill="#ffffff" color="#ffffff" />
+          </div>
           <div>
             <div className="flash-badge-tag">LIMITED TIME OFFER</div>
             <h2>Daily Flash Sale — Up to 50% OFF</h2>
@@ -96,14 +99,14 @@ function FlashSaleSection() {
                     onClick={() => (isWishlisted ? removeFromWishlist(food.id) : addToWishlist(food))}
                     aria-label="Wishlist"
                   >
-                    {isWishlisted ? "❤️" : "🤍"}
+                    <Heart size={15} fill={isWishlisted ? "#ef4444" : "none"} color={isWishlisted ? "#ef4444" : "#64748b"} />
                   </button>
                   <button
                     className="compare-mini-btn"
                     onClick={() => addToCompare(food)}
                     title="Compare item"
                   >
-                    ⚖️
+                    <SlidersHorizontal size={14} color="#64748b" />
                   </button>
                 </div>
               </div>
@@ -118,7 +121,7 @@ function FlashSaleSection() {
                     setQuickViewFood(food);
                   }}
                 >
-                  👁️ Quick View
+                  <Eye size={12} className="inline-icon" /> Quick View
                 </button>
               </div>
 
@@ -130,15 +133,22 @@ function FlashSaleSection() {
                 </Link>
 
                 <div className="flash-rating-row">
-                  <span className="flash-star">{food.rating}</span>
+                  <span className="flash-star">
+                    <Star size={12} fill="#ca8a04" color="#ca8a04" className="inline-icon" /> {food.ratingScore || 4.8}
+                  </span>
                   <span className="flash-reviews">({food.ratingCount || "1.2k"})</span>
-                  <span className="flash-diet-dot">{food.isVeg ? "🟢 Veg" : "🔴 Non-Veg"}</span>
+                  <span className="flash-diet-dot">
+                    <span className={`diet-indicator-dot ${food.isVeg ? "veg" : "non-veg"}`} />
+                    {food.isVeg ? "Veg" : "Non-Veg"}
+                  </span>
                 </div>
 
                 {/* Stock Warning Progress Bar */}
                 <div className="stock-progress-wrap">
                   <div className="stock-text-row">
-                    <span className="stock-alert">🔥 Only {stockLeft} left in stock!</span>
+                    <span className="stock-alert">
+                      <Flame size={12} color="#dc2626" className="inline-icon" /> Only {stockLeft} left in stock!
+                    </span>
                     <span className="stock-status">Selling Fast</span>
                   </div>
                   <div className="stock-track">
@@ -158,13 +168,17 @@ function FlashSaleSection() {
                       className="flash-add-btn"
                       onClick={() => (food.customizable ? setQuickViewFood(food) : addToCart(food))}
                     >
-                      + ADD
+                      <Plus size={14} className="inline-icon" /> ADD
                     </button>
                   ) : (
                     <div className="flash-qty-stepper">
-                      <button onClick={() => decreaseQuantity(food.id)}>−</button>
+                      <button onClick={() => decreaseQuantity(food.id)}>
+                        <Minus size={13} />
+                      </button>
                       <span>{qty}</span>
-                      <button onClick={() => increaseQuantity(food.id)}>+</button>
+                      <button onClick={() => increaseQuantity(food.id)}>
+                        <Plus size={13} />
+                      </button>
                     </div>
                   )}
                 </div>

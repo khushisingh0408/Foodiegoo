@@ -1,5 +1,18 @@
 import { useState, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
+import {
+  MapPin,
+  Star,
+  Clock,
+  Coins,
+  Tag,
+  Search,
+  X,
+  CircleDot,
+  UtensilsCrossed,
+  Plus,
+  Minus
+} from "lucide-react";
 import { restaurants } from "../data/restaurantsData";
 import { foods } from "../data/foodsData";
 import { CartContext } from "../context/CartContext";
@@ -73,11 +86,15 @@ function RestaurantMenu() {
           <div className="rest-title-area">
             <h1>{restaurant.name}</h1>
             <p className="rest-cuisines-sub">{restaurant.cuisines.join(", ")}</p>
-            <p className="rest-loc-sub">📍 {restaurant.address}</p>
+            <p className="rest-loc-sub" style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+              <MapPin size={14} color="#ff4757" /> {restaurant.address}
+            </p>
           </div>
 
           <div className="rest-rating-box">
-            <div className="rating-score">★ {restaurant.rating}</div>
+            <div className="rating-score" style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+              <Star size={15} fill="#fff" stroke="#fff" /> {restaurant.rating}
+            </div>
             <div className="rating-total">{restaurant.ratingCount} reviews</div>
           </div>
         </div>
@@ -86,22 +103,24 @@ function RestaurantMenu() {
 
         <div className="rest-quick-stats">
           <div className="stat-pill">
-            <span className="stat-icon">⏱️</span>
+            <span className="stat-icon"><Clock size={16} color="#ff4757" /></span>
             <strong>{restaurant.deliveryTime}</strong>
           </div>
           <div className="stat-pill">
-            <span className="stat-icon">📍</span>
+            <span className="stat-icon"><MapPin size={16} color="#ff4757" /></span>
             <strong>{restaurant.distance}</strong>
           </div>
           <div className="stat-pill">
-            <span className="stat-icon">💰</span>
+            <span className="stat-icon"><Coins size={16} color="#ff4757" /></span>
             <strong>{restaurant.priceForTwo}</strong>
           </div>
         </div>
 
         {restaurant.discount && (
           <div className="rest-deal-banner">
-            <span>🏷️ {restaurant.discount} | Use Code: FOODIE50</span>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+              <Tag size={15} color="#ff4757" /> {restaurant.discount} | Use Code: FOODIE50
+            </span>
           </div>
         )}
       </div>
@@ -109,7 +128,7 @@ function RestaurantMenu() {
       {/* Menu Filter & Search Bar */}
       <div className="menu-controls-bar">
         <div className="menu-search-box">
-          <span>🔍</span>
+          <Search size={16} color="#94a3b8" />
           <input
             type="text"
             placeholder={`Search in ${restaurant.name} menu...`}
@@ -118,7 +137,7 @@ function RestaurantMenu() {
           />
           {menuSearch && (
             <button className="clear-btn" onClick={() => setMenuSearch("")}>
-              ✕
+              <X size={14} />
             </button>
           )}
         </div>
@@ -127,7 +146,9 @@ function RestaurantMenu() {
           className={`veg-toggle-btn ${isPureVegOnly ? "active" : ""}`}
           onClick={() => updatePureVegFilter(!isPureVegOnly)}
         >
-          <span className="veg-dot">🟢</span>
+          <span className="veg-dot" style={{ display: "inline-flex", alignItems: "center" }}>
+            <CircleDot size={12} color="#10b981" />
+          </span>
           <span>Pure Veg Only</span>
         </button>
       </div>
@@ -137,7 +158,9 @@ function RestaurantMenu() {
         {/* Section 1: Recommended & Bestsellers */}
         {bestsellers.length > 0 && (
           <div className="menu-section">
-            <h2 className="section-title">⭐ Recommended & Bestsellers ({bestsellers.length})</h2>
+            <h2 className="section-title" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <Star size={18} color="#f59e0b" fill="#f59e0b" /> Recommended & Bestsellers ({bestsellers.length})
+            </h2>
             <div className="dishes-list">
               {bestsellers.map((dish) => {
                 const qty = getItemQuantity(dish.id);
@@ -146,7 +169,7 @@ function RestaurantMenu() {
                     <div className="dish-row-left">
                       <div className="dish-indicator-row">
                         <span className={`veg-nonveg-icon ${dish.isVeg ? "veg" : "non-veg"}`}>
-                          {dish.isVeg ? "🟢" : "🔴"}
+                          <CircleDot size={12} color={dish.isVeg ? "#10b981" : "#ef4444"} />
                         </span>
                         {dish.badge && <span className="bestseller-tag">{dish.badge}</span>}
                       </div>
@@ -154,7 +177,9 @@ function RestaurantMenu() {
                       <h3 className="dish-row-name">{dish.name}</h3>
                       <div className="dish-row-price">{dish.price}</div>
                       <div className="dish-row-rating">
-                        <span>★ {dish.rating.replace("⭐", "").trim()}</span>
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: "2px" }}>
+                          <Star size={13} fill="#f59e0b" stroke="#f59e0b" /> {dish.rating.replace("⭐", "").trim()}
+                        </span>
                         <small>({dish.ratingCount || "100+"})</small>
                       </div>
                       <p className="dish-row-desc">{dish.description}</p>
@@ -174,9 +199,9 @@ function RestaurantMenu() {
                             </button>
                           ) : (
                             <div className="qty-stepper-btn">
-                              <button onClick={() => decreaseQuantity(dish.id)}>−</button>
+                              <button onClick={() => decreaseQuantity(dish.id)}><Minus size={13} /></button>
                               <span>{qty}</span>
-                              <button onClick={() => increaseQuantity(dish.id)}>+</button>
+                              <button onClick={() => increaseQuantity(dish.id)}><Plus size={13} /></button>
                             </div>
                           )}
 
@@ -200,7 +225,9 @@ function RestaurantMenu() {
 
         {/* Section 2: All Other Dishes */}
         <div className="menu-section">
-          <h2 className="section-title">🍽️ Main Menu & Specials ({otherDishes.length})</h2>
+          <h2 className="section-title" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <UtensilsCrossed size={18} color="#ff4757" /> Main Menu & Specials ({otherDishes.length})
+          </h2>
           <div className="dishes-list">
             {otherDishes.map((dish) => {
               const qty = getItemQuantity(dish.id);
@@ -209,7 +236,7 @@ function RestaurantMenu() {
                   <div className="dish-row-left">
                     <div className="dish-indicator-row">
                       <span className={`veg-nonveg-icon ${dish.isVeg ? "veg" : "non-veg"}`}>
-                        {dish.isVeg ? "🟢" : "🔴"}
+                        <CircleDot size={12} color={dish.isVeg ? "#10b981" : "#ef4444"} />
                       </span>
                       {dish.badge && <span className="bestseller-tag">{dish.badge}</span>}
                     </div>
@@ -217,7 +244,9 @@ function RestaurantMenu() {
                     <h3 className="dish-row-name">{dish.name}</h3>
                     <div className="dish-row-price">{dish.price}</div>
                     <div className="dish-row-rating">
-                      <span>★ {dish.rating.replace("⭐", "").trim()}</span>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: "2px" }}>
+                        <Star size={13} fill="#f59e0b" stroke="#f59e0b" /> {dish.rating.replace("⭐", "").trim()}
+                      </span>
                       <small>({dish.ratingCount || "100+"})</small>
                     </div>
                     <p className="dish-row-desc">{dish.description}</p>
@@ -237,9 +266,9 @@ function RestaurantMenu() {
                           </button>
                         ) : (
                           <div className="qty-stepper-btn">
-                            <button onClick={() => decreaseQuantity(dish.id)}>−</button>
+                            <button onClick={() => decreaseQuantity(dish.id)}><Minus size={13} /></button>
                             <span>{qty}</span>
-                            <button onClick={() => increaseQuantity(dish.id)}>+</button>
+                            <button onClick={() => increaseQuantity(dish.id)}><Plus size={13} /></button>
                           </div>
                         )}
 

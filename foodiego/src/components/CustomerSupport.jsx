@@ -1,4 +1,21 @@
 import { useState, useContext } from "react";
+import {
+  MessageSquare,
+  Search,
+  Bike,
+  RotateCcw,
+  CreditCard,
+  ShieldCheck,
+  Phone,
+  Mail,
+  HelpCircle,
+  ChevronUp,
+  ChevronDown,
+  Headphones,
+  X,
+  Send,
+  ArrowRight
+} from "lucide-react";
 import { CartContext } from "../context/CartContext";
 import "../css/CustomerSupport.css";
 
@@ -33,7 +50,7 @@ function CustomerSupport() {
   // Live Chat Widget State
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState([
-    { sender: "bot", text: "Hello! 👋 Welcome to FoodieGo Priority Support. How can we help you with your order today?", time: "Just now" }
+    { sender: "bot", text: "Hello! Welcome to FoodieGo Priority Support. How can we help you with your order today?", time: "Just now" }
   ]);
   const [inputMessage, setInputMessage] = useState("");
 
@@ -69,11 +86,13 @@ function CustomerSupport() {
       {/* Hero Header */}
       <div className="support-hero">
         <span className="support-badge">24/7 CUSTOMER CARE</span>
-        <h1>How Can We Help You Today? 💬</h1>
+        <h1 style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+          How Can We Help You Today? <MessageSquare size={28} color="#ff4757" />
+        </h1>
         <p>Search FAQs, connect with our support agents, or track order inquiries</p>
 
         <div className="support-search-bar">
-          <span>🔍</span>
+          <Search size={18} color="#94a3b8" />
           <input
             type="text"
             placeholder="Search help topics (e.g. delivery speed, refunds, payment, coupons)..."
@@ -86,38 +105,46 @@ function CustomerSupport() {
       {/* Support Topic Cards */}
       <div className="support-topics-grid">
         <div className="topic-card" onClick={() => setIsChatOpen(true)}>
-          <span className="topic-icon">🛵</span>
+          <span className="topic-icon"><Bike size={24} color="#ff4757" /></span>
           <h3>Order & Delivery Help</h3>
           <p>Track rider location, report delivery delays, or change drop instructions.</p>
-          <span className="topic-action">Chat with Rider Agent →</span>
+          <span className="topic-action" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+            Chat with Rider Agent <ArrowRight size={13} />
+          </span>
         </div>
 
         <div className="topic-card" onClick={() => setIsChatOpen(true)}>
-          <span className="topic-icon">🔄</span>
+          <span className="topic-icon"><RotateCcw size={24} color="#ff4757" /></span>
           <h3>Returns & Instant Refunds</h3>
           <p>Report cold food, incorrect items, or request instant wallet credits.</p>
-          <span className="topic-action">Open Return Request →</span>
+          <span className="topic-action" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+            Open Return Request <ArrowRight size={13} />
+          </span>
         </div>
 
         <div className="topic-card" onClick={() => setIsChatOpen(true)}>
-          <span className="topic-icon">💳</span>
+          <span className="topic-icon"><CreditCard size={24} color="#ff4757" /></span>
           <h3>Payment & Coupons</h3>
           <p>Resolve payment debits, promo code issues, and bank cashbacks.</p>
-          <span className="topic-action">Get Payment Help →</span>
+          <span className="topic-action" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+            Get Payment Help <ArrowRight size={13} />
+          </span>
         </div>
 
         <div className="topic-card" onClick={() => setIsChatOpen(true)}>
-          <span className="topic-icon">🛡️</span>
+          <span className="topic-icon"><ShieldCheck size={24} color="#ff4757" /></span>
           <h3>Food Quality & Safety</h3>
           <p>Chef hygiene verification, allergen advice, and kitchen standards.</p>
-          <span className="topic-action">Learn Quality Standards →</span>
+          <span className="topic-action" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+            Learn Quality Standards <ArrowRight size={13} />
+          </span>
         </div>
       </div>
 
       {/* Direct Contact Channels */}
       <div className="contact-channels-strip">
         <div className="channel-box">
-          <span className="channel-icon">📞</span>
+          <span className="channel-icon"><Phone size={20} color="#ff4757" /></span>
           <div>
             <strong>Call 24/7 Helpline</strong>
             <a href="tel:+918863033031">+91 8863033031</a>
@@ -125,7 +152,7 @@ function CustomerSupport() {
         </div>
 
         <div className="channel-box">
-          <span className="channel-icon">📧</span>
+          <span className="channel-icon"><Mail size={20} color="#ff4757" /></span>
           <div>
             <strong>Email Support</strong>
             <a href="mailto:support@foodiego.com">support@foodiego.com</a>
@@ -133,7 +160,7 @@ function CustomerSupport() {
         </div>
 
         <div className="channel-box highlight" onClick={() => setIsChatOpen(true)}>
-          <span className="channel-icon">💬</span>
+          <span className="channel-icon"><MessageSquare size={20} color="#ff4757" /></span>
           <div>
             <strong>Live Support Chat</strong>
             <span>Instant reply in under 30s</span>
@@ -144,7 +171,9 @@ function CustomerSupport() {
 
       {/* FAQ Accordions */}
       <section className="faq-accordion-section">
-        <h2>Frequently Asked Questions ❓</h2>
+        <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          Frequently Asked Questions <HelpCircle size={22} color="#ff4757" />
+        </h2>
         <div className="faq-list">
           {filteredFaqs.map((faq, idx) => {
             const isOpen = openFaqIndex === idx;
@@ -156,7 +185,7 @@ function CustomerSupport() {
               >
                 <div className="faq-question-row">
                   <h4>{faq.q}</h4>
-                  <span className="faq-chevron">{isOpen ? "▲" : "▼"}</span>
+                  <span className="faq-chevron">{isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}</span>
                 </div>
                 {isOpen && <p className="faq-answer-txt">{faq.a}</p>}
               </div>
@@ -171,14 +200,14 @@ function CustomerSupport() {
           <div className="chat-widget-box" onClick={(e) => e.stopPropagation()}>
             <div className="chat-widget-header">
               <div className="agent-meta">
-                <span className="agent-avatar">👩‍💼</span>
+                <span className="agent-avatar"><Headphones size={20} color="#ff4757" /></span>
                 <div>
                   <strong>FoodieGo Support Assistant</strong>
                   <small>● Online | Typically replies in 20s</small>
                 </div>
               </div>
               <button className="chat-close-btn" onClick={() => setIsChatOpen(false)}>
-                ✕
+                <X size={18} />
               </button>
             </div>
 
@@ -201,7 +230,9 @@ function CustomerSupport() {
                 onChange={(e) => setInputMessage(e.target.value)}
                 autoFocus
               />
-              <button type="submit">Send</button>
+              <button type="submit" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                Send <Send size={14} />
+              </button>
             </form>
           </div>
         </div>

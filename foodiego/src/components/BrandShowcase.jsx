@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Star, ArrowRight, Award } from "lucide-react";
 import "../css/BrandShowcase.css";
 import pizzaImg from "../assets/images/margherita-pizza.png";
 import burgerImg from "../assets/images/classic Cheeseburger.png";
@@ -21,12 +22,14 @@ function BrandShowcase() {
     <section className="brand-showcase-section">
       <div className="section-head-row">
         <div>
-          <div className="brand-badge-pill">PREMIER HOUSES</div>
+          <div className="brand-badge-pill">
+            <Award size={12} className="inline-icon" /> PREMIER HOUSES
+          </div>
           <h2>Top Brand Showcase</h2>
           <p>Explore signature cuisines and iconic recipes from premier culinary houses</p>
         </div>
         <Link to="/shop" className="view-all-brands-link">
-          All Brands ({brands.length}) →
+          All Brands ({brands.length}) <ArrowRight size={14} className="inline-icon" />
         </Link>
       </div>
 
@@ -44,11 +47,13 @@ function BrandShowcase() {
               <h4>{brand.name}</h4>
               <span className="brand-category-tag">{brand.category}</span>
               <div className="brand-stats">
-                <span className="brand-rating">★ {brand.rating}</span>
+                <span className="brand-rating">
+                  <Star size={12} fill="#ca8a04" color="#ca8a04" /> {brand.rating}
+                </span>
                 <span className="brand-count">• {brand.count}</span>
               </div>
             </div>
-            <span className="brand-arrow">→</span>
+            <ArrowRight size={16} className="brand-arrow" />
           </Link>
         ))}
       </div>

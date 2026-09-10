@@ -1,5 +1,15 @@
 import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
+import {
+  RotateCcw,
+  CheckCircle2,
+  Camera,
+  Zap,
+  CreditCard,
+  Building2,
+  ArrowRight,
+  Sparkles
+} from "lucide-react";
 import { CartContext } from "../context/CartContext";
 import "../css/ReturnsRefunds.css";
 
@@ -41,7 +51,9 @@ function ReturnsRefunds() {
       {/* Header */}
       <div className="returns-header">
         <span className="returns-badge">100% BUYER SATISFACTION</span>
-        <h1>Returns, Replacements & Refunds 🔄</h1>
+        <h1 style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+          Returns, Replacements & Refunds <RotateCcw size={26} color="#ff4757" />
+        </h1>
         <p>Hassle-free 1-click return requests with instant FoodieGo wallet refunds</p>
       </div>
 
@@ -50,7 +62,9 @@ function ReturnsRefunds() {
         <div className="return-form-card">
           {submittedRequest ? (
             <div className="return-success-view">
-              <div className="success-icon">🎉</div>
+              <div className="success-icon" style={{ display: "flex", justifyContent: "center", margin: "16px 0" }}>
+                <CheckCircle2 size={48} color="#10b981" />
+              </div>
               <h3>Return Request #{submittedRequest.id} Confirmed!</h3>
               <p>
                 Our courier executive will arrive on <strong>{submittedRequest.pickupDate}</strong>.
@@ -108,7 +122,9 @@ function ReturnsRefunds() {
                       }
                     }}
                   />
-                  <span>📸 {photoProof ? `Attached: ${photoProof}` : "Click or Drag Photo of Item / Receipt"}</span>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                    <Camera size={16} /> {photoProof ? `Attached: ${photoProof}` : "Click or Drag Photo of Item / Receipt"}
+                  </span>
                 </div>
               </div>
 
@@ -124,14 +140,14 @@ function ReturnsRefunds() {
               <div className="form-group">
                 <label>Refund Settlement Method *</label>
                 <select value={refundMethod} onChange={(e) => setRefundMethod(e.target.value)}>
-                  <option value="FoodieGo Wallet (Instant Credit)">⚡ FoodieGo Wallet (Instant Credit)</option>
-                  <option value="Original Payment Method (1-2 business days)">💳 Original Payment Card / UPI (1-2 days)</option>
-                  <option value="Direct Bank Transfer via UPI">🏦 Direct Bank Transfer via UPI</option>
+                  <option value="FoodieGo Wallet (Instant Credit)">FoodieGo Wallet (Instant Credit)</option>
+                  <option value="Original Payment Method (1-2 business days)">Original Payment Card / UPI (1-2 days)</option>
+                  <option value="Direct Bank Transfer via UPI">Direct Bank Transfer via UPI</option>
                 </select>
               </div>
 
-              <button type="submit" className="submit-return-btn">
-                Submit Return Request →
+              <button type="submit" className="submit-return-btn" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
+                Submit Return Request <ArrowRight size={16} />
               </button>
             </form>
           )}
@@ -140,7 +156,9 @@ function ReturnsRefunds() {
         {/* Right Column: Existing Return Tickets & Policy Timeline */}
         <div className="returns-status-column">
           <div className="return-policy-timeline-card">
-            <h3>🔄 Refund & Pickup Process</h3>
+            <h3 style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <RotateCcw size={18} color="#ff4757" /> Refund & Pickup Process
+            </h3>
             <div className="timeline-steps">
               <div className="t-step">
                 <div className="t-num">1</div>

@@ -1,5 +1,14 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
+import {
+  Heart,
+  ShoppingBag,
+  TrendingDown,
+  X,
+  Star,
+  UtensilsCrossed,
+  Plus
+} from "lucide-react";
 import { WishlistContext } from "../context/WishlistContext";
 import { CartContext } from "../context/CartContext";
 import "../css/Wishlist.css";
@@ -13,7 +22,7 @@ function Wishlist() {
     wishlist.forEach((item) => {
       addToCart(item);
     });
-    showToast(`Moved ${wishlist.length} favorite items to cart! 🛒`, "success");
+    showToast(`Moved ${wishlist.length} favorite items to cart!`, "success");
   };
 
   return (
@@ -21,23 +30,27 @@ function Wishlist() {
       {/* Header */}
       <div className="wishlist-header-bar">
         <div>
-          <h1>My Wishlist & Favorites ({wishlist.length}) ❤️</h1>
+          <h1 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            My Wishlist & Favorites ({wishlist.length}) <Heart size={24} color="#ff4757" fill="#ff4757" />
+          </h1>
           <p>Saved culinary items with live price-drop tracking</p>
         </div>
         {wishlist.length > 0 && (
-          <button className="move-all-cart-btn" onClick={handleMoveAllToCart}>
-            Move All to Cart 🛒
+          <button className="move-all-cart-btn" onClick={handleMoveAllToCart} style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+            <ShoppingBag size={16} /> Move All to Cart
           </button>
         )}
       </div>
 
       {wishlist.length === 0 ? (
         <div className="empty-wishlist-view">
-          <div className="empty-wish-icon">❤️</div>
+          <div className="empty-wish-icon" style={{ display: "flex", justifyContent: "center", margin: "20px 0" }}>
+            <Heart size={64} color="#ff4757" />
+          </div>
           <h2>Your Wishlist is Currently Empty</h2>
           <p>Explore our trending pizzas, burgers, shakes, and noodle bowls to add your cravings!</p>
-          <Link to="/shop" className="browse-dishes-cta">
-            Discover Delicious Dishes 🍕
+          <Link to="/shop" className="browse-dishes-cta" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+            <UtensilsCrossed size={16} /> Discover Delicious Dishes
           </Link>
         </div>
       ) : (
@@ -49,8 +62,8 @@ function Wishlist() {
                 {/* Top Badges */}
                 <div className="wish-card-top-badges">
                   {hasPriceDrop && (
-                    <span className="price-drop-alert-badge">
-                      📉 Price dropped by ₹40!
+                    <span className="price-drop-alert-badge" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                      <TrendingDown size={13} color="#10b981" /> Price dropped by ₹40!
                     </span>
                   )}
                   <button
@@ -58,7 +71,7 @@ function Wishlist() {
                     onClick={() => removeFromWishlist(food.id)}
                     title="Remove from wishlist"
                   >
-                    ✕
+                    <X size={15} />
                   </button>
                 </div>
 
@@ -75,7 +88,9 @@ function Wishlist() {
                   </Link>
 
                   <div className="wish-rating-row">
-                    <span>{food.rating || "⭐ 4.8"}</span>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: "2px" }}>
+                      <Star size={13} fill="#f59e0b" stroke="#f59e0b" /> {food.rating ? String(food.rating).replace("⭐", "").trim() : "4.8"}
+                    </span>
                     <span className="stock-in-tag">● In Stock & Ready</span>
                   </div>
 
@@ -97,8 +112,9 @@ function Wishlist() {
                         addToCart(food);
                         removeFromWishlist(food.id);
                       }}
+                      style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px" }}
                     >
-                      + Move to Cart
+                      <Plus size={15} /> Move to Cart
                     </button>
                   </div>
                 </div>

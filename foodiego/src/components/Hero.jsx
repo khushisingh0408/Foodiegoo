@@ -1,35 +1,56 @@
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  Flame,
+  Truck,
+  Copy,
+  Search,
+  Leaf,
+  Star,
+  Zap,
+  BadgePercent,
+  ArrowRight,
+  Sparkles
+} from "lucide-react";
 import { CartContext } from "../context/CartContext";
+import pizzaImg from "../assets/images/margherita-pizza.png";
+import burgerImg from "../assets/images/classic Cheeseburger.png";
+import friesImg from "../assets/images/french fries.png";
 import "../css/Hero.css";
 
 const promoBanners = [
   {
     id: 1,
-    badge: "SUPER DEAL 🔥",
+    badge: "SUPER DEAL",
+    badgeIcon: <Flame size={12} color="#ffffff" />,
     title: "Flat 50% OFF up to ₹120",
     subtitle: "On your favorite Pizzas, Burgers & Meals",
     code: "FOODIE50",
     bgColor: "linear-gradient(135deg, #ff5200 0%, #ea580c 100%)",
-    emoji: "🍕"
+    image: pizzaImg,
+    alt: "Gourmet Pizza"
   },
   {
     id: 2,
-    badge: "FREE DELIVERY 🚚",
+    badge: "FREE DELIVERY",
+    badgeIcon: <Truck size={12} color="#ffffff" />,
     title: "Zero Delivery Fee on Orders ₹149+",
     subtitle: "Hot & fresh food delivered directly to your doorstep",
     code: "FREEDEL",
     bgColor: "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
-    emoji: "⚡"
+    image: burgerImg,
+    alt: "Express Delivery Burger"
   },
   {
     id: 3,
-    badge: "WEEKEND FEAST 🍔",
+    badge: "WEEKEND FEAST",
+    badgeIcon: <Sparkles size={12} color="#ffffff" />,
     title: "Flat ₹100 OFF on Top Brand Combos",
     subtitle: "Burger King, La Pino'z, Wow Momo & more",
     code: "WELCOME100",
     bgColor: "linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)",
-    emoji: "🍟"
+    image: friesImg,
+    alt: "Crispy Fries Combo"
   }
 ];
 
@@ -63,7 +84,9 @@ function Hero({ searchTerm, setSearchTerm, activeFilter, setActiveFilter }) {
         style={{ background: banner.bgColor }}
       >
         <div className="promo-banner-content">
-          <span className="promo-badge">{banner.badge}</span>
+          <span className="promo-badge">
+            {banner.badgeIcon} {banner.badge}
+          </span>
           <h1>{banner.title}</h1>
           <p>{banner.subtitle}</p>
 
@@ -72,13 +95,15 @@ function Hero({ searchTerm, setSearchTerm, activeFilter, setActiveFilter }) {
               className="coupon-tag-pill"
               onClick={() => {
                 navigator.clipboard.writeText(banner.code);
-                showToast(`Copied code ${banner.code}! Apply at checkout. 📋`, "success");
+                showToast(`Copied code ${banner.code}! Apply at checkout.`, "success");
               }}
               title="Click to copy coupon code"
             >
               <span>USE CODE:</span>
               <strong>{banner.code}</strong>
-              <small>📋 Copy</small>
+              <small>
+                <Copy size={11} className="inline-icon" /> Copy
+              </small>
             </div>
 
             <button
@@ -88,13 +113,15 @@ function Hero({ searchTerm, setSearchTerm, activeFilter, setActiveFilter }) {
                 if (el) el.scrollIntoView({ behavior: "smooth" });
               }}
             >
-              Order Now →
+              Order Now <ArrowRight size={14} className="inline-icon" />
             </button>
           </div>
         </div>
 
         <div className="promo-banner-art">
-          <div className="art-emoji-circle">{banner.emoji}</div>
+          <div className="art-img-circle">
+            <img src={banner.image} alt={banner.alt} className="hero-banner-real-img" loading="lazy" />
+          </div>
         </div>
 
         {/* Carousel Dots */}
@@ -113,7 +140,7 @@ function Hero({ searchTerm, setSearchTerm, activeFilter, setActiveFilter }) {
       {/* Quick Search & Filter Pills Bar */}
       <div className="hero-filter-bar">
         <div className="hero-search-inline">
-          <span>🔍</span>
+          <Search size={16} color="#94a3b8" />
           <input
             type="text"
             placeholder="Search your favorite food or restaurant..."
@@ -129,35 +156,40 @@ function Hero({ searchTerm, setSearchTerm, activeFilter, setActiveFilter }) {
             className={`filter-chip ${isPureVegOnly ? "active-green" : ""}`}
             onClick={() => updatePureVegFilter(!isPureVegOnly)}
           >
-            <span>🌱 Pure Veg</span>
+            <Leaf size={14} color={isPureVegOnly ? "#15803d" : "#64748b"} />
+            <span>Pure Veg</span>
           </button>
 
           <button
             className={`filter-chip ${activeFilter === "rating" ? "active" : ""}`}
             onClick={() => setActiveFilter(activeFilter === "rating" ? "" : "rating")}
           >
-            <span>⭐ Rating 4.8+</span>
+            <Star size={13} fill={activeFilter === "rating" ? "#ffffff" : "#ca8a04"} color={activeFilter === "rating" ? "#ffffff" : "#ca8a04"} />
+            <span>Rating 4.8+</span>
           </button>
 
           <button
             className={`filter-chip ${activeFilter === "fast" ? "active" : ""}`}
             onClick={() => setActiveFilter(activeFilter === "fast" ? "" : "fast")}
           >
-            <span>⚡ Fast (under 20m)</span>
+            <Zap size={13} color={activeFilter === "fast" ? "#ffffff" : "#ea580c"} />
+            <span>Fast (under 20m)</span>
           </button>
 
           <button
             className={`filter-chip ${activeFilter === "bestseller" ? "active" : ""}`}
             onClick={() => setActiveFilter(activeFilter === "bestseller" ? "" : "bestseller")}
           >
-            <span>🔥 Bestsellers</span>
+            <Flame size={13} color={activeFilter === "bestseller" ? "#ffffff" : "#dc2626"} />
+            <span>Bestsellers</span>
           </button>
 
           <button
             className={`filter-chip ${activeFilter === "under199" ? "active" : ""}`}
             onClick={() => setActiveFilter(activeFilter === "under199" ? "" : "under199")}
           >
-            <span>💰 Under ₹199</span>
+            <BadgePercent size={13} color={activeFilter === "under199" ? "#ffffff" : "#16a34a"} />
+            <span>Under ₹199</span>
           </button>
         </div>
       </div>

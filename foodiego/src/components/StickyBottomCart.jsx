@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { ShoppingBag, ArrowRight } from "lucide-react";
 import { CartContext } from "../context/CartContext";
 import "../css/StickyBottomCart.css";
 
@@ -33,9 +34,10 @@ function StickyBottomCart() {
           <span className="sticky-cart-price">₹{finalTotal}</span>
         </div>
 
-        <Link to="/cart" className="view-cart-link">
+        <Link to="/cart" className="view-cart-link" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
           <span>View Cart</span>
-          <span className="cart-arrow">🛒 →</span>
+          <ShoppingBag size={16} />
+          <ArrowRight size={14} />
         </Link>
       </div>
     </div>

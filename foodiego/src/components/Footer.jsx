@@ -1,5 +1,27 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import {
+  Gift,
+  Zap,
+  ShieldCheck,
+  Lock,
+  MapPin,
+  Phone,
+  Mail,
+  Clock,
+  ArrowUp,
+  Layers,
+  Tag,
+  Sparkles,
+  HelpCircle,
+  Truck,
+  RotateCcw,
+  User,
+  Store,
+  FileText,
+  Flame,
+  Award
+} from "lucide-react";
 import "../css/Footer.css";
 import api from "../services/api";
 
@@ -14,10 +36,10 @@ function Footer() {
       try {
         const res = await api.post("/subscribers/subscribe", { email: email.trim() });
         setSubscribed(true);
-        setSubscribeMsg(res.message || "Subscribed! 🎉");
+        setSubscribeMsg(res.message || "Subscribed!");
       } catch (err) {
         setSubscribed(true);
-        setSubscribeMsg("Subscribed! 🎉 Check inbox for 20% off");
+        setSubscribeMsg("Subscribed! Check inbox for 20% off");
       }
       setEmail("");
       setTimeout(() => {
@@ -37,7 +59,9 @@ function Footer() {
       <div className="footer-newsletter-banner">
         <div className="newsletter-content">
           <div className="newsletter-text">
-            <h3>🎁 Get 20% Off Your First Order!</h3>
+            <h3>
+              <Gift size={20} className="inline-icon" color="#ff5200" /> Get 20% Off Your First Order!
+            </h3>
             <p>Subscribe for exclusive deals, secret flash sales, and mouthwatering chef updates.</p>
           </div>
           <form className="newsletter-form" onSubmit={handleSubscribe}>
@@ -50,7 +74,7 @@ function Footer() {
                 required
               />
               <button type="submit" className="subscribe-btn">
-                {subscribed ? (subscribeMsg || "Subscribed! 🎉") : "Subscribe & Save"}
+                {subscribed ? (subscribeMsg || "Subscribed!") : "Subscribe & Save"}
               </button>
             </div>
           </form>
@@ -62,29 +86,17 @@ function Footer() {
         {/* Brand Column */}
         <div className="footer-section footer-brand">
           <Link to="/" className="footer-logo" onClick={scrollToTop}>
-            <span className="logo-emoji">🍔</span>
+            <span className="logo-icon-wrap">
+              <Zap size={22} fill="#ff5200" color="#ff5200" />
+            </span>
             <span className="logo-title">FoodieGo</span>
           </Link>
           <p className="brand-desc">
             Your premium food delivery and culinary marketplace. Hot, hygienic, and lightning-fast delivery to your doorstep in 30 minutes!
           </p>
-          <div className="footer-socials">
-            <a href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram" className="social-icon">
-              📸
-            </a>
-            <a href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="Facebook" className="social-icon">
-              📘
-            </a>
-            <a href="https://twitter.com" target="_blank" rel="noreferrer" aria-label="Twitter" className="social-icon">
-              🐦
-            </a>
-            <a href="https://youtube.com" target="_blank" rel="noreferrer" aria-label="YouTube" className="social-icon">
-              ▶️
-            </a>
-          </div>
 
           <div className="footer-trust-badge">
-            <span className="trust-icon">🔒</span>
+            <ShieldCheck size={18} color="#22c55e" />
             <span>100% Secure Checkout & FSSAI Certified Kitchens</span>
           </div>
         </div>
@@ -94,22 +106,34 @@ function Footer() {
           <h4 className="footer-title">Explore & Shop</h4>
           <ul className="footer-links-list">
             <li>
-              <Link to="/shop" onClick={scrollToTop}>🛍️ All Categories & Menu</Link>
+              <Link to="/shop" onClick={scrollToTop}>
+                <Layers size={14} className="inline-icon" /> All Categories & Menu
+              </Link>
             </li>
             <li>
-              <Link to="/offers" onClick={scrollToTop}>🏷️ Coupons & Offers</Link>
+              <Link to="/offers" onClick={scrollToTop}>
+                <Tag size={14} className="inline-icon" /> Coupons & Offers
+              </Link>
             </li>
             <li>
-              <Link to="/shop?tag=Flash%20Deal" onClick={scrollToTop}>⚡ Flash Sale Deals</Link>
+              <Link to="/shop?tag=Flash%20Deal" onClick={scrollToTop}>
+                <Zap size={14} className="inline-icon" /> Flash Sale Deals
+              </Link>
             </li>
             <li>
-              <Link to="/shop?tag=Best%20Seller" onClick={scrollToTop}>🏆 Bestsellers</Link>
+              <Link to="/shop?tag=Best%20Seller" onClick={scrollToTop}>
+                <Flame size={14} className="inline-icon" /> Bestsellers
+              </Link>
             </li>
             <li>
-              <Link to="/shop?sort=newest" onClick={scrollToTop}>✨ New Arrivals</Link>
+              <Link to="/shop?sort=newest" onClick={scrollToTop}>
+                <Sparkles size={14} className="inline-icon" /> New Arrivals
+              </Link>
             </li>
             <li>
-              <Link to="/about" onClick={scrollToTop}>ℹ️ About FoodieGo</Link>
+              <Link to="/about" onClick={scrollToTop}>
+                <FileText size={14} className="inline-icon" /> About FoodieGo
+              </Link>
             </li>
           </ul>
         </div>
@@ -119,22 +143,34 @@ function Footer() {
           <h4 className="footer-title">Customer Care</h4>
           <ul className="footer-links-list">
             <li>
-              <Link to="/help" onClick={scrollToTop}>❓ Help Center & FAQs</Link>
+              <Link to="/help" onClick={scrollToTop}>
+                <HelpCircle size={14} className="inline-icon" /> Help Center & FAQs
+              </Link>
             </li>
             <li>
-              <Link to="/account/track" onClick={scrollToTop}>📍 Live Order Tracking</Link>
+              <Link to="/account/track" onClick={scrollToTop}>
+                <Truck size={14} className="inline-icon" /> Live Order Tracking
+              </Link>
             </li>
             <li>
-              <Link to="/returns" onClick={scrollToTop}>🔄 Return & Refund Request</Link>
+              <Link to="/returns" onClick={scrollToTop}>
+                <RotateCcw size={14} className="inline-icon" /> Return & Refund Request
+              </Link>
             </li>
             <li>
-              <Link to="/contact" onClick={scrollToTop}>📞 Contact Support</Link>
+              <Link to="/contact" onClick={scrollToTop}>
+                <Phone size={14} className="inline-icon" /> Contact Support
+              </Link>
             </li>
             <li>
-              <Link to="/account" onClick={scrollToTop}>👤 My Account & Profile</Link>
+              <Link to="/account" onClick={scrollToTop}>
+                <User size={14} className="inline-icon" /> My Account & Profile
+              </Link>
             </li>
             <li>
-              <Link to="/seller-info" onClick={scrollToTop}>👨‍🍳 Partner with FoodieGo</Link>
+              <Link to="/seller-info" onClick={scrollToTop}>
+                <Store size={14} className="inline-icon" /> Partner with FoodieGo
+              </Link>
             </li>
           </ul>
         </div>
@@ -144,22 +180,34 @@ function Footer() {
           <h4 className="footer-title">Policies & Trust</h4>
           <ul className="footer-links-list">
             <li>
-              <Link to="/shipping-policy" onClick={scrollToTop}>🚚 Shipping & Delivery Policy</Link>
+              <Link to="/shipping-policy" onClick={scrollToTop}>
+                <Truck size={14} className="inline-icon" /> Shipping & Delivery Policy
+              </Link>
             </li>
             <li>
-              <Link to="/returns-policy" onClick={scrollToTop}>🛡️ Refund & Returns Policy</Link>
+              <Link to="/returns-policy" onClick={scrollToTop}>
+                <ShieldCheck size={14} className="inline-icon" /> Refund & Returns Policy
+              </Link>
             </li>
             <li>
-              <Link to="/cancellation-policy" onClick={scrollToTop}>⏱️ Cancellation Terms</Link>
+              <Link to="/cancellation-policy" onClick={scrollToTop}>
+                <Clock size={14} className="inline-icon" /> Cancellation Terms
+              </Link>
             </li>
             <li>
-              <Link to="/warranty" onClick={scrollToTop}>🥇 Freshness Guarantee</Link>
+              <Link to="/warranty" onClick={scrollToTop}>
+                <Award size={14} className="inline-icon" /> Freshness Guarantee
+              </Link>
             </li>
             <li>
-              <Link to="/privacy" onClick={scrollToTop}>🔒 Privacy Policy</Link>
+              <Link to="/privacy" onClick={scrollToTop}>
+                <Lock size={14} className="inline-icon" /> Privacy Policy
+              </Link>
             </li>
             <li>
-              <Link to="/terms" onClick={scrollToTop}>📜 Terms of Service</Link>
+              <Link to="/terms" onClick={scrollToTop}>
+                <FileText size={14} className="inline-icon" /> Terms of Service
+              </Link>
             </li>
           </ul>
         </div>
@@ -169,19 +217,19 @@ function Footer() {
           <h4 className="footer-title">Headquarters</h4>
           <div className="contact-info">
             <p className="contact-item">
-              <span className="contact-icon">📍</span>
+              <MapPin size={16} className="contact-icon" color="#ff5200" />
               <span>VIP Road, Raipur, Chhattisgarh 492001</span>
             </p>
             <p className="contact-item">
-              <span className="contact-icon">📞</span>
+              <Phone size={16} className="contact-icon" color="#ff5200" />
               <a href="tel:+918863033031">+91 8863033031</a>
             </p>
             <p className="contact-item">
-              <span className="contact-icon">📧</span>
+              <Mail size={16} className="contact-icon" color="#ff5200" />
               <a href="mailto:support@foodiego.com">support@foodiego.com</a>
             </p>
             <p className="contact-item">
-              <span className="contact-icon">🕒</span>
+              <Clock size={16} className="contact-icon" color="#ff5200" />
               <span>Mon – Sun: 8:00 AM – 11:30 PM IST</span>
             </p>
           </div>
@@ -203,7 +251,7 @@ function Footer() {
       <div className="footer-bottom">
         <div className="footer-bottom-container">
           <p className="copyright-text">
-            &copy; {new Date().getFullYear()} <strong>FoodieGo Technologies Inc.</strong> Made with ❤️ for food lovers. All rights reserved.
+            &copy; {new Date().getFullYear()} <strong>FoodieGo Technologies Inc.</strong> All rights reserved.
           </p>
 
           <div className="footer-bottom-links">
@@ -216,7 +264,7 @@ function Footer() {
             <Link to="/help" onClick={scrollToTop}>Help</Link>
             <span className="separator">•</span>
             <button className="back-to-top-btn" onClick={scrollToTop} aria-label="Back to top">
-              Top ⬆
+              <ArrowUp size={12} className="inline-icon" /> Top
             </button>
           </div>
         </div>

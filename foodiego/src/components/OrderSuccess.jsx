@@ -1,5 +1,15 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import {
+  CheckCircle2,
+  Zap,
+  Receipt,
+  MapPin,
+  Bike,
+  Package,
+  ShoppingBag,
+  Sparkles
+} from "lucide-react";
 import "../css/OrderSuccess.css";
 
 function OrderSuccess() {
@@ -33,9 +43,13 @@ function OrderSuccess() {
     <div className="order-success-page">
       <div className="success-container">
         {/* Confetti Animation Icon */}
-        <div className="confetti-bubble">🎉</div>
+        <div className="confetti-bubble" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+          <CheckCircle2 size={44} color="#10b981" />
+        </div>
 
-        <div className="success-badge-tag">ORDER PLACED SUCCESSFULLY</div>
+        <div className="success-badge-tag" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+          <Sparkles size={14} /> ORDER PLACED SUCCESSFULLY
+        </div>
         <h1>Thank You For Your Order!</h1>
         <p className="order-lead-msg">
           We have received your order. The kitchen has begun preparing your fresh meal!
@@ -49,7 +63,9 @@ function OrderSuccess() {
           </div>
           <div className="meta-col">
             <small>ESTIMATED DELIVERY</small>
-            <strong className="eta-highlight">⚡ In 20-25 Mins</strong>
+            <strong className="eta-highlight" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+              <Zap size={14} color="#f59e0b" /> In 20-25 Mins
+            </strong>
           </div>
           <div className="meta-col">
             <small>TOTAL PAID</small>
@@ -63,7 +79,9 @@ function OrderSuccess() {
 
         {/* Receipt Breakdown Box */}
         <div className="success-receipt-box">
-          <h3>Order Details 🧾</h3>
+          <h3 style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            Order Details <Receipt size={18} color="#ff4757" />
+          </h3>
           <div className="success-items-list">
             {order?.items?.map((item, idx) => (
               <div className="receipt-item-row" key={idx}>
@@ -75,22 +93,24 @@ function OrderSuccess() {
 
           <div className="receipt-address-row">
             <small>DELIVERING TO:</small>
-            <p>📍 {order?.deliveryAddress || "Sector 62, Noida"}</p>
+            <p style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <MapPin size={16} color="#ff4757" /> {order?.deliveryAddress || "Sector 62, Noida"}
+            </p>
           </div>
         </div>
 
         {/* Action Buttons */}
         <div className="success-actions-row">
-          <Link to={`/track/${order?.id || orderId}`} className="track-order-cta-btn">
-            🛵 Track Live Delivery Map
+          <Link to={`/track/${order?.id || orderId}`} className="track-order-cta-btn" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+            <Bike size={18} /> Track Live Delivery Map
           </Link>
 
-          <Link to="/orders" className="view-orders-cta-btn">
-            📦 View Order Receipts
+          <Link to="/orders" className="view-orders-cta-btn" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+            <Package size={18} /> View Order Receipts
           </Link>
 
-          <Link to="/shop" className="continue-shopping-cta-btn">
-            🛍️ Continue Shopping
+          <Link to="/shop" className="continue-shopping-cta-btn" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+            <ShoppingBag size={18} /> Continue Shopping
           </Link>
         </div>
       </div>

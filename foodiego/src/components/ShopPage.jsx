@@ -1,5 +1,22 @@
 import { useState, useMemo, useContext, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import {
+  LayoutGrid,
+  List,
+  SlidersHorizontal,
+  Star,
+  Heart,
+  Eye,
+  Clock,
+  UtensilsCrossed,
+  X,
+  Plus,
+  Minus,
+  Zap,
+  Flame,
+  Sparkles,
+  Check
+} from "lucide-react";
 import { foods, brandsList } from "../data/foodsData";
 import { CartContext } from "../context/CartContext";
 import { WishlistContext } from "../context/WishlistContext";
@@ -108,30 +125,29 @@ function ShopPage() {
       result.sort((a, b) => Number(String(b.price).replace("₹", "")) - Number(String(a.price).replace("₹", "")));
     } else if (sortBy === "rating") {
       result.sort((a, b) => (b.ratingScore || 4.5) - (a.ratingScore || 4.5));
-    } else if (sortBy === "discount") {
-      result.sort((a, b) => {
-        const da = parseInt(String(a.discountPercent || "0").replace("% OFF", "")) || 0;
-        const db = parseInt(String(b.discountPercent || "0").replace("% OFF", "")) || 0;
-        return db - da;
-      });
     } else if (sortBy === "newest") {
       result.sort((a, b) => (b.isNewArrival ? 1 : 0) - (a.isNewArrival ? 1 : 0));
+    } else if (sortBy === "discount") {
+      result.sort((a, b) => {
+        const dA = parseInt(String(a.discountPercent || "0").replace("% OFF", "")) || 0;
+        const dB = parseInt(String(b.discountPercent || "0").replace("% OFF", "")) || 0;
+        return dB - dA;
+      });
     }
 
     return result;
-  }, [
-    foods,
-    selectedCategory,
+  }, [selectedCategory, selectedBrand, selectedDiet, maxPrice, minRating, minDiscount, selectedBadge, inStockOnly, sortBy, isPureVegOnly]);
+
+  const activeFiltersCount = [
+    selectedCategory && selectedCategory !== "All",
     selectedBrand,
-    selectedDiet,
-    isPureVegOnly,
-    maxPrice,
-    minRating,
-    minDiscount,
-    selectedBadge,
-    inStockOnly,
-    sortBy
-  ]);
+    selectedDiet !== "all",
+    maxPrice < 500,
+    minRating > 0,
+    minDiscount > 0,
+    selectedBadge !== "all",
+    inStockOnly
+  ].filter(Boolean).length;
 
   const resetAllFilters = () => {
     setSelectedCategory("");
@@ -142,57 +158,42 @@ function ShopPage() {
     setMinDiscount(0);
     setSelectedBadge("all");
     setInStockOnly(false);
-    setSearchParams({});
   };
-
-  const activeFiltersCount =
-    (selectedCategory && selectedCategory !== "All" ? 1 : 0) +
-    (selectedBrand ? 1 : 0) +
-    (selectedDiet !== "all" ? 1 : 0) +
-    (maxPrice < 500 ? 1 : 0) +
-    (minRating > 0 ? 1 : 0) +
-    (minDiscount > 0 ? 1 : 0) +
-    (selectedBadge !== "all" ? 1 : 0) +
-    (inStockOnly ? 1 : 0);
 
   return (
     <div className="shop-page-wrapper">
-      {/* Breadcrumb Strip */}
+      {/* Top Breadcrumb & Title */}
       <div className="shop-breadcrumb-bar">
-        <div className="shop-breadcrumb-content">
+        <div className="shop-breadcrumbs">
           <Link to="/">Home</Link>
-          <span className="crumb-sep">/</span>
-          <Link to="/shop">Shop & Categories</Link>
+          <span>/</span>
+          <Link to="/shop">Shop</Link>
           {selectedCategory && (
             <>
-              <span className="crumb-sep">/</span>
-              <span className="crumb-active">{selectedCategory}</span>
-            </>
-          )}
-          {selectedBrand && (
-            <>
-              <span className="crumb-sep">/</span>
-              <span className="crumb-active">{selectedBrand}</span>
+              <span>/</span>
+              <span className="current">{selectedCategory}</span>
             </>
           )}
         </div>
       </div>
 
-      <div className="shop-main-layout">
-        {/* Left Desktop Filter Sidebar */}
+      <div className="shop-layout-grid">
+        {/* Left Filter Sidebar (Desktop) */}
         <aside className="shop-sidebar-filters desktop-filters">
-          <div className="filters-header-row">
-            <h3>Filters {activeFiltersCount > 0 && `(${activeFiltersCount})`}</h3>
+          <div className="sidebar-header-row">
+            <h3>
+              <SlidersHorizontal size={18} className="inline-icon" /> Filters
+            </h3>
             {activeFiltersCount > 0 && (
-              <button className="reset-filters-btn" onClick={resetAllFilters}>
-                Clear All
+              <button className="clear-all-btn" onClick={resetAllFilters}>
+                Clear All ({activeFiltersCount})
               </button>
             )}
           </div>
 
           {/* 1. Category Filter */}
           <div className="filter-group">
-            <h4 className="filter-title">Category</h4>
+            <h4 className="filter-title">Food Category</h4>
             <div className="filter-options-list">
               {categoriesList.map((cat) => (
                 <label key={cat} className="filter-radio-item">
@@ -229,7 +230,7 @@ function ShopPage() {
                     checked={selectedBrand === b.name}
                     onChange={() => setSelectedBrand(b.name)}
                   />
-                  <span>{b.logo} {b.name}</span>
+                  <span>{b.name}</span>
                 </label>
               ))}
             </div>
@@ -249,13 +250,13 @@ function ShopPage() {
                 className={`diet-pill-btn veg ${selectedDiet === "veg" ? "active" : ""}`}
                 onClick={() => setSelectedDiet("veg")}
               >
-                🟢 Pure Veg
+                <span className="diet-indicator-dot veg" /> Pure Veg
               </button>
               <button
                 className={`diet-pill-btn nonveg ${selectedDiet === "nonveg" ? "active" : ""}`}
                 onClick={() => setSelectedDiet("nonveg")}
               >
-                🔴 Non-Veg
+                <span className="diet-indicator-dot non-veg" /> Non-Veg
               </button>
             </div>
           </div>
@@ -293,7 +294,9 @@ function ShopPage() {
                     checked={minRating === rate}
                     onChange={() => setMinRating(minRating === rate ? 0 : rate)}
                   />
-                  <span>⭐ {rate} & above</span>
+                  <span>
+                    <Star size={12} fill="#ca8a04" color="#ca8a04" className="inline-icon" /> {rate} & above
+                  </span>
                 </label>
               ))}
             </div>
@@ -310,7 +313,9 @@ function ShopPage() {
                   checked={selectedBadge === "flash"}
                   onChange={() => setSelectedBadge(selectedBadge === "flash" ? "all" : "flash")}
                 />
-                <span>⚡ Flash Sale (Up to 50%)</span>
+                <span>
+                  <Zap size={13} color="#dc2626" className="inline-icon" /> Flash Sale (Up to 50%)
+                </span>
               </label>
               <label className="filter-radio-item">
                 <input
@@ -319,7 +324,9 @@ function ShopPage() {
                   checked={selectedBadge === "bestseller"}
                   onChange={() => setSelectedBadge(selectedBadge === "bestseller" ? "all" : "bestseller")}
                 />
-                <span>🔥 Best Sellers</span>
+                <span>
+                  <Flame size={13} color="#ea580c" className="inline-icon" /> Best Sellers
+                </span>
               </label>
               <label className="filter-radio-item">
                 <input
@@ -328,7 +335,9 @@ function ShopPage() {
                   checked={selectedBadge === "new"}
                   onChange={() => setSelectedBadge(selectedBadge === "new" ? "all" : "new")}
                 />
-                <span>✨ New Arrivals</span>
+                <span>
+                  <Sparkles size={13} color="#2563eb" className="inline-icon" /> New Arrivals
+                </span>
               </label>
             </div>
           </div>
@@ -363,7 +372,7 @@ function ShopPage() {
                 className="mobile-filter-drawer-btn"
                 onClick={() => setMobileFilterOpen(true)}
               >
-                <span>⚡ Filters {activeFiltersCount > 0 && `(${activeFiltersCount})`}</span>
+                <SlidersHorizontal size={14} className="inline-icon" /> Filters {activeFiltersCount > 0 && `(${activeFiltersCount})`}
               </button>
 
               {/* Sort Dropdown */}
@@ -386,14 +395,14 @@ function ShopPage() {
                   onClick={() => setViewMode("grid")}
                   title="Grid View"
                 >
-                  ▦
+                  <LayoutGrid size={16} />
                 </button>
                 <button
                   className={`view-btn ${viewMode === "list" ? "active" : ""}`}
                   onClick={() => setViewMode("list")}
                   title="List View"
                 >
-                  ☰
+                  <List size={16} />
                 </button>
               </div>
             </div>
@@ -402,7 +411,9 @@ function ShopPage() {
           {/* Products Grid / List */}
           {filteredProducts.length === 0 ? (
             <div className="shop-empty-state">
-              <div className="empty-icon">🍽️</div>
+              <div className="empty-icon">
+                <UtensilsCrossed size={48} color="#94a3b8" />
+              </div>
               <h3>No dishes match your selected filters</h3>
               <p>Try resetting some filters or changing your craving criteria!</p>
               <button className="reset-btn-large" onClick={resetAllFilters}>
@@ -420,9 +431,7 @@ function ShopPage() {
                     {/* Top Badges */}
                     <div className="card-top-row">
                       <div className="diet-and-badge">
-                        <span className={`diet-icon-dot ${food.isVeg ? "veg" : "nonveg"}`}>
-                          {food.isVeg ? "🟢" : "🔴"}
-                        </span>
+                        <span className={`diet-indicator-dot ${food.isVeg ? "veg" : "non-veg"}`} />
                         {food.badge && <span className="item-badge-tag">{food.badge}</span>}
                         {food.discountPercent && (
                           <span className="item-discount-tag">{food.discountPercent}</span>
@@ -435,14 +444,14 @@ function ShopPage() {
                           onClick={() => (isWishlisted ? removeFromWishlist(food.id) : addToWishlist(food))}
                           title="Wishlist"
                         >
-                          {isWishlisted ? "❤️" : "🤍"}
+                          <Heart size={15} fill={isWishlisted ? "#ef4444" : "none"} color={isWishlisted ? "#ef4444" : "#64748b"} />
                         </button>
                         <button
                           className="compare-icon-btn"
                           onClick={() => addToCompare(food)}
                           title="Add to Compare"
                         >
-                          ⚖️
+                          <SlidersHorizontal size={14} color="#64748b" />
                         </button>
                       </div>
                     </div>
@@ -457,7 +466,7 @@ function ShopPage() {
                           setQuickViewFood(food);
                         }}
                       >
-                        👁️ Quick View
+                        <Eye size={12} className="inline-icon" /> Quick View
                       </button>
                     </div>
 
@@ -469,10 +478,14 @@ function ShopPage() {
                       </Link>
 
                       <div className="card-rating-strip">
-                        <span className="card-star">{food.rating}</span>
+                        <span className="card-star">
+                          <Star size={12} fill="#ca8a04" color="#ca8a04" className="inline-icon" /> {food.ratingScore || 4.8}
+                        </span>
                         <span className="card-rating-count">({food.ratingCount || "1k+"})</span>
                         <span className="dot-sep">•</span>
-                        <span className="card-prep">⏱️ {food.prepTime || "20 mins"}</span>
+                        <span className="card-prep">
+                          <Clock size={11} className="inline-icon" /> {food.prepTime || "20 mins"}
+                        </span>
                       </div>
 
                       <p className="card-desc-snippet">{food.description}</p>
@@ -490,13 +503,17 @@ function ShopPage() {
                               className="shop-add-cart-btn"
                               onClick={() => (food.customizable ? setQuickViewFood(food) : addToCart(food))}
                             >
-                              + ADD
+                              <Plus size={13} className="inline-icon" /> ADD
                             </button>
                           ) : (
                             <div className="shop-qty-stepper">
-                              <button onClick={() => decreaseQuantity(food.id)}>−</button>
+                              <button onClick={() => decreaseQuantity(food.id)}>
+                                <Minus size={12} />
+                              </button>
                               <span>{qty}</span>
-                              <button onClick={() => increaseQuantity(food.id)}>+</button>
+                              <button onClick={() => increaseQuantity(food.id)}>
+                                <Plus size={12} />
+                              </button>
                             </div>
                           )}
                           {food.customizable && (
@@ -522,7 +539,7 @@ function ShopPage() {
             <div className="mobile-drawer-header">
               <h3>Filters & Sorting</h3>
               <button className="drawer-close-btn" onClick={() => setMobileFilterOpen(false)}>
-                ✕
+                <X size={16} />
               </button>
             </div>
 
@@ -557,13 +574,13 @@ function ShopPage() {
                     className={`m-chip veg ${selectedDiet === "veg" ? "active" : ""}`}
                     onClick={() => setSelectedDiet("veg")}
                   >
-                    🟢 Veg
+                    Pure Veg
                   </button>
                   <button
                     className={`m-chip nonveg ${selectedDiet === "nonveg" ? "active" : ""}`}
                     onClick={() => setSelectedDiet("nonveg")}
                   >
-                    🔴 Non-Veg
+                    Non-Veg
                   </button>
                 </div>
               </div>
@@ -592,7 +609,7 @@ function ShopPage() {
                       className={`m-chip ${minRating === rate ? "active" : ""}`}
                       onClick={() => setMinRating(minRating === rate ? 0 : rate)}
                     >
-                      ⭐ {rate}+
+                      <Star size={11} fill="#ca8a04" color="#ca8a04" className="inline-icon" /> {rate}+
                     </button>
                   ))}
                 </div>
