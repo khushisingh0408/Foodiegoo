@@ -27,12 +27,18 @@ function Navbar() {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
   const searchRef = useRef(null);
+  const mobileSearchRef = useRef(null);
   const navigate = useNavigate();
 
   // Close search dropdown on click outside
   useEffect(() => {
     function handleClickOutside(e) {
-      if (searchRef.current && !searchRef.current.contains(e.target)) {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(e.target) &&
+        mobileSearchRef.current &&
+        !mobileSearchRef.current.contains(e.target)
+      ) {
         setIsSearchFocused(false);
       }
     }
@@ -75,7 +81,7 @@ function Navbar() {
               <div className="logo-icon-wrap">⚡</div>
               <div className="logo-text">
                 <h2>FoodieGo</h2>
-                <span>Lightning Delivery</span>
+                <span className="desktop-tagline">Lightning Delivery</span>
               </div>
             </Link>
 
@@ -95,7 +101,7 @@ function Navbar() {
             </button>
           </div>
 
-          {/* Center: Live Search Bar with Instant Suggestions */}
+          {/* Desktop Center: Live Search Bar */}
           <div className="nav-center-search" ref={searchRef}>
             <form className="nav-search-form" onSubmit={handleSearchSubmit}>
               <span className="search-icon">🔍</span>
@@ -223,11 +229,11 @@ function Navbar() {
               </div>
             </button>
 
-            {/* Active Live Order Tracker Banner Button (if any) */}
+            {/* Active Live Order Tracker Banner Button (Desktop) */}
             {activeTrackingOrder && (
               <Link
                 to={`/track/${activeTrackingOrder.id}`}
-                className="live-track-nav-btn"
+                className="live-track-nav-btn desktop-only"
                 title="Track Active Order"
               >
                 <span className="pulse-dot" />
@@ -235,14 +241,14 @@ function Navbar() {
               </Link>
             )}
 
-            {/* Wishlist Link */}
-            <Link to="/wishlist" className="nav-icon-link" title="Wishlist">
+            {/* Wishlist Link (Desktop) */}
+            <Link to="/wishlist" className="nav-icon-link desktop-only" title="Wishlist">
               <span className="nav-icon">❤️</span>
               {wishlist.length > 0 && <span className="icon-badge">{wishlist.length}</span>}
             </Link>
 
-            {/* Cart Pill */}
-            <Link to="/cart" className="nav-cart-pill" title="View Cart">
+            {/* Desktop Cart Pill */}
+            <Link to="/cart" className="nav-cart-pill desktop-only" title="View Cart">
               <div className="cart-pill-icon">🛒</div>
               <div className="cart-pill-text">
                 <span className="cart-items-txt">
@@ -252,9 +258,17 @@ function Navbar() {
               </div>
             </Link>
 
-            {/* User Profile / Login */}
+            {/* Mobile Cart Icon Link */}
+            <Link to="/cart" className="mobile-cart-btn" aria-label="Cart">
+              <span className="m-cart-icon">🛒</span>
+              {totalCartItems > 0 && (
+                <span className="m-cart-badge">{totalCartItems}</span>
+              )}
+            </Link>
+
+            {/* Desktop User Profile / Login */}
             {isLoggedIn ? (
-              <div className="user-profile-menu-wrap">
+              <div className="user-profile-menu-wrap desktop-only">
                 <button
                   className="user-profile-pill"
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
@@ -306,7 +320,7 @@ function Navbar() {
                 )}
               </div>
             ) : (
-              <Link to="/login" className="nav-login-btn">
+              <Link to="/login" className="nav-login-btn desktop-only">
                 Sign In
               </Link>
             )}
@@ -322,11 +336,91 @@ function Navbar() {
           </div>
         </nav>
 
+        {/* Mobile Dedicated Search Bar (Always visible below header on phones) */}
+        <div className="mobile-search-strip" ref={mobileSearchRef}>
+          <form className="mobile-search-form" onSubmit={handleSearchSubmit}>
+            <span className="m-search-icon">🔍</span>
+            <input
+              type="text"
+              placeholder="Search dishes, restaurants..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => setIsSearchFocused(true)}
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                className="m-clear-search-btn"
+                onClick={() => setSearchQuery("")}
+              >
+                ✕
+              </button>
+            )}
+          </form>
+
+          {/* Mobile Search Dropdown */}
+          {isSearchFocused && (
+            <div className="mobile-search-suggestions">
+              {searchQuery.trim() === "" ? (
+                <div className="m-trending-searches">
+                  <div className="m-sugg-title">🔥 Popular Searches</div>
+                  <div className="m-chips-wrap">
+                    {trendingTags.map((tag, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        className="m-trending-chip"
+                        onClick={() => {
+                          setSearchQuery(tag);
+                          setIsSearchFocused(false);
+                          navigate(`/search?search=${encodeURIComponent(tag)}`);
+                        }}
+                      >
+                        {tag}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="m-results-list">
+                  {matchedDishes.map((dish) => (
+                    <div
+                      key={dish.id}
+                      className="m-sugg-item"
+                      onClick={() => {
+                        setIsSearchFocused(false);
+                        navigate(`/search?search=${encodeURIComponent(dish.name)}`);
+                      }}
+                    >
+                      <span>🍽️ {dish.name}</span>
+                      <small>{dish.price}</small>
+                    </div>
+                  ))}
+                  <div
+                    className="m-view-all-row"
+                    onClick={() => handleSearchSubmit()}
+                  >
+                    Search all for "{searchQuery}" →
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
         {/* Mobile Navigation Drawer */}
         {menuOpen && (
           <div className="mobile-drawer">
-            <div className="mobile-loc-row" onClick={() => { setIsLocationModalOpen(true); setMenuOpen(false); }}>
-              <span>📍 Deliver to: <strong>{deliveryLocation?.tag}</strong> ({deliveryLocation?.city})</span>
+            <div
+              className="mobile-loc-row"
+              onClick={() => {
+                setIsLocationModalOpen(true);
+                setMenuOpen(false);
+              }}
+            >
+              <span>
+                📍 Deliver to: <strong>{deliveryLocation?.tag}</strong> ({deliveryLocation?.city})
+              </span>
               <span>Change ▾</span>
             </div>
 
@@ -335,17 +429,21 @@ function Navbar() {
                 🏠 Home & Menu
               </Link>
               <Link to="/orders" onClick={() => setMenuOpen(false)}>
-                📦 My Orders
+                📦 My Orders & Receipts
               </Link>
               <Link to="/wishlist" onClick={() => setMenuOpen(false)}>
-                ❤️ Wishlist ({wishlist.length})
+                ❤️ Wishlist Favorites ({wishlist.length})
               </Link>
               <Link to="/cart" onClick={() => setMenuOpen(false)}>
-                🛒 Cart ({totalCartItems} items • ₹{finalTotal})
+                🛒 My Cart ({totalCartItems} items • ₹{finalTotal})
               </Link>
               {activeTrackingOrder && (
-                <Link to={`/track/${activeTrackingOrder.id}`} onClick={() => setMenuOpen(false)} className="track-link-mobile">
-                  🛵 Track Active Order
+                <Link
+                  to={`/track/${activeTrackingOrder.id}`}
+                  onClick={() => setMenuOpen(false)}
+                  className="track-link-mobile"
+                >
+                  🛵 Track Active Order #{activeTrackingOrder.id}
                 </Link>
               )}
             </div>

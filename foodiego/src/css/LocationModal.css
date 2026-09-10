@@ -21,6 +21,7 @@
   max-width: 520px;
   max-height: 85vh;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
   padding: 24px;
   box-sizing: border-box;
@@ -233,4 +234,26 @@
     opacity: 1;
     transform: scale(1);
   }
+}
+
+/* Mobile Bottom Sheet */
+@media (max-width: 600px) {
+  .location-modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .location-modal-box {
+    border-radius: 24px 24px 0 0;
+    max-height: 85vh;
+    max-width: 100%;
+    margin: 0;
+    padding: 20px 16px;
+    animation: locationSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+@keyframes locationSlideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
 }

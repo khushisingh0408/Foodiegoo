@@ -1,5 +1,5 @@
 .restaurants-section {
-  padding: 40px 24px;
+  padding: 36px 24px;
   max-width: 1280px;
   margin: 0 auto;
   box-sizing: border-box;
@@ -8,29 +8,30 @@
 .section-header-wrap {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-bottom: 28px;
+  gap: 14px;
+  margin-bottom: 24px;
 }
 
 .section-header-wrap h2 {
-  font-size: clamp(22px, 3vw, 32px);
+  font-size: clamp(20px, 3vw, 30px);
   font-weight: 800;
   color: #1e293b;
-  margin: 0 0 6px 0;
+  margin: 0 0 4px 0;
   letter-spacing: -0.5px;
 }
 
 .section-header-wrap p {
-  font-size: 14.5px;
+  font-size: 14px;
   color: #64748b;
   margin: 0;
 }
 
 .cuisine-filters-scroll {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   overflow-x: auto;
-  padding-bottom: 6px;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
   scrollbar-width: none;
 }
 
@@ -42,13 +43,14 @@
   background: #ffffff;
   border: 1.5px solid #e2e8f0;
   color: #475569;
-  padding: 8px 18px;
-  border-radius: 24px;
-  font-size: 13.5px;
+  padding: 7px 16px;
+  border-radius: 20px;
+  font-size: 13px;
   font-weight: 700;
   white-space: nowrap;
   cursor: pointer;
   transition: all 0.2s;
+  flex-shrink: 0;
 }
 
 .cuisine-pill:hover {
@@ -65,7 +67,7 @@
 .restaurants-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 28px;
+  gap: 24px;
 }
 
 .restaurant-card {
@@ -89,7 +91,7 @@
 .rest-image-box {
   position: relative;
   width: 100%;
-  height: 180px;
+  height: 170px;
   background: #f1f5f9;
   overflow: hidden;
 }
@@ -107,33 +109,33 @@
 
 .discount-tag {
   position: absolute;
-  bottom: 12px;
-  left: 12px;
+  bottom: 10px;
+  left: 10px;
   background: rgba(15, 23, 42, 0.85);
   backdrop-filter: blur(4px);
   color: #fbbf24;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 800;
-  padding: 4px 10px;
-  border-radius: 8px;
+  padding: 4px 8px;
+  border-radius: 6px;
   letter-spacing: 0.3px;
 }
 
 .pure-veg-badge {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 10px;
+  right: 10px;
   background: #15803d;
   color: #ffffff;
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 800;
-  padding: 3px 8px;
+  padding: 3px 7px;
   border-radius: 6px;
   letter-spacing: 0.5px;
 }
 
 .rest-info-box {
-  padding: 16px;
+  padding: 14px;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -143,11 +145,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .rest-title-row h3 {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 800;
   color: #1e293b;
   margin: 0;
@@ -160,9 +162,9 @@
 .rating-badge {
   background: #16a34a;
   color: #ffffff;
-  padding: 3px 8px;
+  padding: 2px 7px;
   border-radius: 6px;
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -172,7 +174,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 700;
   color: #475569;
   margin-bottom: 4px;
@@ -183,9 +185,9 @@
 }
 
 .rest-cuisines {
-  font-size: 13px;
+  font-size: 12.5px;
   color: #64748b;
-  margin: 0 0 12px 0;
+  margin: 0 0 10px 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -196,18 +198,18 @@
   align-items: center;
   justify-content: space-between;
   margin-top: auto;
-  padding-top: 10px;
+  padding-top: 8px;
   border-top: 1px dashed #e2e8f0;
 }
 
 .price-for-two {
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
   color: #64748b;
 }
 
 .view-menu-txt {
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 800;
   color: #ff5200;
 }
@@ -220,7 +222,7 @@
 }
 
 .no-restaurants p {
-  font-size: 16px;
+  font-size: 15px;
   color: #64748b;
   margin-bottom: 14px;
 }
@@ -237,15 +239,25 @@
 
 @media (max-width: 768px) {
   .restaurants-section {
-    padding: 24px 16px;
+    padding: 20px 16px;
   }
 
   .restaurants-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 16px;
   }
 
   .rest-image-box {
-    height: 160px;
+    height: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .restaurants-section {
+    padding: 16px 12px;
+  }
+
+  .rest-image-box {
+    height: 140px;
   }
 }
