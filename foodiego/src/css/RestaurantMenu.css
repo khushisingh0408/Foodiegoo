@@ -1,0 +1,381 @@
+.restaurant-menu-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 16px 80px 16px;
+  box-sizing: border-box;
+}
+
+.menu-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #94a3b8;
+  margin-bottom: 20px;
+}
+
+.menu-breadcrumb a {
+  color: #64748b;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.menu-breadcrumb a:hover {
+  color: #ff5200;
+}
+
+.restaurant-header-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  border: 1px solid #f1f5f9;
+  margin-bottom: 24px;
+}
+
+.rest-header-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.rest-title-area h1 {
+  font-size: clamp(22px, 3.5vw, 30px);
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.5px;
+}
+
+.rest-cuisines-sub {
+  font-size: 14.5px;
+  color: #64748b;
+  margin: 0 0 4px 0;
+}
+
+.rest-loc-sub {
+  font-size: 13px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.rest-rating-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  text-align: center;
+  min-width: 80px;
+}
+
+.rating-score {
+  color: #16a34a;
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 2px;
+}
+
+.rating-total {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.rest-header-divider {
+  height: 1px;
+  background: #f1f5f9;
+  margin: 18px 0;
+}
+
+.rest-quick-stats {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.stat-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #334155;
+  font-weight: 700;
+}
+
+.rest-deal-banner {
+  margin-top: 16px;
+  background: #fff7ed;
+  border: 1px dashed #fdba74;
+  color: #c2410c;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.menu-controls-bar {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.menu-search-box {
+  flex: 1;
+  min-width: 240px;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.menu-search-box input {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  font-size: 14px;
+  color: #1e293b;
+}
+
+.menu-search-box .clear-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+}
+
+.veg-toggle-btn {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  color: #475569;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.veg-toggle-btn.active {
+  background: #dcfce7;
+  border-color: #22c55e;
+  color: #15803d;
+}
+
+.menu-sections-container {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.section-title {
+  font-size: 19px;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0 0 16px 0;
+  border-bottom: 2px solid #f1f5f9;
+  padding-bottom: 10px;
+}
+
+.dishes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.dish-row-item {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+  transition: border-color 0.2s;
+}
+
+.dish-row-item:hover {
+  border-color: #cbd5e1;
+}
+
+.dish-row-left {
+  flex: 1;
+}
+
+.dish-indicator-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.veg-nonveg-icon {
+  font-size: 13px;
+}
+
+.bestseller-tag {
+  background: #ffedd5;
+  color: #ea580c;
+  font-size: 10.5px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.dish-row-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 4px 0;
+}
+
+.dish-row-price {
+  font-size: 16px;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 6px;
+}
+
+.dish-row-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #16a34a;
+  margin-bottom: 8px;
+}
+
+.dish-row-rating small {
+  color: #94a3b8;
+}
+
+.dish-row-desc {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.4;
+  max-width: 520px;
+}
+
+.dish-row-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dish-img-wrap {
+  width: 120px;
+  height: 110px;
+  position: relative;
+  border-radius: 14px;
+  background: #fafaf9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border: 1px solid #f1f5f9;
+}
+
+.dish-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.dish-action-container {
+  position: absolute;
+  bottom: -12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.add-btn-primary {
+  background: #ffffff;
+  color: #16a34a;
+  border: 1.5px solid #dcfce7;
+  padding: 6px 22px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s;
+}
+
+.add-btn-primary:hover {
+  background: #f0fdf4;
+  border-color: #16a34a;
+  transform: scale(1.04);
+}
+
+.qty-stepper-btn {
+  display: flex;
+  align-items: center;
+  background: #16a34a;
+  color: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+}
+
+.qty-stepper-btn button {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  padding: 5px 10px;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.qty-stepper-btn span {
+  padding: 0 6px;
+  font-size: 13.5px;
+  font-weight: 800;
+}
+
+.custom-hint {
+  font-size: 10.5px;
+  color: #64748b;
+  margin-top: 4px;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .rest-header-main {
+    flex-direction: column;
+  }
+
+  .dish-row-item {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .dish-img-wrap {
+    width: 95px;
+    height: 90px;
+  }
+
+  .dish-row-name {
+    font-size: 15px;
+  }
+
+  .dish-row-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}

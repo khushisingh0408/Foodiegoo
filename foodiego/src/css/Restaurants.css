@@ -1,0 +1,251 @@
+.restaurants-section {
+  padding: 40px 24px;
+  max-width: 1280px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.section-header-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.section-header-wrap h2 {
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.5px;
+}
+
+.section-header-wrap p {
+  font-size: 14.5px;
+  color: #64748b;
+  margin: 0;
+}
+
+.cuisine-filters-scroll {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scrollbar-width: none;
+}
+
+.cuisine-filters-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.cuisine-pill {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  color: #475569;
+  padding: 8px 18px;
+  border-radius: 24px;
+  font-size: 13.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cuisine-pill:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.cuisine-pill.active {
+  background: #1e293b;
+  color: #ffffff;
+  border-color: #1e293b;
+}
+
+.restaurants-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 28px;
+}
+
+.restaurant-card {
+  background: #ffffff;
+  border-radius: 18px;
+  overflow: hidden;
+  text-decoration: none;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.restaurant-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1);
+  border-color: rgba(255, 82, 0, 0.2);
+}
+
+.rest-image-box {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  background: #f1f5f9;
+  overflow: hidden;
+}
+
+.rest-image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.restaurant-card:hover .rest-image-box img {
+  transform: scale(1.05);
+}
+
+.discount-tag {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(4px);
+  color: #fbbf24;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 8px;
+  letter-spacing: 0.3px;
+}
+
+.pure-veg-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #15803d;
+  color: #ffffff;
+  font-size: 10.5px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+}
+
+.rest-info-box {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.rest-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.rest-title-row h3 {
+  font-size: 17px;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.rating-badge {
+  background: #16a34a;
+  color: #ffffff;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+}
+
+.rest-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 4px;
+}
+
+.dot-sep {
+  opacity: 0.5;
+}
+
+.rest-cuisines {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0 0 12px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rest-bottom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.price-for-two {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.view-menu-txt {
+  font-size: 13px;
+  font-weight: 800;
+  color: #ff5200;
+}
+
+.no-restaurants {
+  text-align: center;
+  padding: 40px 20px;
+  background: #f8fafc;
+  border-radius: 16px;
+}
+
+.no-restaurants p {
+  font-size: 16px;
+  color: #64748b;
+  margin-bottom: 14px;
+}
+
+.reset-btn {
+  background: #ff5200;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .restaurants-section {
+    padding: 24px 16px;
+  }
+
+  .restaurants-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .rest-image-box {
+    height: 160px;
+  }
+}

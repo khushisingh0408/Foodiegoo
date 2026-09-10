@@ -1,84 +1,207 @@
-import "../css/SearchResults.css";
-import { useContext, useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
+import { useState, useContext } from "react";
+import { foods } from "../data/foodsData";
+import { restaurants } from "../data/restaurantsData";
 import { CartContext } from "../context/CartContext";
-import { WishlistContext } from "../context/WishlistContext";
-import { foods as localFoods } from "../data/foodsData";
-import { getFoodImage } from "../utils/foodImages";
-import api from "../services/api";
+import DishModal from "./DishModal";
+import "../css/SearchResults.css";
 
 function SearchResults() {
-  const [searchParams] = useSearchParams();
-  const searchTerm = searchParams.get("search") || "";
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const query = (queryParams.get("search") || "").trim().toLowerCase();
 
-  const { addToCart } = useContext(CartContext);
-  const { addToWishlist } = useContext(WishlistContext);
-  const [foodsList, setFoodsList] = useState(localFoods);
+  const {
+    addToCart,
+    getItemQuantity,
+    increaseQuantity,
+    decreaseQuantity,
+    isPureVegOnly,
+    updatePureVegFilter
+  } = useContext(CartContext);
 
-  useEffect(() => {
-    async function searchFoods() {
-      const res = await api.get(`/foods?search=${encodeURIComponent(searchTerm)}`);
-      if (res.success && Array.isArray(res.foods)) {
-        setFoodsList(res.foods);
-      } else {
-        const term = searchTerm.toLowerCase();
-        setFoodsList(
-          localFoods.filter(
-            (f) =>
-              f.name.toLowerCase().includes(term) ||
-              f.category.toLowerCase().includes(term)
-          )
-        );
-      }
+  const [activeModalFood, setActiveModalFood] = useState(null);
+  const [selectedSort, setSelectedSort] = useState("relevance");
+
+  // Matched Restaurants
+  const matchedRestaurants = restaurants.filter((r) => {
+    if (isPureVegOnly && !r.isVegOnly) return false;
+    if (!query) return true;
+    return (
+      r.name.toLowerCase().includes(query) ||
+      r.cuisines.some((c) => c.toLowerCase().includes(query)) ||
+      (r.category && r.category.toLowerCase().includes(query))
+    );
+  });
+
+  // Matched Dishes
+  let matchedDishes = foods.filter((food) => {
+    if (isPureVegOnly && !food.isVeg) return false;
+    if (!query) return true;
+    return (
+      food.name.toLowerCase().includes(query) ||
+      food.category.toLowerCase().includes(query) ||
+      (food.restaurantName && food.restaurantName.toLowerCase().includes(query)) ||
+      (food.description && food.description.toLowerCase().includes(query))
+    );
+  });
+
+  // Sort
+  if (selectedSort === "price-low") {
+    matchedDishes.sort((a, b) => {
+      const pa = Number(String(a.price).replace("₹", ""));
+      const pb = Number(String(b.price).replace("₹", ""));
+      return pa - pb;
+    });
+  } else if (selectedSort === "price-high") {
+    matchedDishes.sort((a, b) => {
+      const pa = Number(String(a.price).replace("₹", ""));
+      const pb = Number(String(b.price).replace("₹", ""));
+      return pb - pa;
+    });
+  } else if (selectedSort === "rating") {
+    matchedDishes.sort((a, b) => {
+      const ra = parseFloat(String(a.rating).replace("⭐", "").trim()) || 0;
+      const rb = parseFloat(String(b.rating).replace("⭐", "").trim()) || 0;
+      return rb - ra;
+    });
+  }
+
+  const handleAddClick = (food) => {
+    if (food.customizable) {
+      setActiveModalFood(food);
+    } else {
+      addToCart(food);
     }
-
-    searchFoods();
-  }, [searchTerm]);
+  };
 
   return (
-    <section className="search-results-page">
-      <div className="search-food-container">
-        {foodsList.length === 0 ? (
-          <h2>No food found matching &quot;{searchTerm}&quot; 😔</h2>
+    <div className="search-results-page">
+      <div className="search-results-header">
+        <div>
+          <h1>Search Results for "{query}" 🔍</h1>
+          <p>Showing matching restaurants and dishes in your delivery area</p>
+        </div>
+
+        {/* Filter Controls */}
+        <div className="search-filter-controls">
+          <button
+            className={`veg-filter-btn ${isPureVegOnly ? "active" : ""}`}
+            onClick={() => updatePureVegFilter(!isPureVegOnly)}
+          >
+            <span>🟢 Pure Veg</span>
+          </button>
+
+          <select
+            className="sort-select"
+            value={selectedSort}
+            onChange={(e) => setSelectedSort(e.target.value)}
+          >
+            <option value="relevance">Sort: Relevance</option>
+            <option value="rating">Sort: Rating (High to Low)</option>
+            <option value="price-low">Sort: Price (Low to High)</option>
+            <option value="price-high">Sort: Price (High to Low)</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Section 1: Matched Restaurants */}
+      {matchedRestaurants.length > 0 && (
+        <div className="search-section">
+          <h2>🏬 Restaurants ({matchedRestaurants.length})</h2>
+          <div className="search-restaurants-grid">
+            {matchedRestaurants.map((r) => (
+              <Link to={`/restaurant/${r.id}`} className="search-rest-card" key={r.id}>
+                <img src={r.image} alt={r.name} />
+                <div className="search-rest-info">
+                  <div className="s-rest-title-row">
+                    <h3>{r.name}</h3>
+                    <span className="s-rest-rating">★ {r.rating}</span>
+                  </div>
+                  <p>{r.cuisines.join(", ")}</p>
+                  <small>⏱️ {r.deliveryTime} • {r.priceForTwo}</small>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Section 2: Matched Dishes */}
+      <div className="search-section">
+        <h2>🍽️ Dishes ({matchedDishes.length})</h2>
+
+        {matchedDishes.length === 0 && matchedRestaurants.length === 0 ? (
+          <div className="no-search-results">
+            <h3>No results found for "{query}" 😔</h3>
+            <p>Try searching for popular items like Pizza, Burger, Noodles, Biryani, or Cake.</p>
+            <Link to="/" className="home-link-btn">
+              Back to Home 🏠
+            </Link>
+          </div>
         ) : (
-          foodsList.map((food) => {
-            const displayImage = getFoodImage(food.image, food.id);
-            const foodObj = { ...food, image: displayImage };
+          <div className="search-dishes-grid">
+            {matchedDishes.map((dish) => {
+              const qty = getItemQuantity(dish.id);
+              return (
+                <div className="search-dish-card" key={dish.id}>
+                  <div className="s-dish-top">
+                    <span className="s-dish-diet">{dish.isVeg ? "🟢" : "🔴"}</span>
+                    {dish.badge && <span className="s-dish-badge">{dish.badge}</span>}
+                  </div>
 
-            return (
-              <div className="food-card" key={food.id}>
-                <img
-                  src={displayImage}
-                  alt={food.name}
-                  className="food-image"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src =
-                      "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80";
-                  }}
-                />
+                  <div className="s-dish-img-wrap">
+                    <img src={dish.image} alt={dish.name} />
+                  </div>
 
-                <h3>{food.name}</h3>
-                <p>{food.rating}</p>
-                <h4>{food.price}</h4>
+                  <div className="s-dish-meta">
+                    <div className="s-dish-rating">
+                      <span>★ {dish.rating.replace("⭐", "").trim()}</span>
+                      <small>⏱️ {dish.prepTime || "20 mins"}</small>
+                    </div>
 
-                <button
-                  className="wishlist-btn"
-                  onClick={() => addToWishlist(foodObj)}
-                  aria-label="Add to wishlist"
-                >
-                  ❤️
-                </button>
+                    <h4>{dish.name}</h4>
+                    {dish.restaurantName && (
+                      <span className="s-dish-rest">🏬 {dish.restaurantName}</span>
+                    )}
 
-                <button onClick={() => addToCart(foodObj)}>
-                  Add to Cart
-                </button>
-              </div>
-            );
-          })
+                    <div className="s-dish-bottom">
+                      <strong>{dish.price}</strong>
+
+                      <div className="s-dish-actions">
+                        {qty === 0 ? (
+                          <button
+                            className="s-add-btn"
+                            onClick={() => handleAddClick(dish)}
+                          >
+                            + ADD
+                          </button>
+                        ) : (
+                          <div className="s-qty-stepper">
+                            <button onClick={() => decreaseQuantity(dish.id)}>−</button>
+                            <span>{qty}</span>
+                            <button onClick={() => increaseQuantity(dish.id)}>+</button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         )}
       </div>
-    </section>
+
+      {/* Dish Modal */}
+      {activeModalFood && (
+        <DishModal
+          food={activeModalFood}
+          isOpen={!!activeModalFood}
+          onClose={() => setActiveModalFood(null)}
+        />
+      )}
+    </div>
   );
 }
 

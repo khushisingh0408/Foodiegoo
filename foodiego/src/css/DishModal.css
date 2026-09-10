@@ -1,0 +1,370 @@
+.dish-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  padding: 16px;
+  animation: fadeIn 0.25s ease;
+}
+
+.dish-modal-container {
+  background: #ffffff;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 580px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+  position: relative;
+  overflow: hidden;
+  animation: modalScaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dish-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 16px;
+  color: #475569;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
+}
+
+.dish-modal-close:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.dish-modal-hero {
+  display: flex;
+  gap: 18px;
+  padding: 24px 24px 18px 24px;
+  background: #fafaf9;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.dish-image-wrapper {
+  width: 110px;
+  height: 110px;
+  min-width: 110px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 8px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dish-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.dish-hero-info {
+  flex: 1;
+}
+
+.dish-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.diet-pill {
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.diet-pill.veg {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.diet-pill.non-veg {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.highlight-tag {
+  background: #ffedd5;
+  color: #c2410c;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.rating-pill {
+  background: #fef08a;
+  color: #854d0e;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.dish-hero-info h2 {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0 0 4px 0;
+  line-height: 1.25;
+}
+
+.dish-desc {
+  font-size: 12.5px;
+  color: #64748b;
+  margin: 0 0 8px 0;
+  line-height: 1.35;
+}
+
+.dish-quick-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.dish-modal-body {
+  padding: 20px 24px;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.custom-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.section-title-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-title-wrap h4 {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.required-badge {
+  font-size: 11px;
+  font-weight: 700;
+  background: #fee2e2;
+  color: #ef4444;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.optional-badge {
+  font-size: 11px;
+  font-weight: 600;
+  background: #f1f5f9;
+  color: #64748b;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.option-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1.5px solid #e2e8f0;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.option-card:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.option-card.active {
+  border-color: #ff5200;
+  background: #fff7ed;
+}
+
+.option-card input[type="radio"] {
+  accent-color: #ff5200;
+}
+
+.option-label {
+  display: flex;
+  flex-direction: column;
+}
+
+.option-label span {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.option-label small {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.addons-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.addon-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid #f1f5f9;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.addon-item:hover {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+.addon-item.checked {
+  background: #fff7ed;
+  border-color: #fdba74;
+}
+
+.addon-item input[type="checkbox"] {
+  accent-color: #ff5200;
+  margin-right: 10px;
+}
+
+.addon-name {
+  flex: 1;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.addon-price {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ff5200;
+}
+
+.instructions-input {
+  width: 100%;
+  border-radius: 10px;
+  border: 1.5px solid #e2e8f0;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #1e293b;
+  outline: none;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.instructions-input:focus {
+  border-color: #ff5200;
+}
+
+.dish-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: #ffffff;
+  border-top: 1px solid #f1f5f9;
+  gap: 16px;
+}
+
+.total-display small {
+  font-size: 11.5px;
+  color: #64748b;
+  display: block;
+}
+
+.total-display h3 {
+  font-size: 20px;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0;
+}
+
+.add-item-btn {
+  flex: 1;
+  background: #ff5200;
+  color: #ffffff;
+  border: none;
+  padding: 13px 20px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(255, 82, 0, 0.3);
+  transition: all 0.2s;
+}
+
+.add-item-btn:hover {
+  background: #e04800;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 600px) {
+  .dish-modal-hero {
+    flex-direction: column;
+    padding: 18px 16px;
+  }
+
+  .dish-image-wrapper {
+    width: 90px;
+    height: 90px;
+    margin: 0 auto;
+  }
+
+  .dish-modal-body {
+    padding: 14px 16px;
+  }
+
+  .dish-modal-footer {
+    padding: 12px 16px;
+  }
+}
