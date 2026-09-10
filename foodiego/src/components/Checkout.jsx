@@ -1,30 +1,9 @@
 import { useContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
 import { AuthContext } from "../context/AuthContext";
 import api from "../services/api";
 import "../css/Checkout.css";
-
-const savedAddressOptions = [
-  {
-    tag: "Home",
-    emoji: "🏠",
-    name: "Alex Morgan",
-    phone: "9876543210",
-    address: "Flat 402, Sunshine Heights, Sector 62",
-    city: "Noida, Uttar Pradesh",
-    pincode: "201309"
-  },
-  {
-    tag: "Work",
-    emoji: "💼",
-    name: "Alex Morgan",
-    phone: "9876543210",
-    address: "Tower B, Cyber City, DLF Phase 2",
-    city: "Gurugram, Haryana",
-    pincode: "122002"
-  }
-];
 
 function Checkout() {
   const {
@@ -35,12 +14,18 @@ function Checkout() {
     deliveryFee,
     platformFee,
     gstAndTaxes,
+    expressFee,
+    giftWrapFee,
     couponDiscount,
     appliedCoupon,
     driverTip,
     cookingInstructions,
     deliverySpeed,
-    deliveryLocation,
+    setDeliverySpeed,
+    isGiftWrap,
+    giftMessage,
+    savedAddresses,
+    addAddress,
     startOrderTracking,
     showToast
   } = useContext(CartContext);
@@ -48,455 +33,718 @@ function Checkout() {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  // Active Checkout Step (1: Address, 2: Delivery, 3: Payment)
+  const [currentStep, setCurrentStep] = useState(1);
+
   // Address State
-  const [selectedAddressTag, setSelectedAddressTag] = useState("Home");
-  const [name, setName] = useState(user?.name || "Alex Morgan");
+  const [selectedAddressId, setSelectedAddressId] = useState(savedAddresses[0]?.id || "new");
+  const [fullName, setFullName] = useState(user?.name || "Alex Morgan");
   const [mobile, setMobile] = useState(user?.phone || "9876543210");
-  const [address, setAddress] = useState(deliveryLocation?.address || "Flat 402, Sunshine Heights, Sector 62, Noida");
+  const [houseFlat, setHouseFlat] = useState("Flat 402, Sunshine Heights");
+  const [street, setStreet] = useState("Sector 62, Electronic City");
+  const [city, setCity] = useState("Noida");
+  const [stateName, setStateName] = useState("Uttar Pradesh");
+  const [pincode, setPincode] = useState("201309");
+  const [addressTag, setAddressTag] = useState("Home");
 
   // Payment State
-  const [paymentMethod, setPaymentMethod] = useState("upi"); // upi | card | netbanking | cod
-  const [upiApp, setUpiApp] = useState("gpay"); // gpay | phonepe | paytm
+  const [paymentMethod, setPaymentMethod] = useState("upi"); // upi | card | netbanking | wallet | cod | emi
+  const [upiApp, setUpiApp] = useState("gpay"); // gpay | phonepe | paytm | qrcode
   const [upiIdInput, setUpiIdInput] = useState("alex@okaxis");
 
   // Card Simulator State
-  const [cardNumber, setCardNumber] = useState("4532 •••• •••• 8921");
+  const [cardNumber, setCardNumber] = useState("4532 8921 7734 6512");
   const [cardHolder, setCardHolder] = useState(user?.name || "ALEX MORGAN");
   const [cardExpiry, setCardExpiry] = useState("08/29");
-  const [cardCvv, setCardCvv] = useState("•••");
+  const [cardCvv, setCardCvv] = useState("892");
+
+  // Netbanking & Wallet state
+  const [selectedBank, setSelectedBank] = useState("HDFC Bank");
+  const [selectedWallet, setSelectedWallet] = useState("Paytm");
+  const [selectedEmiTenure, setSelectedEmiTenure] = useState("3");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [orderSuccess, setOrderSuccess] = useState(false);
 
   useEffect(() => {
     if (user) {
-      if (user.name) setName(user.name);
+      if (user.name) setFullName(user.name);
       if (user.phone) setMobile(user.phone);
     }
   }, [user]);
 
-  const handleSelectSavedAddress = (saved) => {
-    setSelectedAddressTag(saved.tag);
-    setName(saved.name);
-    setMobile(saved.phone);
-    setAddress(`${saved.address}, ${saved.city} - ${saved.pincode}`);
+  const handleSelectSavedAddress = (addr) => {
+    setSelectedAddressId(addr.id);
+    setFullName(addr.fullName);
+    setMobile(addr.mobile);
+    setHouseFlat(addr.houseFlat);
+    setStreet(addr.street);
+    setCity(addr.city);
+    setStateName(addr.state);
+    setPincode(addr.pincode);
+    setAddressTag(addr.tag);
   };
 
   const handlePlaceOrder = async () => {
-    if (!name.trim() || !mobile.trim() || !address.trim()) {
-      showToast("Please enter complete delivery details.", "error");
+    if (!fullName.trim() || !mobile.trim() || !houseFlat.trim() || !city.trim() || !pincode.trim()) {
+      showToast("Please enter complete delivery address.", "error");
+      setCurrentStep(1);
       return;
     }
 
     if (mobile.trim().length !== 10) {
       showToast("Please enter a valid 10-digit mobile number.", "error");
+      setCurrentStep(1);
+      return;
+    }
+
+    if (cart.length === 0) {
+      showToast("Your cart is empty.", "warning");
+      navigate("/shop");
       return;
     }
 
     setIsSubmitting(true);
 
+    const fullDeliveryAddress = `${houseFlat}, ${street}, ${city}, ${stateName} - ${pincode} (${addressTag})`;
+    const paymentLabel =
+      paymentMethod === "upi"
+        ? `UPI (${upiApp.toUpperCase()})`
+        : paymentMethod === "card"
+        ? `Credit/Debit Card (Ending in ${cardNumber.slice(-4)})`
+        : paymentMethod === "netbanking"
+        ? `Net Banking (${selectedBank})`
+        : paymentMethod === "wallet"
+        ? `Wallet (${selectedWallet})`
+        : paymentMethod === "emi"
+        ? `EMI (${selectedEmiTenure} Months)`
+        : "Cash on Delivery";
+
     const orderPayload = {
-      customerName: name.trim(),
+      customerName: fullName.trim(),
       customerMobile: mobile.trim(),
-      deliveryAddress: address.trim(),
-      paymentMethod:
-        paymentMethod === "upi"
-          ? `UPI (${upiApp.toUpperCase()})`
-          : paymentMethod === "card"
-          ? "Credit/Debit Card"
-          : paymentMethod === "netbanking"
-          ? "Net Banking"
-          : "Cash on Delivery",
+      deliveryAddress: fullDeliveryAddress,
+      paymentMethod: paymentLabel,
+      deliverySpeed,
+      isGiftWrap,
+      giftMessage,
+      driverTip,
+      cookingInstructions,
+      couponCode: appliedCoupon?.code || null,
+      total: finalTotal,
       items: cart.map((item) => ({
         id: item.id,
-        name: item.name + (item.customOptions ? ` (${item.customOptions.size?.name || "Custom"})` : ""),
+        name: item.name + (item.customOptions ? ` (${item.customOptions.size?.name || 'Custom'})` : ''),
         price: item.price,
         quantity: item.quantity || 1,
-        image: item.image || "",
-      })),
-      total: finalTotal,
-      cookingInstructions,
-      restaurantName: cart[0]?.restaurantName || "FoodieGo Kitchen"
+        image: item.image,
+      }))
     };
 
-    // Post to SQL Backend API
-    const res = await api.post("/orders", orderPayload);
-
-    let createdOrder;
-    if (res.success && res.order) {
-      createdOrder = { ...res.order, restaurantName: orderPayload.restaurantName };
-    } else {
-      // Offline fallback order object
-      createdOrder = {
+    try {
+      const res = await api.post("/orders", orderPayload);
+      const orderData = res.order || {
         id: `FGO-${Math.floor(1000 + Math.random() * 9000)}`,
-        items: orderPayload.items,
-        total: finalTotal,
-        customerName: name.trim(),
-        customerMobile: mobile.trim(),
-        deliveryAddress: address.trim(),
-        paymentMethod: orderPayload.paymentMethod,
-        date: new Date().toISOString(),
-        status: "Order Confirmed",
-        restaurantName: orderPayload.restaurantName
+        ...orderPayload,
+        status: "Order Placed",
+        date: new Date().toISOString()
       };
+
+      // Save order in local history
+      const savedOrders = JSON.parse(localStorage.getItem("foodieGoOrders") || "[]");
+      localStorage.setItem("foodieGoOrders", JSON.stringify([orderData, ...savedOrders]));
+
+      startOrderTracking(orderData);
+      clearCart();
+      setIsSubmitting(false);
+
+      // Navigate to dedicated Order Success confirmation page
+      navigate(`/order-success/${orderData.id}`);
+    } catch (err) {
+      console.error(err);
+      const fallbackId = `FGO-${Math.floor(1000 + Math.random() * 9000)}`;
+      const fallbackOrder = {
+        id: fallbackId,
+        ...orderPayload,
+        status: "Order Placed",
+        date: new Date().toISOString()
+      };
+      const savedOrders = JSON.parse(localStorage.getItem("foodieGoOrders") || "[]");
+      localStorage.setItem("foodieGoOrders", JSON.stringify([fallbackOrder, ...savedOrders]));
+      startOrderTracking(fallbackOrder);
+      clearCart();
+      setIsSubmitting(false);
+      navigate(`/order-success/${fallbackId}`);
     }
-
-    // Save to local storage order history
-    const existingOrders = JSON.parse(localStorage.getItem("foodieGoOrders") || "[]");
-    localStorage.setItem("foodieGoOrders", JSON.stringify([createdOrder, ...existingOrders]));
-
-    // Start Live GPS Tracking
-    startOrderTracking(createdOrder);
-    clearCart();
-    setOrderSuccess(true);
-    setIsSubmitting(false);
-
-    showToast("🎉 Order confirmed! Redirecting to live tracking map...", "success", 2500);
-
-    setTimeout(() => {
-      navigate(`/track/${createdOrder.id}`);
-    }, 1200);
   };
 
   return (
     <div className="checkout-page">
-      <div className="checkout-header">
-        <h1>Secure Checkout 🛍️</h1>
-        <p>Review your delivery address and choose payment method</p>
+      {/* Checkout Header & Steps Indicator */}
+      <div className="checkout-header-area">
+        <h1>Secure Checkout 🔒</h1>
+        <div className="checkout-steps-tracker">
+          <div
+            className={`step-bubble ${currentStep >= 1 ? "active" : ""} ${currentStep > 1 ? "completed" : ""}`}
+            onClick={() => setCurrentStep(1)}
+          >
+            <span className="step-num">{currentStep > 1 ? "✓" : "1"}</span>
+            <span className="step-text">Delivery Address</span>
+          </div>
+
+          <div className={`step-connector ${currentStep >= 2 ? "active" : ""}`} />
+
+          <div
+            className={`step-bubble ${currentStep >= 2 ? "active" : ""} ${currentStep > 2 ? "completed" : ""}`}
+            onClick={() => setCurrentStep(2)}
+          >
+            <span className="step-num">{currentStep > 2 ? "✓" : "2"}</span>
+            <span className="step-text">Delivery Speed</span>
+          </div>
+
+          <div className={`step-connector ${currentStep >= 3 ? "active" : ""}`} />
+
+          <div
+            className={`step-bubble ${currentStep >= 3 ? "active" : ""}`}
+            onClick={() => setCurrentStep(3)}
+          >
+            <span className="step-num">3</span>
+            <span className="step-text">Payment Method</span>
+          </div>
+        </div>
       </div>
 
-      {cart.length === 0 && !orderSuccess ? (
-        <div className="empty-checkout-box">
-          <h2>Your Cart is Empty 😔</h2>
-          <p>Add some food to your cart before proceeding to checkout.</p>
-          <button onClick={() => navigate("/")} className="primary-btn">
-            Browse Menu 🍔
-          </button>
-        </div>
-      ) : (
-        <div className="checkout-grid">
-          {/* Left Column: Delivery Address & Payment Method */}
-          <div className="checkout-left-col">
-            {/* Step 1: Delivery Address */}
-            <div className="checkout-card">
-              <div className="card-step-header">
-                <span className="step-num">1</span>
-                <div>
-                  <h3>Delivery Address</h3>
-                  <small>Select a saved address or enter a new one</small>
-                </div>
+      <div className="checkout-main-grid">
+        {/* Left Column: Interactive Steps Form */}
+        <div className="checkout-form-column">
+          {/* STEP 1: Address */}
+          <div className={`checkout-step-card ${currentStep === 1 ? "active-card" : ""}`}>
+            <div className="step-card-header" onClick={() => setCurrentStep(1)}>
+              <div className="step-badge">1</div>
+              <div>
+                <h3>1. Select Delivery Address</h3>
+                <p className="step-subtitle">Where should we deliver your hot food?</p>
               </div>
+              {currentStep !== 1 && <span className="step-edit-link">Edit ✎</span>}
+            </div>
 
-              {/* Saved Address Pills */}
-              <div className="saved-addr-pills">
-                {savedAddressOptions.map((opt) => (
-                  <div
-                    key={opt.tag}
-                    className={`addr-pill ${selectedAddressTag === opt.tag ? "selected" : ""}`}
-                    onClick={() => handleSelectSavedAddress(opt)}
-                  >
-                    <span className="addr-emoji">{opt.emoji}</span>
-                    <div className="addr-pill-info">
-                      <strong>{opt.tag}</strong>
-                      <small>{opt.address.slice(0, 24)}...</small>
-                    </div>
+            {currentStep === 1 && (
+              <div className="step-card-body">
+                {/* Saved Address Pills */}
+                {savedAddresses.length > 0 && (
+                  <div className="saved-addresses-grid">
+                    {savedAddresses.map((addr) => (
+                      <div
+                        key={addr.id}
+                        className={`saved-addr-card ${selectedAddressId === addr.id ? "selected" : ""}`}
+                        onClick={() => handleSelectSavedAddress(addr)}
+                      >
+                        <div className="saved-addr-top">
+                          <span className="addr-tag-pill">
+                            {addr.tag === "Home" ? "🏠 Home" : addr.tag === "Work" ? "💼 Work" : "📍 Other"}
+                          </span>
+                          {selectedAddressId === addr.id && <span className="selected-check">✓ Selected</span>}
+                        </div>
+                        <strong>{addr.fullName}</strong>
+                        <p>{addr.houseFlat}, {addr.street}</p>
+                        <small>{addr.city}, {addr.state} - {addr.pincode}</small>
+                        <small className="addr-phone">📱 {addr.mobile}</small>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                )}
 
-              <div className="address-inputs-wrap">
-                <div className="input-row-2">
-                  <div className="input-field">
-                    <label>Full Name</label>
+                {/* Address Form */}
+                <div className="address-form-grid">
+                  <div className="form-group">
+                    <label>Full Name *</label>
                     <input
                       type="text"
-                      placeholder="Receiver's name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
+                      placeholder="e.g. Alex Morgan"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
                     />
                   </div>
 
-                  <div className="input-field">
-                    <label>10-Digit Mobile Number</label>
+                  <div className="form-group">
+                    <label>Mobile Number (10 digits) *</label>
                     <input
                       type="tel"
+                      maxLength={10}
                       placeholder="e.g. 9876543210"
                       value={mobile}
-                      onChange={(e) => setMobile(e.target.value)}
-                      maxLength={10}
+                      onChange={(e) => setMobile(e.target.value.replace(/\D/g, ""))}
                     />
+                  </div>
+
+                  <div className="form-group span-2">
+                    <label>Flat / House No. / Building Name *</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Flat 402, Sunshine Heights"
+                      value={houseFlat}
+                      onChange={(e) => setHouseFlat(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="form-group span-2">
+                    <label>Street / Area / Sector *</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Sector 62, Electronic City"
+                      value={street}
+                      onChange={(e) => setStreet(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>City *</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Noida"
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>State *</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Uttar Pradesh"
+                      value={stateName}
+                      onChange={(e) => setStateName(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>PIN Code *</label>
+                    <input
+                      type="text"
+                      maxLength={6}
+                      placeholder="e.g. 201309"
+                      value={pincode}
+                      onChange={(e) => setPincode(e.target.value.replace(/\D/g, ""))}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Save Address As</label>
+                    <div className="tag-toggle-row">
+                      {["Home", "Work", "Other"].map((t) => (
+                        <button
+                          key={t}
+                          type="button"
+                          className={`tag-btn ${addressTag === t ? "active" : ""}`}
+                          onClick={() => setAddressTag(t)}
+                        >
+                          {t === "Home" ? "🏠" : t === "Work" ? "💼" : "📍"} {t}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
-                <div className="input-field">
-                  <label>Complete Delivery Address & Landmark</label>
-                  <textarea
-                    rows={2}
-                    placeholder="House/Flat number, Building, Street, Area, Landmark"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                  />
+                <button className="step-continue-btn" onClick={() => setCurrentStep(2)}>
+                  Continue to Delivery Speed →
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* STEP 2: Delivery Speed */}
+          <div className={`checkout-step-card ${currentStep === 2 ? "active-card" : ""}`}>
+            <div className="step-card-header" onClick={() => setCurrentStep(2)}>
+              <div className="step-badge">2</div>
+              <div>
+                <h3>2. Choose Delivery Speed & Method</h3>
+                <p className="step-subtitle">Selected: {deliverySpeed === "express" ? "⚡ Priority Express" : "Standard Delivery"}</p>
+              </div>
+              {currentStep !== 2 && <span className="step-edit-link">Edit ✎</span>}
+            </div>
+
+            {currentStep === 2 && (
+              <div className="step-card-body">
+                <div className="delivery-speed-choices">
+                  <div
+                    className={`delivery-choice-item ${deliverySpeed === "standard" ? "selected" : ""}`}
+                    onClick={() => setDeliverySpeed("standard")}
+                  >
+                    <input
+                      type="radio"
+                      name="speed-step"
+                      checked={deliverySpeed === "standard"}
+                      onChange={() => setDeliverySpeed("standard")}
+                    />
+                    <div className="speed-choice-text">
+                      <strong>Standard Courier Delivery (25-30 mins)</strong>
+                      <p>Standard delivery dispatch with contactless thermal packaging.</p>
+                    </div>
+                    <span className="choice-fee">Free</span>
+                  </div>
+
+                  <div
+                    className={`delivery-choice-item ${deliverySpeed === "express" ? "selected" : ""}`}
+                    onClick={() => setDeliverySpeed("express")}
+                  >
+                    <input
+                      type="radio"
+                      name="speed-step"
+                      checked={deliverySpeed === "express"}
+                      onChange={() => setDeliverySpeed("express")}
+                    />
+                    <div className="speed-choice-text">
+                      <strong>⚡ Priority Express Rider (15-20 mins)</strong>
+                      <p>Dedicated single-drop express rider assigned directly to your kitchen.</p>
+                    </div>
+                    <span className="choice-fee">+₹25</span>
+                  </div>
                 </div>
+
+                <button className="step-continue-btn" onClick={() => setCurrentStep(3)}>
+                  Continue to Payment →
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* STEP 3: Payment */}
+          <div className={`checkout-step-card ${currentStep === 3 ? "active-card" : ""}`}>
+            <div className="step-card-header" onClick={() => setCurrentStep(3)}>
+              <div className="step-badge">3</div>
+              <div>
+                <h3>3. Select Payment Method</h3>
+                <p className="step-subtitle">100% Secure & Encrypted Payment Options</p>
               </div>
             </div>
 
-            {/* Step 2: Payment Options */}
-            <div className="checkout-card">
-              <div className="card-step-header">
-                <span className="step-num">2</span>
-                <div>
-                  <h3>Payment Method</h3>
-                  <small>100% Safe and Encrypted Payments</small>
+            {currentStep === 3 && (
+              <div className="step-card-body">
+                {/* Payment Tabs */}
+                <div className="payment-tabs-row">
+                  <button
+                    type="button"
+                    className={`payment-tab ${paymentMethod === "upi" ? "active" : ""}`}
+                    onClick={() => setPaymentMethod("upi")}
+                  >
+                    ⚡ UPI / QR
+                  </button>
+                  <button
+                    type="button"
+                    className={`payment-tab ${paymentMethod === "card" ? "active" : ""}`}
+                    onClick={() => setPaymentMethod("card")}
+                  >
+                    💳 Card
+                  </button>
+                  <button
+                    type="button"
+                    className={`payment-tab ${paymentMethod === "netbanking" ? "active" : ""}`}
+                    onClick={() => setPaymentMethod("netbanking")}
+                  >
+                    🏦 Net Banking
+                  </button>
+                  <button
+                    type="button"
+                    className={`payment-tab ${paymentMethod === "wallet" ? "active" : ""}`}
+                    onClick={() => setPaymentMethod("wallet")}
+                  >
+                    👛 Wallet
+                  </button>
+                  <button
+                    type="button"
+                    className={`payment-tab ${paymentMethod === "cod" ? "active" : ""}`}
+                    onClick={() => setPaymentMethod("cod")}
+                  >
+                    💵 Cash on Delivery
+                  </button>
+                  <button
+                    type="button"
+                    className={`payment-tab ${paymentMethod === "emi" ? "active" : ""}`}
+                    onClick={() => setPaymentMethod("emi")}
+                  >
+                    📊 EMI
+                  </button>
                 </div>
-              </div>
 
-              <div className="payment-options-tabs">
-                <button
-                  className={`pay-tab ${paymentMethod === "upi" ? "active" : ""}`}
-                  onClick={() => setPaymentMethod("upi")}
-                >
-                  <span>📱</span> UPI (Instant)
-                </button>
-                <button
-                  className={`pay-tab ${paymentMethod === "card" ? "active" : ""}`}
-                  onClick={() => setPaymentMethod("card")}
-                >
-                  <span>💳</span> Cards
-                </button>
-                <button
-                  className={`pay-tab ${paymentMethod === "netbanking" ? "active" : ""}`}
-                  onClick={() => setPaymentMethod("netbanking")}
-                >
-                  <span>🏦</span> Net Banking
-                </button>
-                <button
-                  className={`pay-tab ${paymentMethod === "cod" ? "active" : ""}`}
-                  onClick={() => setPaymentMethod("cod")}
-                >
-                  <span>💵</span> Cash on Delivery
-                </button>
-              </div>
-
-              {/* UPI Tab View */}
-              {paymentMethod === "upi" && (
-                <div className="payment-tab-content">
-                  <div className="upi-apps-row">
-                    <button
-                      className={`upi-app-btn ${upiApp === "gpay" ? "selected" : ""}`}
-                      onClick={() => setUpiApp("gpay")}
-                    >
-                      <span className="upi-badge">GPay</span> Google Pay
-                    </button>
-                    <button
-                      className={`upi-app-btn ${upiApp === "phonepe" ? "selected" : ""}`}
-                      onClick={() => setUpiApp("phonepe")}
-                    >
-                      <span className="upi-badge phonepe">Pe</span> PhonePe
-                    </button>
-                    <button
-                      className={`upi-app-btn ${upiApp === "paytm" ? "selected" : ""}`}
-                      onClick={() => setUpiApp("paytm")}
-                    >
-                      <span className="upi-badge paytm">Paytm</span> Paytm
-                    </button>
-                  </div>
-
-                  <div className="upi-id-input-box">
-                    <label>Enter UPI ID (VPA):</label>
-                    <div className="upi-input-group">
-                      <input
-                        type="text"
-                        value={upiIdInput}
-                        onChange={(e) => setUpiIdInput(e.target.value)}
-                        placeholder="username@bank"
-                      />
-                      <span className="verified-badge">✓ Verified</span>
+                {/* 1. UPI Payment Panel */}
+                {paymentMethod === "upi" && (
+                  <div className="payment-panel-content">
+                    <label className="panel-label">Choose UPI App or Scan QR:</label>
+                    <div className="upi-apps-grid">
+                      {[
+                        { id: "gpay", name: "Google Pay", icon: "🌐" },
+                        { id: "phonepe", name: "PhonePe", icon: "🟣" },
+                        { id: "paytm", name: "Paytm UPI", icon: "🔵" },
+                        { id: "qrcode", name: "Scan QR Code", icon: "📱" }
+                      ].map((app) => (
+                        <div
+                          key={app.id}
+                          className={`upi-app-card ${upiApp === app.id ? "selected" : ""}`}
+                          onClick={() => setUpiApp(app.id)}
+                        >
+                          <span className="app-icon">{app.icon}</span>
+                          <strong>{app.name}</strong>
+                        </div>
+                      ))}
                     </div>
-                  </div>
-                </div>
-              )}
 
-              {/* Card Tab View with Interactive Visual Card */}
-              {paymentMethod === "card" && (
-                <div className="payment-tab-content">
-                  {/* Visual Card Preview */}
-                  <div className="visual-credit-card">
-                    <div className="card-top-chip">
-                      <span className="chip-icon">💳</span>
-                      <span className="card-brand-logo">VISA</span>
-                    </div>
-                    <div className="visual-card-number">{cardNumber}</div>
-                    <div className="card-bottom-meta">
-                      <div>
-                        <small>CARD HOLDER</small>
-                        <strong>{cardHolder}</strong>
+                    {upiApp !== "qrcode" ? (
+                      <div className="upi-input-group">
+                        <label>Enter UPI ID (VPA):</label>
+                        <input
+                          type="text"
+                          value={upiIdInput}
+                          onChange={(e) => setUpiIdInput(e.target.value)}
+                          placeholder="yourname@okhdfcbank"
+                        />
+                        <small>A payment request will be sent to your UPI app.</small>
                       </div>
-                      <div>
-                        <small>EXPIRES</small>
-                        <strong>{cardExpiry}</strong>
+                    ) : (
+                      <div className="upi-qr-display-box">
+                        <div className="qr-box-pattern">📱 [FOODIEGO-UPI-QR]</div>
+                        <strong>Scan with any UPI app to pay ₹{finalTotal}</strong>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 2. Card Payment Panel */}
+                {paymentMethod === "card" && (
+                  <div className="payment-panel-content">
+                    {/* Interactive 3D Card Preview */}
+                    <div className="visual-card-preview">
+                      <div className="card-chip">💳</div>
+                      <div className="card-number-display">{cardNumber || "•••• •••• •••• ••••"}</div>
+                      <div className="card-bottom-display">
+                        <div>
+                          <small>CARD HOLDER</small>
+                          <strong>{cardHolder || "YOUR NAME"}</strong>
+                        </div>
+                        <div>
+                          <small>EXPIRES</small>
+                          <strong>{cardExpiry || "MM/YY"}</strong>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Card Form */}
-                  <div className="card-form-grid">
-                    <div className="input-field">
-                      <label>Card Number</label>
-                      <input
-                        type="text"
-                        value={cardNumber}
-                        onChange={(e) => setCardNumber(e.target.value)}
-                        maxLength={19}
-                      />
-                    </div>
-                    <div className="input-field">
-                      <label>Cardholder Name</label>
-                      <input
-                        type="text"
-                        value={cardHolder}
-                        onChange={(e) => setCardHolder(e.target.value.toUpperCase())}
-                      />
-                    </div>
-                    <div className="input-row-2">
-                      <div className="input-field">
+                    <div className="card-inputs-grid">
+                      <div className="form-group span-2">
+                        <label>Card Number</label>
+                        <input
+                          type="text"
+                          maxLength={19}
+                          value={cardNumber}
+                          onChange={(e) => setCardNumber(e.target.value)}
+                          placeholder="4532 8921 7734 6512"
+                        />
+                      </div>
+                      <div className="form-group span-2">
+                        <label>Name on Card</label>
+                        <input
+                          type="text"
+                          value={cardHolder}
+                          onChange={(e) => setCardHolder(e.target.value.toUpperCase())}
+                          placeholder="ALEX MORGAN"
+                        />
+                      </div>
+                      <div className="form-group">
                         <label>Expiry (MM/YY)</label>
                         <input
                           type="text"
+                          maxLength={5}
                           value={cardExpiry}
                           onChange={(e) => setCardExpiry(e.target.value)}
-                          maxLength={5}
+                          placeholder="08/29"
                         />
                       </div>
-                      <div className="input-field">
-                        <label>CVV</label>
+                      <div className="form-group">
+                        <label>CVV / CVC</label>
                         <input
                           type="password"
+                          maxLength={4}
                           value={cardCvv}
                           onChange={(e) => setCardCvv(e.target.value)}
-                          maxLength={3}
+                          placeholder="892"
                         />
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* Netbanking Tab */}
-              {paymentMethod === "netbanking" && (
-                <div className="payment-tab-content">
-                  <div className="popular-banks-grid">
-                    <label className="bank-card">
-                      <input type="radio" name="bank" defaultChecked />
-                      <span>HDFC Bank 🏛️</span>
-                    </label>
-                    <label className="bank-card">
-                      <input type="radio" name="bank" />
-                      <span>ICICI Bank 🏛️</span>
-                    </label>
-                    <label className="bank-card">
-                      <input type="radio" name="bank" />
-                      <span>State Bank of India 🏛️</span>
-                    </label>
-                    <label className="bank-card">
-                      <input type="radio" name="bank" />
-                      <span>Axis Bank 🏛️</span>
-                    </label>
+                {/* 3. Net Banking */}
+                {paymentMethod === "netbanking" && (
+                  <div className="payment-panel-content">
+                    <label className="panel-label">Select Your Bank:</label>
+                    <div className="banks-grid">
+                      {["HDFC Bank", "ICICI Bank", "State Bank of India", "Axis Bank", "Kotak Mahindra"].map((bank) => (
+                        <div
+                          key={bank}
+                          className={`bank-card ${selectedBank === bank ? "selected" : ""}`}
+                          onClick={() => setSelectedBank(bank)}
+                        >
+                          <span>🏦</span>
+                          <strong>{bank}</strong>
+                        </div>
+                      ))}
+                    </div>
                   </div>
+                )}
+
+                {/* 4. Wallet */}
+                {paymentMethod === "wallet" && (
+                  <div className="payment-panel-content">
+                    <label className="panel-label">Choose Mobile Wallet:</label>
+                    <div className="banks-grid">
+                      {["Paytm Wallet", "Amazon Pay", "Mobikwik", "PhonePe Wallet"].map((w) => (
+                        <div
+                          key={w}
+                          className={`bank-card ${selectedWallet === w ? "selected" : ""}`}
+                          onClick={() => setSelectedWallet(w)}
+                        >
+                          <span>👛</span>
+                          <strong>{w}</strong>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Cash on Delivery */}
+                {paymentMethod === "cod" && (
+                  <div className="payment-panel-content cod-box">
+                    <div className="cod-icon">💵</div>
+                    <h4>Pay Cash or UPI upon Delivery</h4>
+                    <p>
+                      Please keep exact cash ready or scan the delivery rider's QR code upon arrival.
+                    </p>
+                  </div>
+                )}
+
+                {/* 6. EMI */}
+                {paymentMethod === "emi" && (
+                  <div className="payment-panel-content">
+                    <label className="panel-label">Select EMI Tenure (Credit Cards):</label>
+                    <div className="emi-options-list">
+                      {[
+                        { months: "3", perMonth: Math.round(finalTotal / 3), bank: "HDFC / ICICI No Cost" },
+                        { months: "6", perMonth: Math.round(finalTotal / 6), bank: "Standard Chartered" },
+                        { months: "12", perMonth: Math.round(finalTotal / 12), bank: "Axis Bank" }
+                      ].map((emi) => (
+                        <div
+                          key={emi.months}
+                          className={`emi-card-item ${selectedEmiTenure === emi.months ? "selected" : ""}`}
+                          onClick={() => setSelectedEmiTenure(emi.months)}
+                        >
+                          <div>
+                            <strong>{emi.months} Months Plan</strong>
+                            <small>{emi.bank}</small>
+                          </div>
+                          <span className="emi-rate">₹{emi.perMonth}/mo</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Trust Seals */}
+                <div className="checkout-trust-seals">
+                  <span>🔒 256-Bit SSL Encryption</span>
+                  <span>🛡️ 100% Genuine Quality Guarantee</span>
+                  <span>⚡ RBI Approved Gateway</span>
+                </div>
+
+                {/* Place Order CTA Button */}
+                <button
+                  className="place-order-big-btn"
+                  onClick={handlePlaceOrder}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <span>Processing Order... ⏳</span>
+                  ) : (
+                    <span>Place Order • ₹{finalTotal} ⚡</span>
+                  )}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Right Column: Order Summary Card */}
+        <div className="checkout-summary-column">
+          <div className="order-summary-box">
+            <h3>Order Summary ({cart.length} items)</h3>
+
+            {/* Products Mini List */}
+            <div className="summary-items-list">
+              {cart.map((item, idx) => (
+                <div className="summary-item-row" key={idx}>
+                  <img src={item.image} alt={item.name} />
+                  <div className="summary-item-info">
+                    <strong>{item.name}</strong>
+                    <small>Qty: {item.quantity || 1}</small>
+                  </div>
+                  <span className="summary-item-price">
+                    ₹{(item.unitPrice || Number(String(item.price).replace("₹", ""))) * (item.quantity || 1)}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <div className="summary-bill-rows">
+              <div className="bill-row">
+                <span>Item Subtotal</span>
+                <span>₹{itemTotal}</span>
+              </div>
+              <div className="bill-row">
+                <span>Delivery Fee</span>
+                <span>{deliveryFee === 0 ? <strong className="green-txt">FREE</strong> : `₹${deliveryFee}`}</span>
+              </div>
+              <div className="bill-row">
+                <span>Platform Fee</span>
+                <span>₹{platformFee}</span>
+              </div>
+              <div className="bill-row">
+                <span>GST & Taxes</span>
+                <span>₹{gstAndTaxes}</span>
+              </div>
+              {deliverySpeed === "express" && (
+                <div className="bill-row">
+                  <span>Priority Express Delivery</span>
+                  <span>₹{expressFee}</span>
                 </div>
               )}
-
-              {/* Cash On Delivery Tab */}
-              {paymentMethod === "cod" && (
-                <div className="payment-tab-content cod-box">
-                  <div className="cod-icon">💵</div>
-                  <h4>Cash on Delivery Selected</h4>
-                  <p>Please keep exact change ready of ₹{finalTotal} at the time of delivery.</p>
+              {isGiftWrap && (
+                <div className="bill-row">
+                  <span>Gift Wrapping & Card</span>
+                  <span>₹{giftWrapFee}</span>
+                </div>
+              )}
+              {driverTip > 0 && (
+                <div className="bill-row">
+                  <span>Rider Tip</span>
+                  <span>₹{driverTip}</span>
+                </div>
+              )}
+              {couponDiscount > 0 && (
+                <div className="bill-row green-txt">
+                  <span>Coupon Discount ({appliedCoupon?.code})</span>
+                  <span>-₹{couponDiscount}</span>
                 </div>
               )}
             </div>
-          </div>
 
-          {/* Right Column: Order Summary & Place Order Button */}
-          <div className="checkout-right-col">
-            <div className="order-summary-box">
-              <h3>Order Summary 🛒</h3>
+            <div className="summary-divider" />
 
-              <div className="checkout-items-preview">
-                {cart.map((food) => (
-                  <div className="summary-item-row" key={food.cartItemId || food.id}>
-                    <div className="s-name">
-                      <span>{food.name}</span>
-                      <small>Qty: {food.quantity || 1}</small>
-                    </div>
-                    <strong>
-                      ₹{(food.unitPrice || Number(String(food.price).replace("₹", ""))) * (food.quantity || 1)}
-                    </strong>
-                  </div>
-                ))}
+            <div className="summary-total-row">
+              <div>
+                <strong>Total Amount</strong>
+                <small>Including all charges</small>
               </div>
-
-              <div className="summary-bill-details">
-                <div className="s-bill-row">
-                  <span>Item Total</span>
-                  <span>₹{itemTotal}</span>
-                </div>
-                <div className="s-bill-row">
-                  <span>Delivery Partner Fee</span>
-                  <span>{deliveryFee === 0 ? "FREE" : `₹${deliveryFee}`}</span>
-                </div>
-                <div className="s-bill-row">
-                  <span>Platform Fee & Taxes</span>
-                  <span>₹{platformFee + gstAndTaxes}</span>
-                </div>
-
-                {deliverySpeed === "express" && (
-                  <div className="s-bill-row">
-                    <span>⚡ Priority Express</span>
-                    <span>₹25</span>
-                  </div>
-                )}
-
-                {driverTip > 0 && (
-                  <div className="s-bill-row">
-                    <span>Delivery Partner Tip</span>
-                    <span>₹{driverTip}</span>
-                  </div>
-                )}
-
-                {couponDiscount > 0 && (
-                  <div className="s-bill-row green-row">
-                    <span>Coupon Savings ({appliedCoupon?.code})</span>
-                    <span>-₹{couponDiscount}</span>
-                  </div>
-                )}
-
-                <div className="summary-divider" />
-
-                <div className="summary-final-total">
-                  <span>Grand Total</span>
-                  <h2>₹{finalTotal}</h2>
-                </div>
-              </div>
-
-              {/* Place Order CTA Button */}
-              <button
-                className="place-final-order-btn"
-                onClick={handlePlaceOrder}
-                disabled={isSubmitting}
-              >
-                {isSubmitting
-                  ? "Processing Secure Order..."
-                  : `Pay & Place Order (₹${finalTotal}) 🚀`}
-              </button>
-
-              <div className="security-badges">
-                <span>🔒 256-Bit SSL Encrypted</span>
-                <span>⚡ Live GPS Order Tracking</span>
-              </div>
+              <h2>₹{finalTotal}</h2>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

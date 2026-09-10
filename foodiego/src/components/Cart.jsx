@@ -1,7 +1,9 @@
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
+import { WishlistContext } from "../context/WishlistContext";
 import { coupons } from "../data/couponsData";
+import { foods } from "../data/foodsData";
 import "../css/Cart.css";
 
 function Cart() {
@@ -11,11 +13,13 @@ function Cart() {
     decreaseQuantity,
     removeFromCart,
     clearCart,
+    addToCart,
     itemTotal,
     deliveryFee,
     platformFee,
     gstAndTaxes,
     expressFee,
+    giftWrapFee,
     couponDiscount,
     finalTotal,
     appliedCoupon,
@@ -27,8 +31,14 @@ function Cart() {
     setCookingInstructions,
     deliverySpeed,
     setDeliverySpeed,
+    isGiftWrap,
+    setIsGiftWrap,
+    giftMessage,
+    setGiftMessage,
     deliveryLocation
   } = useContext(CartContext);
+
+  const { addToWishlist } = useContext(WishlistContext);
 
   const [couponInput, setCouponInput] = useState("");
   const [showCouponsModal, setShowCouponsModal] = useState(false);
@@ -40,9 +50,20 @@ function Cart() {
     setShowCouponsModal(false);
   };
 
+  const handleMoveToWishlist = (food) => {
+    addToWishlist(food);
+    removeFromCart(food.cartItemId || food.id);
+  };
+
   const freeDeliveryThreshold = 300;
   const remainingForFreeDelivery = Math.max(0, freeDeliveryThreshold - itemTotal);
   const freeDeliveryPercent = Math.min(100, Math.round((itemTotal / freeDeliveryThreshold) * 100));
+
+  // Recommended Cross-Sell Add-ons (e.g. Dips, Desserts, Cold drinks)
+  const cartIds = cart.map((i) => i.id);
+  const recommendedAddons = foods
+    .filter((f) => !cartIds.includes(f.id) && (f.category === "Drinks" || f.category === "Dessert" || f.category === "Fries"))
+    .slice(0, 4);
 
   return (
     <div className="cart-page">
@@ -60,13 +81,18 @@ function Cart() {
           <div className="empty-cart-art">🍽️</div>
           <h2>Your Cart is Empty</h2>
           <p>Good food is always just a few clicks away. Explore our delicious menu now!</p>
-          <Link to="/" className="browse-menu-btn">
-            Browse Restaurants & Menu 🍕
-          </Link>
+          <div className="empty-cart-actions">
+            <Link to="/shop" className="browse-menu-btn">
+              Explore Full Shop & Menu 🍕
+            </Link>
+            <Link to="/wishlist" className="view-wishlist-cart-btn">
+              View Wishlist Favorites ❤️
+            </Link>
+          </div>
         </div>
       ) : (
         <div className="cart-grid-layout">
-          {/* Left Column: Items, Instructions, Coupons */}
+          {/* Left Column: Items, Free Shipping, Instructions, Speed, Tip, Gift */}
           <div className="cart-left-col">
             {/* Free Delivery Progress Bar */}
             <div className="free-delivery-card">
@@ -99,12 +125,17 @@ function Cart() {
 
                   return (
                     <div className="cart-item-row" key={identifier}>
-                      <div className="item-diet-dot">
-                        {food.isVeg !== false ? "🟢" : "🔴"}
+                      <div className="item-thumb-box">
+                        <img src={food.image} alt={food.name} />
                       </div>
 
                       <div className="item-details">
-                        <h4>{food.name}</h4>
+                        <div className="item-name-brand-row">
+                          <h4>{food.name}</h4>
+                          <span className={`item-diet-dot ${food.isVeg !== false ? "veg" : "non-veg"}`}>
+                            {food.isVeg !== false ? "🟢" : "🔴"}
+                          </span>
+                        </div>
                         <span className="item-unit-price">₹{itemPrice}</span>
 
                         {food.customOptions && (
@@ -116,13 +147,34 @@ function Cart() {
                               <span>Crust: {food.customOptions.crust.name}</span>
                             )}
                             {food.customOptions.addOns?.length > 0 && (
-                              <span>Add-ons: {food.customOptions.addOns.map(a => a.name).join(", ")}</span>
+                              <span>Add-ons: {food.customOptions.addOns.map((a) => a.name).join(", ")}</span>
                             )}
                             {food.customOptions.notes && (
                               <span className="user-note">Note: "{food.customOptions.notes}"</span>
                             )}
                           </div>
                         )}
+
+                        {food.stock && food.stock <= 5 && (
+                          <span className="cart-stock-warning">⚡ Only {food.stock} left in stock</span>
+                        )}
+
+                        {/* Fast Move / Remove Actions */}
+                        <div className="item-secondary-actions">
+                          <button
+                            className="move-wishlist-btn"
+                            onClick={() => handleMoveToWishlist(food)}
+                          >
+                            ❤️ Move to Wishlist
+                          </button>
+                          <span className="action-sep">•</span>
+                          <button
+                            className="remove-item-btn"
+                            onClick={() => removeFromCart(identifier)}
+                          >
+                            🗑️ Remove
+                          </button>
+                        </div>
                       </div>
 
                       {/* Stepper */}
@@ -140,12 +192,33 @@ function Cart() {
               </div>
             </div>
 
+            {/* Recommended Add-ons Carousel */}
+            {recommendedAddons.length > 0 && (
+              <div className="recommended-addons-card">
+                <h4>🥤 Frequently Added With Your Order</h4>
+                <div className="addons-carousel-row">
+                  {recommendedAddons.map((addon) => (
+                    <div className="addon-quick-card" key={addon.id}>
+                      <img src={addon.image} alt={addon.name} />
+                      <div className="addon-meta">
+                        <strong>{addon.name}</strong>
+                        <span>{addon.price}</span>
+                      </div>
+                      <button className="addon-add-btn" onClick={() => addToCart(addon)}>
+                        + Add
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Special Instructions */}
             <div className="cooking-notes-card">
               <label>🧑‍🍳 Cooking & Delivery Instructions:</label>
               <textarea
                 rows={2}
-                placeholder="e.g. Leave at door, don't ring the bell, extra spicy sauce..."
+                placeholder="e.g. Leave at door, don't ring the bell, extra spicy sauce, extra napkins..."
                 value={cookingInstructions}
                 onChange={(e) => setCookingInstructions(e.target.value)}
               />
@@ -189,6 +262,31 @@ function Cart() {
                   <span className="speed-fee">+₹25</span>
                 </div>
               </div>
+            </div>
+
+            {/* Gift Wrapping Option */}
+            <div className="gift-wrapping-card">
+              <label className="gift-checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={isGiftWrap}
+                  onChange={(e) => setIsGiftWrap(e.target.checked)}
+                />
+                <div>
+                  <strong>🎁 Add Premium Gift Wrapping (+₹30)</strong>
+                  <p>Includes special thermal gift box, ribbon, and personalized card message.</p>
+                </div>
+              </label>
+
+              {isGiftWrap && (
+                <input
+                  type="text"
+                  placeholder="Enter your personalized gift message..."
+                  className="gift-msg-input"
+                  value={giftMessage}
+                  onChange={(e) => setGiftMessage(e.target.value)}
+                />
+              )}
             </div>
 
             {/* Delivery Partner Tip */}
@@ -239,7 +337,7 @@ function Cart() {
                 <div className="coupon-input-wrap">
                   <input
                     type="text"
-                    placeholder="Enter Coupon Code (e.g. FOODIE50)"
+                    placeholder="Enter Coupon (e.g. FOODIE50)"
                     value={couponInput}
                     onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
                   />
@@ -318,6 +416,13 @@ function Cart() {
                 </div>
               )}
 
+              {isGiftWrap && (
+                <div className="bill-row">
+                  <span>🎁 Gift Wrapping & Card</span>
+                  <span>₹{giftWrapFee}</span>
+                </div>
+              )}
+
               {driverTip > 0 && (
                 <div className="bill-row">
                   <span>Delivery Partner Tip</span>
@@ -353,6 +458,10 @@ function Cart() {
               >
                 Proceed to Checkout • ₹{finalTotal} →
               </button>
+
+              <Link to="/shop" className="continue-shopping-link">
+                ← Continue Shopping
+              </Link>
             </div>
           </div>
         </div>

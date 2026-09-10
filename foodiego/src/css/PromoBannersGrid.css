@@ -1,0 +1,142 @@
+.promo-banners-grid-section {
+  max-width: 1400px;
+  margin: 32px auto;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+.promo-grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.promo-deal-card {
+  border-radius: 20px;
+  padding: 24px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.promo-deal-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.16);
+}
+
+.promo-card-content {
+  flex: 1;
+  z-index: 1;
+}
+
+.promo-tag-badge {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(4px);
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+  display: inline-block;
+}
+
+.promo-card-content h3 {
+  font-size: 18px;
+  font-weight: 900;
+  margin: 8px 0 4px;
+  line-height: 1.2;
+}
+
+.promo-card-content p {
+  font-size: 12px;
+  opacity: 0.92;
+  margin: 0 0 14px;
+}
+
+.promo-bottom-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.code-pill {
+  background: rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(4px);
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-family: monospace;
+  border: 1px dashed rgba(255, 255, 255, 0.3);
+}
+
+.code-pill strong {
+  color: #fef08a;
+  letter-spacing: 0.5px;
+}
+
+.explore-deal-btn {
+  background: #ffffff;
+  color: #0f172a;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 6px 14px;
+  border-radius: 999px;
+  transition: transform 0.2s, background 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.explore-deal-btn:hover {
+  background: #f8fafc;
+  transform: scale(1.04);
+}
+
+.promo-card-art-wrap {
+  width: 100px;
+  height: 100px;
+  margin-left: 12px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.promo-real-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.25));
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.promo-deal-card:hover .promo-real-img {
+  transform: scale(1.12) rotate(4deg);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .promo-banners-grid-section {
+    padding: 0 16px;
+    margin: 20px auto;
+  }
+
+  .promo-grid-container {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .promo-deal-card {
+    padding: 18px 16px;
+  }
+
+  .promo-card-art-wrap {
+    width: 80px;
+    height: 80px;
+  }
+}

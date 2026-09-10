@@ -1,0 +1,298 @@
+.app-download-section {
+  max-width: 1400px;
+  margin: 48px auto;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+.app-download-card {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border-radius: 28px;
+  padding: 44px 48px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.2);
+  overflow: hidden;
+  position: relative;
+}
+
+.app-download-content {
+  flex: 1;
+  max-width: 600px;
+}
+
+.app-badge {
+  background: #ff5200;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.5px;
+}
+
+.app-download-content h2 {
+  font-size: 28px;
+  font-weight: 900;
+  margin: 14px 0 10px;
+  line-height: 1.25;
+}
+
+.app-download-content p {
+  font-size: 14px;
+  color: #94a3b8;
+  line-height: 1.6;
+  margin: 0 0 20px;
+}
+
+.app-rating-strip {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 10px 16px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  width: fit-content;
+}
+
+.app-rate-item strong {
+  display: block;
+  font-size: 13px;
+  color: #f8fafc;
+}
+
+.app-rate-item small {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.rate-divider {
+  width: 1px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.app-sms-form {
+  margin-bottom: 24px;
+}
+
+.sms-input-wrap {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 999px;
+  padding: 4px 6px 4px 14px;
+  max-width: 440px;
+}
+
+.country-code {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-right: 8px;
+}
+
+.sms-input-wrap input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 13px;
+  color: #1e293b;
+}
+
+.send-link-btn {
+  background: #ff5200;
+  color: #ffffff;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.send-link-btn:hover {
+  background: #e04800;
+}
+
+.store-buttons-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.store-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 12px;
+  transition: all 0.2s;
+}
+
+.store-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.store-icon {
+  font-size: 24px;
+}
+
+.store-btn small {
+  display: block;
+  font-size: 9px;
+  color: #cbd5e1;
+  text-transform: uppercase;
+}
+
+.store-btn strong {
+  font-size: 13px;
+}
+
+/* Phone Screen Mockup */
+.app-mockup-art {
+  flex-shrink: 0;
+}
+
+.phone-screen-mock {
+  width: 220px;
+  background: #090d16;
+  border: 6px solid #334155;
+  border-radius: 28px;
+  padding: 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.screen-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 800;
+  color: #ff5200;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.screen-dish-pill {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 11px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.screen-tracker-pill {
+  background: #064e3b;
+  color: #6ee7b7;
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.live-dot {
+  width: 6px;
+  height: 6px;
+  background: #10b981;
+  border-radius: 50%;
+  animation: pulseLight 1.5s infinite;
+}
+
+.qr-box {
+  background: #ffffff;
+  color: #0f172a;
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+}
+
+.qr-pattern {
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.qr-box small {
+  font-size: 10px;
+  font-weight: 700;
+  color: #64748b;
+  display: block;
+  margin-top: 4px;
+}
+
+@media (max-width: 900px) {
+  .app-download-card {
+    flex-direction: column;
+    padding: 28px 20px;
+  }
+
+  .app-mockup-art {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-download-section {
+    padding: 0 16px;
+    margin: 28px auto;
+  }
+
+  .app-download-content h2 {
+    font-size: 22px;
+  }
+
+  .app-rating-strip {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .rate-divider {
+    display: none;
+  }
+
+  .sms-input-wrap {
+    flex-direction: column;
+    border-radius: 14px;
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .send-link-btn {
+    width: 100%;
+    border-radius: 10px;
+  }
+
+  .store-buttons-row {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .store-btn {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+}

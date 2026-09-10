@@ -1,0 +1,235 @@
+.offers-page-container {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 30px 24px 80px;
+  box-sizing: border-box;
+}
+
+.offers-hero-banner {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border-radius: 24px;
+  padding: 36px 32px;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 32px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.offers-badge {
+  background: #ff5200;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.5px;
+}
+
+.offers-hero-banner h1 {
+  font-size: 28px;
+  font-weight: 900;
+  margin: 10px 0 6px;
+}
+
+.offers-hero-banner p {
+  font-size: 14px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.offers-tabs-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 32px;
+  overflow-x: auto;
+}
+
+.offers-tab-btn {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #475569;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.offers-tab-btn.active {
+  background: #ff5200;
+  color: #ffffff;
+  border-color: #ff5200;
+  box-shadow: 0 4px 14px rgba(255, 82, 0, 0.25);
+}
+
+.offers-section-block {
+  margin-bottom: 40px;
+}
+
+.offers-section-block h2 {
+  font-size: 20px;
+  font-weight: 900;
+  color: #1e293b;
+  margin-bottom: 20px;
+}
+
+.coupons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.coupon-ticket-card {
+  background: #ffffff;
+  border: 1.5px dashed #fdba74;
+  border-radius: 18px;
+  padding: 24px;
+  position: relative;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s;
+}
+
+.coupon-ticket-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(255, 82, 0, 0.08);
+}
+
+.ticket-cutout-left,
+.ticket-cutout-right {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  background: #fafaf9;
+  border-radius: 50%;
+  border: 1px solid #fdba74;
+}
+
+.ticket-cutout-left {
+  left: -10px;
+}
+
+.ticket-cutout-right {
+  right: -10px;
+}
+
+.ticket-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.discount-tag {
+  color: #ffffff;
+  font-family: monospace;
+  font-size: 13px;
+  font-weight: 900;
+  padding: 4px 10px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+}
+
+.copy-code-action {
+  background: #fff7ed;
+  border: 1px solid #fdba74;
+  color: #ea580c;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.coupon-ticket-card h3 {
+  font-size: 16px;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0 0 6px;
+}
+
+.coupon-ticket-card p {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0 0 16px;
+  flex: 1;
+}
+
+.ticket-footer-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 600;
+  padding-top: 10px;
+  border-top: 1px solid #f8fafc;
+}
+
+/* Bank Grid */
+.bank-offers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.bank-offer-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+}
+
+.bank-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.bank-icon {
+  font-size: 24px;
+}
+
+.bank-card-head strong {
+  font-size: 15px;
+  color: #1e293b;
+}
+
+.bank-offer-desc {
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.4;
+  margin: 0 0 16px;
+}
+
+.bank-card-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bank-code {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.bank-code strong {
+  color: #1e293b;
+  font-family: monospace;
+}
+
+.copy-bank-btn {
+  background: #1e293b;
+  color: #ffffff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}

@@ -1,0 +1,136 @@
+.customer-reviews-section {
+  max-width: 1400px;
+  margin: 48px auto;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+.reviews-section-head {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.reviews-badge {
+  background: #fef3c7;
+  color: #b45309;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.5px;
+}
+
+.reviews-section-head h2 {
+  font-size: 26px;
+  font-weight: 900;
+  color: #1e293b;
+  margin: 8px 0 4px;
+}
+
+.reviews-section-head p {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.testimonial-card {
+  background: #ffffff;
+  border: 1px solid #f1f5f9;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08);
+}
+
+.test-rating-stars {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.verified-badge-pill {
+  font-size: 10px;
+  font-weight: 800;
+  color: #16a34a;
+  background: #dcfce7;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.test-quote {
+  font-size: 14px;
+  color: #334155;
+  line-height: 1.5;
+  font-style: italic;
+  margin: 0 0 16px;
+  flex: 1;
+}
+
+.test-ordered-dish {
+  font-size: 11px;
+  color: #64748b;
+  background: #f8fafc;
+  padding: 6px 10px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+}
+
+.test-ordered-dish strong {
+  color: #ff5200;
+}
+
+.test-user-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.test-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.test-user-row strong {
+  display: block;
+  font-size: 13px;
+  color: #1e293b;
+}
+
+.test-user-row small {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .customer-reviews-section {
+    padding: 0 16px;
+    margin: 28px auto;
+  }
+
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .testimonial-card {
+    padding: 18px 16px;
+  }
+}

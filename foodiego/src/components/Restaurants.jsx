@@ -20,7 +20,8 @@ function Restaurants() {
     <section className="restaurants-section">
       <div className="section-header-wrap">
         <div>
-          <h2>Top Restaurant Chains in {deliveryLocation?.city?.split(",")[0] || "Your Area"} 🏬</h2>
+          <div className="rest-badge-pill">CURATED CHAINS</div>
+          <h2>Top Restaurant Chains in {deliveryLocation?.city?.split(",")[0] || "Your Area"}</h2>
           <p>Handpicked top-rated restaurants with lightning fast delivery</p>
         </div>
 

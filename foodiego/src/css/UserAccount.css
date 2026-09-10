@@ -1,0 +1,1123 @@
+.user-account-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px 24px 80px;
+  box-sizing: border-box;
+}
+
+.account-container {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+/* Left Sidebar */
+.account-sidebar {
+  width: 300px;
+  background: #ffffff;
+  border: 1px solid #f1f5f9;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.03);
+  flex-shrink: 0;
+  position: sticky;
+  top: 90px;
+}
+
+.user-sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 16px;
+}
+
+.sidebar-avatar {
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(135deg, #ff5200, #ff7a00);
+  color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 900;
+  box-shadow: 0 4px 14px rgba(255, 82, 0, 0.3);
+}
+
+.sidebar-user-meta h3 {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.user-tier-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 800;
+  color: #ca8a04;
+  background: #fef9c3;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin: 2px 0;
+}
+
+.sidebar-user-meta small {
+  display: block;
+  font-size: 11px;
+  color: #64748b;
+}
+
+.sidebar-nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+}
+
+.sidebar-nav-item:hover {
+  background: #f8fafc;
+  color: #ff5200;
+}
+
+.sidebar-nav-item.active {
+  background: #fff7ed;
+  color: #ff5200;
+}
+
+.nav-item-icon {
+  font-size: 16px;
+}
+
+.nav-item-label {
+  flex: 1;
+}
+
+.nav-item-count {
+  background: #f1f5f9;
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 999px;
+}
+
+.sidebar-nav-item.active .nav-item-count {
+  background: #ff5200;
+  color: #ffffff;
+}
+
+.sidebar-logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #ef4444;
+  cursor: pointer;
+  margin-top: 16px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.sidebar-logout-btn:hover {
+  background: #fef2f2;
+}
+
+/* Right Main Content Pane */
+.account-content-main {
+  flex: 1;
+  background: #ffffff;
+  border: 1px solid #f1f5f9;
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.03);
+}
+
+.pane-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.pane-header-row h2 {
+  font-size: 22px;
+  font-weight: 900;
+  color: #0f172a;
+  margin: 0;
+}
+
+.pane-header-row p {
+  font-size: 13px;
+  color: #64748b;
+  margin: 4px 0 0;
+}
+
+/* Metric Stat Cards */
+.metric-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.metric-stat-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.stat-icon {
+  font-size: 28px;
+}
+
+.metric-stat-card h3 {
+  font-size: 22px;
+  font-weight: 900;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1;
+}
+
+.metric-stat-card small {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.orange-stat {
+  color: #ea580c !important;
+}
+
+.green-stat {
+  color: #16a34a !important;
+}
+
+.purple-stat {
+  color: #7c3aed !important;
+}
+
+/* Overview Section Box */
+.overview-section-box {
+  background: #f8fafc;
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.sec-head-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.sec-head-row h3 {
+  font-size: 15px;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0;
+}
+
+.sec-head-row button {
+  background: none;
+  border: none;
+  color: #ff5200;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.recent-orders-overview-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.order-overview-row {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.o-left strong {
+  display: block;
+  font-size: 13px;
+  color: #1e293b;
+}
+
+.o-left small {
+  font-size: 11px;
+  color: #64748b;
+  display: block;
+  margin: 2px 0;
+}
+
+.o-date {
+  font-size: 10px;
+  color: #94a3b8;
+}
+
+.o-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.o-total {
+  font-size: 15px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.o-track-btn {
+  background: #fff7ed;
+  border: 1px solid #fdba74;
+  color: #ea580c;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 6px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+/* Quick Actions Bar */
+.quick-actions-bar {
+  display: flex;
+  gap: 12px;
+}
+
+.quick-action-pill {
+  flex: 1;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 800;
+  color: #1e293b;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.quick-action-pill:hover {
+  border-color: #ff5200;
+  background: #fff7ed;
+  color: #ff5200;
+}
+
+/* Orders Cards Stack */
+.orders-cards-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.detailed-order-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 20px;
+}
+
+.order-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.order-card-top strong {
+  font-size: 15px;
+  color: #0f172a;
+}
+
+.order-time-txt {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-left: 8px;
+}
+
+.status-pill {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.status-pill.delivered {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status-pill.active {
+  background: #fff7ed;
+  color: #ea580c;
+}
+
+.order-items-table {
+  background: #f8fafc;
+  padding: 12px 16px;
+  border-radius: 12px;
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.order-item-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #334155;
+}
+
+.order-footer-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-size: 12px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.order-footer-details small {
+  font-size: 10px;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+.order-grand-total {
+  font-size: 18px;
+  font-weight: 900;
+  color: #0f172a;
+  display: block;
+}
+
+.order-btns-group {
+  display: flex;
+  gap: 8px;
+}
+
+.reorder-mini-btn,
+.track-mini-btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.reorder-mini-btn {
+  background: #ff5200;
+  color: #ffffff;
+  border: none;
+}
+
+.track-mini-btn {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+/* Live Track Card */
+.live-track-card {
+  background: #f8fafc;
+  border: 1px solid #fdba74;
+  border-radius: 20px;
+  padding: 24px;
+}
+
+.live-track-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.live-pulse-badge {
+  font-size: 10px;
+  font-weight: 800;
+  color: #16a34a;
+  background: #dcfce7;
+  padding: 2px 8px;
+  border-radius: 999px;
+  display: inline-block;
+  margin-bottom: 4px;
+}
+
+.eta-badge {
+  font-size: 13px;
+  font-weight: 900;
+  color: #ea580c;
+  background: #fff7ed;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+
+.rider-status-text {
+  font-size: 13px;
+  color: #334155;
+  margin: 0 0 16px;
+}
+
+.live-progress-bar-wrap {
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+
+.progress-fill-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #ff5200, #22c55e);
+}
+
+.open-full-tracker-btn {
+  display: inline-block;
+  background: #1e293b;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+/* Wishlist Grid */
+.account-wishlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.account-wish-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 14px;
+  text-align: center;
+}
+
+.account-wish-card img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin: 0 auto 10px;
+}
+
+.wish-info strong {
+  display: block;
+  font-size: 13px;
+  color: #1e293b;
+}
+
+.wish-price {
+  font-size: 14px;
+  font-weight: 800;
+  color: #ff5200;
+}
+
+.wish-actions-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.wish-add-cart-btn {
+  flex: 1;
+  background: #ff5200;
+  color: #ffffff;
+  border: none;
+  padding: 6px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.wish-delete-btn {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Addresses Grid */
+.addresses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.address-box-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 18px;
+}
+
+.addr-card-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.addr-tag {
+  font-size: 11px;
+  font-weight: 800;
+  background: #f1f5f9;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.default-pill {
+  font-size: 10px;
+  font-weight: 800;
+  color: #16a34a;
+  background: #dcfce7;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.address-box-card strong {
+  display: block;
+  font-size: 14px;
+  color: #1e293b;
+}
+
+.address-box-card p {
+  font-size: 12px;
+  color: #64748b;
+  margin: 4px 0 2px;
+}
+
+.address-box-card small {
+  display: block;
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.addr-card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid #f8fafc;
+}
+
+.set-default-btn,
+.delete-addr-btn {
+  background: none;
+  border: none;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.set-default-btn {
+  color: #ff5200;
+}
+
+.delete-addr-btn {
+  color: #ef4444;
+}
+
+.add-new-addr-btn {
+  background: #ff5200;
+  color: #ffffff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* Wallet Card */
+.wallet-overview-card {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  color: #ffffff;
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.wallet-badge {
+  font-size: 10px;
+  font-weight: 800;
+  color: #fdba74;
+}
+
+.wallet-card-left h2 {
+  font-size: 32px;
+  font-weight: 900;
+  margin: 4px 0;
+}
+
+.wallet-card-left p {
+  font-size: 12px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.add-money-form {
+  display: flex;
+  gap: 8px;
+}
+
+.add-money-form input {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  outline: none;
+}
+
+.add-money-form button {
+  background: #ff5200;
+  color: #ffffff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.saved-cards-section h3 {
+  font-size: 15px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.saved-payment-item {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pay-icon {
+  font-size: 24px;
+}
+
+.saved-payment-item div {
+  flex: 1;
+}
+
+.saved-payment-item strong {
+  display: block;
+  font-size: 13px;
+  color: #1e293b;
+}
+
+.saved-payment-item small {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.verified-tag {
+  font-size: 11px;
+  font-weight: 700;
+  color: #16a34a;
+}
+
+/* Coupons Grid */
+.account-coupons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.account-coupon-card {
+  background: #f8fafc;
+  border: 1px dashed #fdba74;
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.c-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.c-badge {
+  background: #1e293b;
+  color: #ffffff;
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.copy-btn {
+  background: #fff7ed;
+  border: 1px solid #fdba74;
+  color: #ea580c;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.account-coupon-card h4 {
+  font-size: 13px;
+  font-weight: 800;
+  margin: 0 0 4px;
+}
+
+.account-coupon-card p {
+  font-size: 11px;
+  color: #64748b;
+  margin: 0 0 8px;
+}
+
+.account-coupon-card small {
+  font-size: 10px;
+  color: #94a3b8;
+}
+
+/* Profile Form */
+.profile-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+  max-width: 600px;
+}
+
+.profile-form-grid .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.profile-form-grid label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
+}
+
+.profile-form-grid input {
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  outline: none;
+}
+
+.save-profile-btn {
+  grid-column: span 2;
+  background: #ff5200;
+  color: #ffffff;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+/* Security */
+.security-section-box {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.security-toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8fafc;
+  padding: 16px 20px;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+}
+
+.security-toggle-row strong {
+  font-size: 14px;
+  color: #1e293b;
+}
+
+.security-toggle-row p {
+  font-size: 12px;
+  color: #64748b;
+  margin: 2px 0 0;
+}
+
+.toggle-2fa-btn {
+  background: #e2e8f0;
+  color: #475569;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.toggle-2fa-btn.active {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.password-change-box h4 {
+  font-size: 14px;
+  font-weight: 800;
+  margin: 0 0 12px;
+}
+
+.pass-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.pass-grid input {
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 13px;
+  outline: none;
+}
+
+.update-pass-btn {
+  background: #1e293b;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* Modals */
+.account-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 10005;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.account-modal-box {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px;
+  width: 100%;
+  max-width: 460px;
+}
+
+.modal-addr-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal-addr-form input {
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  outline: none;
+}
+
+.modal-two-col {
+  display: flex;
+  gap: 10px;
+}
+
+.modal-two-col input {
+  flex: 1;
+}
+
+.save-addr-modal-btn {
+  background: #ff5200;
+  color: #ffffff;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .account-container {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .account-sidebar {
+    width: 100%;
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .account-page-wrapper {
+    padding: 16px 12px 90px;
+  }
+
+  .account-sidebar {
+    padding: 16px 14px;
+    border-radius: 16px;
+  }
+
+  .sidebar-nav-list {
+    flex-direction: row;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+    gap: 8px;
+  }
+
+  .sidebar-nav-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-tab-btn {
+    white-space: nowrap;
+    padding: 8px 14px;
+    font-size: 12.5px;
+    border-radius: 999px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+  }
+
+  .nav-tab-btn.active {
+    background: #ff5200;
+    color: #ffffff;
+    border-color: #ff5200;
+  }
+
+  .nav-tab-btn span {
+    font-size: 14px;
+  }
+
+  .account-main-content {
+    padding: 18px 14px;
+    border-radius: 16px;
+  }
+
+  .overview-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .stat-card-acc {
+    padding: 14px;
+  }
+
+  .order-item-acc {
+    padding: 14px;
+  }
+
+  .order-top-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .order-actions-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .order-actions-row .reorder-btn,
+  .order-actions-row .track-btn,
+  .order-actions-row .invoice-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .overview-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .wallet-overview-card {
+    padding: 18px 14px;
+  }
+
+  .wallet-card-left h2 {
+    font-size: 24px;
+  }
+
+  .add-money-form {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .add-money-form input,
+  .add-money-form button {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
