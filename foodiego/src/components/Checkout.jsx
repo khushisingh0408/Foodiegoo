@@ -386,7 +386,7 @@ function Checkout() {
                     <label>City *</label>
                     <input
                       type="text"
-                      placeholder="City name (e.g. Mumbai, Delhi, Raipur)"
+                      placeholder="City name"
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
                     />
