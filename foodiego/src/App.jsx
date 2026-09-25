@@ -3,7 +3,6 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Categories from "./components/Categories";
-import FoodMediaReels from "./components/FoodMediaReels";
 import FlashSaleSection from "./components/FlashSaleSection";
 import Restaurants from "./components/Restaurants";
 import BrandShowcase from "./components/BrandShowcase";
@@ -64,10 +63,7 @@ function Home() {
         setSelectedCategory={setSelectedCategory}
       />
 
-      {/* 3. Food Media Stories & Kitchen Sizzle Reels */}
-      <FoodMediaReels />
-
-      {/* 4. Limited-Time Flash Sale with Live Countdown */}
+      {/* 3. Limited-Time Flash Sale with Live Countdown */}
       <FlashSaleSection />
 
       {/* 4. Promotional Deals & BOGO Banners */}

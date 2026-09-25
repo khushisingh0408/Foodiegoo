@@ -462,11 +462,6 @@ function ShopPage() {
                     {/* Image Area */}
                     <div className="shop-card-img-wrap" onClick={() => setQuickViewFood(food)}>
                       <img src={food.image} alt={food.name} loading="lazy" />
-                      {food.videoUrl && (
-                        <div className="shop-video-tag">
-                          <Play size={9} fill="#ffffff" color="#ffffff" /> <span>Sizzle</span>
-                        </div>
-                      )}
                       <button
                         className="quick-view-hover-btn"
                         onClick={(e) => {
