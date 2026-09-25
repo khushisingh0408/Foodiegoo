@@ -80,3 +80,31 @@
     transform: translate(-50%, 0);
   }
 }
+
+@media (max-width: 900px) {
+  .sticky-bottom-cart-bar {
+    bottom: 74px;
+    width: calc(100% - 24px);
+    max-width: 540px;
+  }
+
+  .sticky-cart-content {
+    padding: 11px 16px;
+    border-radius: 14px;
+  }
+
+  .items-count-badge {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+
+  .sticky-cart-price {
+    font-size: 16px;
+  }
+
+  .view-cart-link {
+    font-size: 13.5px;
+    padding: 6px 12px;
+  }
+}
+

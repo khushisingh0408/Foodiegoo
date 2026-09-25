@@ -25,6 +25,14 @@ function CustomerReviews() {
               </span>
             </div>
             <p className="test-quote">"{t.text}"</p>
+            
+            {t.mealPhoto && (
+              <div className="test-meal-photo-wrap">
+                <img src={t.mealPhoto} alt={t.foodOrdered} className="test-meal-img" loading="lazy" />
+                <span className="meal-photo-tag">Customer Dish Snap 📸</span>
+              </div>
+            )}
+
             <div className="test-ordered-dish">
               <span>Ordered: </span>
               <strong>{t.foodOrdered}</strong>

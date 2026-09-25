@@ -145,6 +145,39 @@ export function initDatabase() {
     );
   `);
 
+  // 10. Coupons Table
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS coupons (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      code TEXT UNIQUE NOT NULL,
+      discount_type TEXT DEFAULT 'percent',
+      discount_value REAL NOT NULL,
+      min_order_amount REAL DEFAULT 0,
+      max_discount_amount REAL DEFAULT 500,
+      is_active INTEGER DEFAULT 1,
+      expiry_date TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
+
+  // Try adding is_available column to foods if not exists
+  try {
+    db.exec("ALTER TABLE foods ADD COLUMN is_available INTEGER DEFAULT 1;");
+  } catch {
+    // Column already exists
+  }
+
+  // Try adding payment columns to orders if not exists
+  try {
+    db.exec("ALTER TABLE orders ADD COLUMN payment_status TEXT DEFAULT 'Pending';");
+  } catch {}
+  try {
+    db.exec("ALTER TABLE orders ADD COLUMN razorpay_order_id TEXT;");
+  } catch {}
+  try {
+    db.exec("ALTER TABLE orders ADD COLUMN razorpay_payment_id TEXT;");
+  } catch {}
+
   // Seed Default Categories if empty
   const catCount = db.prepare("SELECT COUNT(*) as count FROM categories").get().count;
   if (catCount === 0) {
@@ -158,7 +191,7 @@ export function initDatabase() {
   const foodCount = db.prepare("SELECT COUNT(*) as count FROM foods").get().count;
   if (foodCount === 0) {
     const insertFood = db.prepare(
-      "INSERT INTO foods (id, name, price, rating, image, category, description) VALUES (?, ?, ?, ?, ?, ?, ?)"
+      "INSERT INTO foods (id, name, price, rating, image, category, description, is_available) VALUES (?, ?, ?, ?, ?, ?, ?, 1)"
     );
     for (const food of initialFoods) {
       insertFood.run(
@@ -173,9 +206,25 @@ export function initDatabase() {
     }
   }
 
-  // Seed Demo User if not exists
-  const userCount = db.prepare("SELECT COUNT(*) as count FROM users").get().count;
-  if (userCount === 0) {
+  // Seed Default Admin User if not exists
+  const adminExists = db.prepare("SELECT id FROM users WHERE email = 'admin@foodiego.com'").get();
+  if (!adminExists) {
+    const hashedAdminPassword = bcrypt.hashSync("admin123", 10);
+    db.prepare(
+      "INSERT INTO users (name, email, password, phone, address, role) VALUES (?, ?, ?, ?, ?, ?)"
+    ).run(
+      "FoodieGo Admin",
+      "admin@foodiego.com",
+      hashedAdminPassword,
+      "9999999999",
+      "FoodieGo Headquarters, Mumbai",
+      "admin"
+    );
+  }
+
+  // Seed Demo Customer User if not exists
+  const userExists = db.prepare("SELECT id FROM users WHERE email = 'demo@foodiego.com'").get();
+  if (!userExists) {
     const hashedPassword = bcrypt.hashSync("password123", 10);
     db.prepare(
       "INSERT INTO users (name, email, password, phone, address, role) VALUES (?, ?, ?, ?, ?, ?)"
@@ -187,6 +236,19 @@ export function initDatabase() {
       "Raipur, Chhattisgarh",
       "customer"
     );
+  }
+
+  // Seed Default Coupons if empty
+  const couponCount = db.prepare("SELECT COUNT(*) as count FROM coupons").get().count;
+  if (couponCount === 0) {
+    const insertCoupon = db.prepare(`
+      INSERT INTO coupons (code, discount_type, discount_value, min_order_amount, max_discount_amount, is_active, expiry_date)
+      VALUES (?, ?, ?, ?, ?, 1, '2026-12-31')
+    `);
+    insertCoupon.run("FOODIE20", "percent", 20, 299, 150);
+    insertCoupon.run("FLAT50", "flat", 50, 199, 50);
+    insertCoupon.run("FEAST100", "flat", 100, 499, 100);
+    insertCoupon.run("WELCOME30", "percent", 30, 249, 120);
   }
 
   console.log("✅ SQL Database initialized and verified at:", dbPath);

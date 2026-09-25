@@ -23,7 +23,9 @@ import {
   Layers,
   UtensilsCrossed,
   Truck,
-  Leaf
+  Leaf,
+  LayoutDashboard,
+  Star
 } from "lucide-react";
 import { CartContext } from "../context/CartContext";
 import { WishlistContext } from "../context/WishlistContext";
@@ -546,6 +548,16 @@ function Navbar() {
                       <small>{user?.email || "user@foodiego.com"}</small>
                     </div>
                     <div className="dropdown-divider" />
+                    {user?.role === "admin" && (
+                      <Link
+                        to="/admin"
+                        className="dropdown-link"
+                        style={{ color: "#ff6b00", fontWeight: 700, background: "rgba(255, 107, 0, 0.08)" }}
+                        onClick={() => setUserDropdownOpen(false)}
+                      >
+                        <LayoutDashboard size={15} className="inline-icon" /> Admin Control Panel
+                      </Link>
+                    )}
                     <Link
                       to="/account"
                       className="dropdown-link"
@@ -749,6 +761,11 @@ function Navbar() {
               <Link to="/offers" onClick={() => setMenuOpen(false)}>
                 <Tag size={16} className="inline-icon" color="#16a34a" /> Coupons & Offers
               </Link>
+              {user?.role === "admin" && (
+                <Link to="/admin" onClick={() => setMenuOpen(false)} style={{ color: "#ff6b00", fontWeight: 700, background: "rgba(255, 107, 0, 0.08)" }}>
+                  <LayoutDashboard size={16} className="inline-icon" /> Admin Control Panel
+                </Link>
+              )}
               <Link to="/account" onClick={() => setMenuOpen(false)}>
                 <User size={16} className="inline-icon" /> My Account & Profile
               </Link>

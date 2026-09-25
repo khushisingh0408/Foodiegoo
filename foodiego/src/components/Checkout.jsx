@@ -19,11 +19,15 @@ import {
   ArrowRight,
   Clock,
   Loader2,
-  Smartphone
+  Smartphone,
+  CheckCircle2,
+  BadgePercent,
+  Sparkles
 } from "lucide-react";
 import { CartContext } from "../context/CartContext";
 import { AuthContext } from "../context/AuthContext";
 import api from "../services/api";
+import { initiateRazorpayPayment } from "../services/razorpay";
 import "../css/Checkout.css";
 
 function Checkout() {
@@ -59,30 +63,18 @@ function Checkout() {
 
   // Address State
   const [selectedAddressId, setSelectedAddressId] = useState(savedAddresses[0]?.id || "new");
-  const [fullName, setFullName] = useState(user?.name || "Alex Morgan");
-  const [mobile, setMobile] = useState(user?.phone || "9876543210");
-  const [houseFlat, setHouseFlat] = useState("Flat 402, Sunshine Heights");
-  const [street, setStreet] = useState("Sector 62, Electronic City");
-  const [city, setCity] = useState("Noida");
-  const [stateName, setStateName] = useState("Uttar Pradesh");
-  const [pincode, setPincode] = useState("201309");
+  const [fullName, setFullName] = useState(user?.name || "");
+  const [mobile, setMobile] = useState(user?.phone || "");
+  const [houseFlat, setHouseFlat] = useState("");
+  const [street, setStreet] = useState("");
+  const [city, setCity] = useState("");
+  const [stateName, setStateName] = useState("");
+  const [pincode, setPincode] = useState("");
   const [addressTag, setAddressTag] = useState("Home");
 
-  // Payment State
-  const [paymentMethod, setPaymentMethod] = useState("upi"); // upi | card | netbanking | wallet | cod | emi
-  const [upiApp, setUpiApp] = useState("gpay"); // gpay | phonepe | paytm | qrcode
-  const [upiIdInput, setUpiIdInput] = useState("alex@okaxis");
-
-  // Card Simulator State
-  const [cardNumber, setCardNumber] = useState("4532 8921 7734 6512");
-  const [cardHolder, setCardHolder] = useState(user?.name || "ALEX MORGAN");
-  const [cardExpiry, setCardExpiry] = useState("08/29");
-  const [cardCvv, setCardCvv] = useState("892");
-
-  // Netbanking & Wallet state
-  const [selectedBank, setSelectedBank] = useState("HDFC Bank");
-  const [selectedWallet, setSelectedWallet] = useState("Paytm");
-  const [selectedEmiTenure, setSelectedEmiTenure] = useState("3");
+  // Payment State: "razorpay" (Online) | "cod" (Cash on Delivery)
+  const [paymentMethod, setPaymentMethod] = useState("razorpay");
+  const [onlineSubMethod, setOnlineSubMethod] = useState("all"); // all | upi | card | netbanking | wallet
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -92,6 +84,30 @@ function Checkout() {
       if (user.phone) setMobile(user.phone);
     }
   }, [user]);
+
+  const handleContinueFromAddress = () => {
+    if (!fullName.trim()) {
+      showToast("Please enter your Full Name", "error");
+      return;
+    }
+    if (!mobile.trim() || mobile.trim().length !== 10) {
+      showToast("Please enter a valid 10-digit mobile number", "error");
+      return;
+    }
+    if (!houseFlat.trim()) {
+      showToast("Please enter Flat / House / Building name", "error");
+      return;
+    }
+    if (!city.trim()) {
+      showToast("Please enter your City", "error");
+      return;
+    }
+    if (!pincode.trim() || pincode.trim().length !== 6) {
+      showToast("Please enter a valid 6-digit PIN code", "error");
+      return;
+    }
+    setCurrentStep(2);
+  };
 
   const handleSelectSavedAddress = (addr) => {
     setSelectedAddressId(addr.id);
@@ -105,62 +121,8 @@ function Checkout() {
     setAddressTag(addr.tag);
   };
 
-  const handlePlaceOrder = async () => {
-    if (!fullName.trim() || !mobile.trim() || !houseFlat.trim() || !city.trim() || !pincode.trim()) {
-      showToast("Please enter complete delivery address.", "error");
-      setCurrentStep(1);
-      return;
-    }
-
-    if (mobile.trim().length !== 10) {
-      showToast("Please enter a valid 10-digit mobile number.", "error");
-      setCurrentStep(1);
-      return;
-    }
-
-    if (cart.length === 0) {
-      showToast("Your cart is empty.", "warning");
-      navigate("/shop");
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    const fullDeliveryAddress = `${houseFlat}, ${street}, ${city}, ${stateName} - ${pincode} (${addressTag})`;
-    const paymentLabel =
-      paymentMethod === "upi"
-        ? `UPI (${upiApp.toUpperCase()})`
-        : paymentMethod === "card"
-        ? `Credit/Debit Card (Ending in ${cardNumber.slice(-4)})`
-        : paymentMethod === "netbanking"
-        ? `Net Banking (${selectedBank})`
-        : paymentMethod === "wallet"
-        ? `Wallet (${selectedWallet})`
-        : paymentMethod === "emi"
-        ? `EMI (${selectedEmiTenure} Months)`
-        : "Cash on Delivery";
-
-    const orderPayload = {
-      customerName: fullName.trim(),
-      customerMobile: mobile.trim(),
-      deliveryAddress: fullDeliveryAddress,
-      paymentMethod: paymentLabel,
-      deliverySpeed,
-      isGiftWrap,
-      giftMessage,
-      driverTip,
-      cookingInstructions,
-      couponCode: appliedCoupon?.code || null,
-      total: finalTotal,
-      items: cart.map((item) => ({
-        id: item.id,
-        name: item.name + (item.customOptions ? ` (${item.customOptions.size?.name || 'Custom'})` : ''),
-        price: item.price,
-        quantity: item.quantity || 1,
-        image: item.image,
-      }))
-    };
-
+  // Complete Order Creation Helper
+  const finalizeOrder = async (orderPayload) => {
     try {
       const res = await api.post("/orders", orderPayload);
       const orderData = res.order || {
@@ -195,6 +157,97 @@ function Checkout() {
       clearCart();
       setIsSubmitting(false);
       navigate(`/order-success/${fallbackId}`);
+    }
+  };
+
+  const handlePlaceOrder = async () => {
+    if (!fullName.trim() || !mobile.trim() || !houseFlat.trim() || !city.trim() || !pincode.trim()) {
+      showToast("Please enter complete delivery address.", "error");
+      setCurrentStep(1);
+      return;
+    }
+
+    if (mobile.trim().length !== 10) {
+      showToast("Please enter a valid 10-digit mobile number.", "error");
+      setCurrentStep(1);
+      return;
+    }
+
+    if (cart.length === 0) {
+      showToast("Your cart is empty.", "warning");
+      navigate("/shop");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    const fullDeliveryAddress = `${houseFlat}, ${street}, ${city}, ${stateName} - ${pincode} (${addressTag})`;
+
+    const baseOrderPayload = {
+      customerName: fullName.trim(),
+      customerMobile: mobile.trim(),
+      deliveryAddress: fullDeliveryAddress,
+      deliverySpeed,
+      isGiftWrap,
+      giftMessage,
+      driverTip,
+      cookingInstructions,
+      couponCode: appliedCoupon?.code || null,
+      total: finalTotal,
+      items: cart.map((item) => ({
+        id: item.id,
+        name: item.name + (item.customOptions ? ` (${item.customOptions.size?.name || 'Custom'})` : ''),
+        price: item.price,
+        quantity: item.quantity || 1,
+        image: item.image,
+      }))
+    };
+
+    // 1. CASH ON DELIVERY
+    if (paymentMethod === "cod") {
+      const codOrderPayload = {
+        ...baseOrderPayload,
+        paymentMethod: "Cash on Delivery",
+        paymentStatus: "Pending (COD)",
+        razorpayPaymentId: null,
+        razorpayOrderId: null
+      };
+      await finalizeOrder(codOrderPayload);
+      return;
+    }
+
+    // 2. REAL RAZORPAY GATEWAY PAYMENT
+    try {
+      await initiateRazorpayPayment({
+        amount: finalTotal,
+        customerInfo: {
+          name: fullName.trim(),
+          phone: mobile.trim(),
+          email: user?.email || "customer@foodiego.com"
+        },
+        onSuccess: async (paymentResult) => {
+          showToast(`Payment Successful! ID: ${paymentResult.paymentId}`, "success");
+          const onlineOrderPayload = {
+            ...baseOrderPayload,
+            paymentMethod: `Razorpay Online (${paymentResult.method || 'UPI/Card'})`,
+            paymentStatus: "Paid",
+            razorpayPaymentId: paymentResult.paymentId,
+            razorpayOrderId: paymentResult.orderId
+          };
+          await finalizeOrder(onlineOrderPayload);
+        },
+        onError: (errMsg) => {
+          setIsSubmitting(false);
+          showToast(errMsg || "Payment failed or cancelled.", "error");
+        },
+        onDismiss: () => {
+          setIsSubmitting(false);
+          showToast("Payment window closed.", "info");
+        }
+      });
+    } catch (err) {
+      setIsSubmitting(false);
+      showToast(err.message || "Could not launch Razorpay payment.", "error");
     }
   };
 
@@ -292,7 +345,7 @@ function Checkout() {
                     <label>Full Name *</label>
                     <input
                       type="text"
-                      placeholder="e.g. Alex Morgan"
+                      placeholder="Enter your full name"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                     />
@@ -303,7 +356,7 @@ function Checkout() {
                     <input
                       type="tel"
                       maxLength={10}
-                      placeholder="e.g. 9876543210"
+                      placeholder="Enter 10-digit mobile number"
                       value={mobile}
                       onChange={(e) => setMobile(e.target.value.replace(/\D/g, ""))}
                     />
@@ -313,7 +366,7 @@ function Checkout() {
                     <label>Flat / House No. / Building Name *</label>
                     <input
                       type="text"
-                      placeholder="e.g. Flat 402, Sunshine Heights"
+                      placeholder="House / Flat No., Apartment / Building name"
                       value={houseFlat}
                       onChange={(e) => setHouseFlat(e.target.value)}
                     />
@@ -323,7 +376,7 @@ function Checkout() {
                     <label>Street / Area / Sector *</label>
                     <input
                       type="text"
-                      placeholder="e.g. Sector 62, Electronic City"
+                      placeholder="Street name, Area, Sector, Landmark"
                       value={street}
                       onChange={(e) => setStreet(e.target.value)}
                     />
@@ -333,7 +386,7 @@ function Checkout() {
                     <label>City *</label>
                     <input
                       type="text"
-                      placeholder="e.g. Noida"
+                      placeholder="City name (e.g. Mumbai, Delhi, Raipur)"
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
                     />
@@ -343,7 +396,7 @@ function Checkout() {
                     <label>State *</label>
                     <input
                       type="text"
-                      placeholder="e.g. Uttar Pradesh"
+                      placeholder="State name"
                       value={stateName}
                       onChange={(e) => setStateName(e.target.value)}
                     />
@@ -354,7 +407,7 @@ function Checkout() {
                     <input
                       type="text"
                       maxLength={6}
-                      placeholder="e.g. 201309"
+                      placeholder="6-digit PIN code"
                       value={pincode}
                       onChange={(e) => setPincode(e.target.value.replace(/\D/g, ""))}
                     />
@@ -380,7 +433,7 @@ function Checkout() {
 
                 <button
                   className="step-continue-btn"
-                  onClick={() => setCurrentStep(2)}
+                  onClick={handleContinueFromAddress}
                   style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px" }}
                 >
                   Continue to Delivery Speed <ArrowRight size={16} />
@@ -467,243 +520,99 @@ function Checkout() {
 
             {currentStep === 3 && (
               <div className="step-card-body">
-                {/* Payment Tabs */}
-                <div className="payment-tabs-row">
-                  <button
-                    type="button"
-                    className={`payment-tab ${paymentMethod === "upi" ? "active" : ""}`}
-                    onClick={() => setPaymentMethod("upi")}
-                    style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
+                {/* Payment Methods Selection */}
+                <div className="payment-gateway-options-grid">
+                  {/* Option 1: Razorpay Online Payment Gateway */}
+                  <div
+                    className={`gateway-option-card ${paymentMethod === "razorpay" ? "selected" : ""}`}
+                    onClick={() => setPaymentMethod("razorpay")}
                   >
-                    <Zap size={14} color="#f59e0b" /> UPI / QR
-                  </button>
-                  <button
-                    type="button"
-                    className={`payment-tab ${paymentMethod === "card" ? "active" : ""}`}
-                    onClick={() => setPaymentMethod("card")}
-                    style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
-                  >
-                    <CreditCard size={14} color="#3b82f6" /> Card
-                  </button>
-                  <button
-                    type="button"
-                    className={`payment-tab ${paymentMethod === "netbanking" ? "active" : ""}`}
-                    onClick={() => setPaymentMethod("netbanking")}
-                    style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
-                  >
-                    <Building2 size={14} color="#8b5cf6" /> Net Banking
-                  </button>
-                  <button
-                    type="button"
-                    className={`payment-tab ${paymentMethod === "wallet" ? "active" : ""}`}
-                    onClick={() => setPaymentMethod("wallet")}
-                    style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
-                  >
-                    <Wallet size={14} color="#ec4899" /> Wallet
-                  </button>
-                  <button
-                    type="button"
-                    className={`payment-tab ${paymentMethod === "cod" ? "active" : ""}`}
-                    onClick={() => setPaymentMethod("cod")}
-                    style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
-                  >
-                    <Banknote size={14} color="#10b981" /> Cash on Delivery
-                  </button>
-                  <button
-                    type="button"
-                    className={`payment-tab ${paymentMethod === "emi" ? "active" : ""}`}
-                    onClick={() => setPaymentMethod("emi")}
-                    style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
-                  >
-                    <BarChart3 size={14} color="#f97316" /> EMI
-                  </button>
-                </div>
-
-                {/* 1. UPI Payment Panel */}
-                {paymentMethod === "upi" && (
-                  <div className="payment-panel-content">
-                    <label className="panel-label">Choose UPI App or Scan QR:</label>
-                    <div className="upi-apps-grid">
-                      {[
-                        { id: "gpay", name: "Google Pay", icon: <Smartphone size={20} color="#4285F4" /> },
-                        { id: "phonepe", name: "PhonePe", icon: <Smartphone size={20} color="#6739B7" /> },
-                        { id: "paytm", name: "Paytm UPI", icon: <Smartphone size={20} color="#00BAF2" /> },
-                        { id: "qrcode", name: "Scan QR Code", icon: <QrCode size={20} color="#10b981" /> }
-                      ].map((app) => (
-                        <div
-                          key={app.id}
-                          className={`upi-app-card ${upiApp === app.id ? "selected" : ""}`}
-                          onClick={() => setUpiApp(app.id)}
-                        >
-                          <span className="app-icon">{app.icon}</span>
-                          <strong>{app.name}</strong>
+                    <div className="gateway-radio-header">
+                      <div className="gateway-radio-wrap">
+                        <input
+                          type="radio"
+                          name="payment-main-choice"
+                          checked={paymentMethod === "razorpay"}
+                          onChange={() => setPaymentMethod("razorpay")}
+                        />
+                        <div>
+                          <div className="gateway-title-row">
+                            <strong>Razorpay Secure Online Gateway</strong>
+                            <span className="gateway-rec-badge">Recommended</span>
+                          </div>
+                          <p className="gateway-desc">
+                            Pay instantly with UPI (Google Pay, PhonePe, Paytm), Credit/Debit Cards, NetBanking, Wallets & QR.
+                          </p>
                         </div>
-                      ))}
+                      </div>
+                      <div className="gateway-brand-badge">
+                        <ShieldCheck size={18} color="#10b981" />
+                        <span>100% Safe</span>
+                      </div>
                     </div>
 
-                    {upiApp !== "qrcode" ? (
-                      <div className="upi-input-group">
-                        <label>Enter UPI ID (VPA):</label>
-                        <input
-                          type="text"
-                          value={upiIdInput}
-                          onChange={(e) => setUpiIdInput(e.target.value)}
-                          placeholder="yourname@okhdfcbank"
-                        />
-                        <small>A payment request will be sent to your UPI app.</small>
+                    {/* Supported Sub-Methods Icons Showcase */}
+                    <div className="supported-methods-strip">
+                      <div className="method-pill">
+                        <Zap size={14} color="#f59e0b" />
+                        <span>UPI & QR</span>
                       </div>
-                    ) : (
-                      <div className="upi-qr-display-box" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
-                        <div className="qr-box-pattern" style={{ padding: "16px", background: "#f8fafc", borderRadius: "12px", display: "flex", alignItems: "center", gap: "8px" }}>
-                          <QrCode size={48} color="#0f172a" />
-                        </div>
-                        <strong>Scan with any UPI app to pay ₹{finalTotal}</strong>
+                      <div className="method-pill">
+                        <Smartphone size={14} color="#3b82f6" />
+                        <span>GPay / PhonePe / Paytm</span>
+                      </div>
+                      <div className="method-pill">
+                        <CreditCard size={14} color="#8b5cf6" />
+                        <span>Visa / Master / RuPay</span>
+                      </div>
+                      <div className="method-pill">
+                        <Building2 size={14} color="#ec4899" />
+                        <span>50+ NetBanking</span>
+                      </div>
+                      <div className="method-pill">
+                        <Wallet size={14} color="#10b981" />
+                        <span>Wallets & PayLater</span>
+                      </div>
+                    </div>
+
+                    {paymentMethod === "razorpay" && (
+                      <div className="razorpay-active-notice">
+                        <CheckCircle2 size={16} color="#16a34a" />
+                        <span>
+                          Clicking &quot;Pay via Razorpay&quot; will open the official secure checkout popup.
+                        </span>
                       </div>
                     )}
                   </div>
-                )}
 
-                {/* 2. Card Payment Panel */}
-                {paymentMethod === "card" && (
-                  <div className="payment-panel-content">
-                    {/* Interactive 3D Card Preview */}
-                    <div className="visual-card-preview">
-                      <div className="card-chip"><CreditCard size={28} /></div>
-                      <div className="card-number-display">{cardNumber || "•••• •••• •••• ••••"}</div>
-                      <div className="card-bottom-display">
+                  {/* Option 2: Cash on Delivery */}
+                  <div
+                    className={`gateway-option-card ${paymentMethod === "cod" ? "selected" : ""}`}
+                    onClick={() => setPaymentMethod("cod")}
+                  >
+                    <div className="gateway-radio-header">
+                      <div className="gateway-radio-wrap">
+                        <input
+                          type="radio"
+                          name="payment-main-choice"
+                          checked={paymentMethod === "cod"}
+                          onChange={() => setPaymentMethod("cod")}
+                        />
                         <div>
-                          <small>CARD HOLDER</small>
-                          <strong>{cardHolder || "YOUR NAME"}</strong>
-                        </div>
-                        <div>
-                          <small>EXPIRES</small>
-                          <strong>{cardExpiry || "MM/YY"}</strong>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="card-inputs-grid">
-                      <div className="form-group span-2">
-                        <label>Card Number</label>
-                        <input
-                          type="text"
-                          maxLength={19}
-                          value={cardNumber}
-                          onChange={(e) => setCardNumber(e.target.value)}
-                          placeholder="4532 8921 7734 6512"
-                        />
-                      </div>
-                      <div className="form-group span-2">
-                        <label>Name on Card</label>
-                        <input
-                          type="text"
-                          value={cardHolder}
-                          onChange={(e) => setCardHolder(e.target.value.toUpperCase())}
-                          placeholder="ALEX MORGAN"
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label>Expiry (MM/YY)</label>
-                        <input
-                          type="text"
-                          maxLength={5}
-                          value={cardExpiry}
-                          onChange={(e) => setCardExpiry(e.target.value)}
-                          placeholder="08/29"
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label>CVV / CVC</label>
-                        <input
-                          type="password"
-                          maxLength={4}
-                          value={cardCvv}
-                          onChange={(e) => setCardCvv(e.target.value)}
-                          placeholder="892"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* 3. Net Banking */}
-                {paymentMethod === "netbanking" && (
-                  <div className="payment-panel-content">
-                    <label className="panel-label">Select Your Bank:</label>
-                    <div className="banks-grid">
-                      {["HDFC Bank", "ICICI Bank", "State Bank of India", "Axis Bank", "Kotak Mahindra"].map((bank) => (
-                        <div
-                          key={bank}
-                          className={`bank-card ${selectedBank === bank ? "selected" : ""}`}
-                          onClick={() => setSelectedBank(bank)}
-                          style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}
-                        >
-                          <Building2 size={18} color="#8b5cf6" />
-                          <strong>{bank}</strong>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* 4. Wallet */}
-                {paymentMethod === "wallet" && (
-                  <div className="payment-panel-content">
-                    <label className="panel-label">Choose Mobile Wallet:</label>
-                    <div className="banks-grid">
-                      {["Paytm Wallet", "Amazon Pay", "Mobikwik", "PhonePe Wallet"].map((w) => (
-                        <div
-                          key={w}
-                          className={`bank-card ${selectedWallet === w ? "selected" : ""}`}
-                          onClick={() => setSelectedWallet(w)}
-                          style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}
-                        >
-                          <Wallet size={18} color="#ec4899" />
-                          <strong>{w}</strong>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* 5. Cash on Delivery */}
-                {paymentMethod === "cod" && (
-                  <div className="payment-panel-content cod-box">
-                    <div className="cod-icon" style={{ display: "flex", justifyContent: "center", marginBottom: "8px" }}>
-                      <Banknote size={36} color="#10b981" />
-                    </div>
-                    <h4>Pay Cash or UPI upon Delivery</h4>
-                    <p>
-                      Please keep exact cash ready or scan the delivery rider's QR code upon arrival.
-                    </p>
-                  </div>
-                )}
-
-                {/* 6. EMI */}
-                {paymentMethod === "emi" && (
-                  <div className="payment-panel-content">
-                    <label className="panel-label">Select EMI Tenure (Credit Cards):</label>
-                    <div className="emi-options-list">
-                      {[
-                        { months: "3", perMonth: Math.round(finalTotal / 3), bank: "HDFC / ICICI No Cost" },
-                        { months: "6", perMonth: Math.round(finalTotal / 6), bank: "Standard Chartered" },
-                        { months: "12", perMonth: Math.round(finalTotal / 12), bank: "Axis Bank" }
-                      ].map((emi) => (
-                        <div
-                          key={emi.months}
-                          className={`emi-card-item ${selectedEmiTenure === emi.months ? "selected" : ""}`}
-                          onClick={() => setSelectedEmiTenure(emi.months)}
-                        >
-                          <div>
-                            <strong>{emi.months} Months Plan</strong>
-                            <small>{emi.bank}</small>
+                          <div className="gateway-title-row">
+                            <strong>Cash on Delivery (COD)</strong>
                           </div>
-                          <span className="emi-rate">₹{emi.perMonth}/mo</span>
+                          <p className="gateway-desc">
+                            Pay with cash or scan delivery rider&apos;s UPI QR code upon arrival.
+                          </p>
                         </div>
-                      ))}
+                      </div>
+                      <div className="gateway-brand-badge cod-badge">
+                        <Banknote size={18} color="#10b981" />
+                      </div>
                     </div>
                   </div>
-                )}
+                </div>
 
                 {/* Trust Seals */}
                 <div className="checkout-trust-seals">
@@ -714,7 +623,7 @@ function Checkout() {
                     <ShieldCheck size={14} color="#3b82f6" /> 100% Genuine Quality Guarantee
                   </span>
                   <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
-                    <Zap size={14} color="#f59e0b" /> RBI Approved Gateway
+                    <Zap size={14} color="#f59e0b" /> RBI Approved Razorpay Gateway
                   </span>
                 </div>
 
@@ -727,11 +636,15 @@ function Checkout() {
                 >
                   {isSubmitting ? (
                     <span style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
-                      Processing Order... <Loader2 size={16} className="spin-icon" />
+                      Processing Payment... <Loader2 size={16} className="spin-icon" />
+                    </span>
+                  ) : paymentMethod === "razorpay" ? (
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+                      <Lock size={16} /> Pay via Razorpay • ₹{finalTotal} <ArrowRight size={16} />
                     </span>
                   ) : (
                     <span style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
-                      Place Order • ₹{finalTotal} <Zap size={16} />
+                      Place Cash on Delivery Order • ₹{finalTotal} <Check size={16} />
                     </span>
                   )}
                 </button>
@@ -813,6 +726,24 @@ function Checkout() {
               </div>
               <h2>₹{finalTotal}</h2>
             </div>
+
+            {/* Direct Order CTA Button in Sidebar */}
+            <button
+              className="place-order-big-btn"
+              onClick={handlePlaceOrder}
+              disabled={isSubmitting}
+              style={{ marginTop: "1.25rem", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
+            >
+              {isSubmitting ? (
+                <span style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+                  Processing Order... <Loader2 size={16} className="spin-icon" />
+                </span>
+              ) : (
+                <span style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+                  Confirm & Place Order • ₹{finalTotal} <Zap size={16} />
+                </span>
+              )}
+            </button>
           </div>
         </div>
       </div>

@@ -48,6 +48,7 @@
   height: fit-content;
 }
 
+.pdp-media-mode-tabs,
 .media-mode-tabs {
   display: flex;
   gap: 8px;
@@ -1367,82 +1368,20 @@
     padding: 16px 14px 90px;
   }
 
-  .pdp-main-media-box {
-    height: 280px;
-  }
-
-  .pdp-info-column {
-    padding: 20px 16px;
+  .pdp-main-image-viewport {
+    height: 300px;
     border-radius: 18px;
   }
 
-  .pdp-title-row h1 {
+  .pdp-product-title {
     font-size: 22px;
   }
 
-  .pdp-live-price h2 {
-    font-size: 28px;
+  .current-selling-price {
+    font-size: 26px;
   }
 
-  .pdp-bundles-card {
-    padding: 16px;
-  }
-
-  .bundle-items-row {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-  }
-
-  .bundle-plus {
-    text-align: center;
-  }
-
-  .pdp-actions-row {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .pdp-add-to-cart-btn,
-  .pdp-buy-now-btn {
-    width: 100%;
-    padding: 14px;
-    font-size: 14px;
-  }
-
-  .pdp-tabs-nav {
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-
-  .pdp-tabs-nav::-webkit-scrollbar {
-    display: none;
-  }
-
-  .pdp-tab-btn {
-    white-space: nowrap;
-    font-size: 13px;
-    padding: 10px 14px;
-  }
-
-  .reviews-summary-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
-  .nutrition-table th,
-  .nutrition-table td {
-    padding: 8px 10px;
-    font-size: 12px;
-  }
-}
-
-@media (max-width: 480px) {
-  .pdp-main-media-box {
-    height: 220px;
-  }
-
-  .variants-pill-row {
+  .variant-options-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -1450,7 +1389,87 @@
     grid-template-columns: 1fr;
   }
 
+  .pdp-cta-sticky-box {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .qty-stepper-box {
+    justify-content: center;
+  }
+
+  .cta-buttons-row {
+    width: 100%;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .add-cart-large-btn,
+  .buy-now-large-btn {
+    width: 100%;
+    padding: 13px 16px;
+    font-size: 14px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pdp-bundle-section {
+    padding: 18px 16px;
+  }
+
+  .bundle-card-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .bundle-items-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .bundle-plus-sign {
+    text-align: center;
+  }
+
+  .bundle-buy-action-box {
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .add-bundle-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  .pdp-tab-btn {
+    white-space: nowrap;
+    font-size: 12.5px;
+    padding: 8px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pdp-main-image-viewport {
+    height: 240px;
+  }
+
+  .variant-options-grid {
+    grid-template-columns: 1fr;
+  }
+
   .pincode-form {
     max-width: 100%;
   }
+
+  .pdp-guarantee-badges {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
 }
+

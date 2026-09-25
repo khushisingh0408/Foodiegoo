@@ -9,20 +9,30 @@
   --success: #16a34a;
   --success-light: #dcfce7;
   --danger: #ef4444;
+  --danger-light: #fee2e2;
   --bg-page: #fafaf9;
   --bg-card: #ffffff;
   --text-main: #1e293b;
   --text-muted: #64748b;
   --border-light: #f1f5f9;
+  --border-medium: #e2e8f0;
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.1);
+  --shadow-primary: 0 8px 25px rgba(255, 82, 0, 0.25);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html {
@@ -42,25 +52,78 @@ body {
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #fafaf9;
-  color: #1e293b;
+  background-color: var(--bg-page);
+  color: var(--text-main);
   line-height: 1.5;
+  text-rendering: optimizeLegibility;
 }
 
 img {
   max-width: 100%;
   height: auto;
   display: block;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 button, input, select, textarea {
   font-family: inherit;
 }
 
+button {
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Base interactive button press feel */
+button:active:not(:disabled),
+.filter-chip:active,
+.subnav-link:active,
+.tag-btn:active {
+  transform: scale(0.97);
+  transition: transform 0.1s ease;
+}
+
+/* App Layout & Content Padding */
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+}
+
+.main-content {
+  flex: 1;
+  width: 100%;
+  min-height: calc(100vh - 200px);
+}
+
+/* Ensure mobile screens have clearance for bottom navigation and floating cart */
+@media (max-width: 900px) {
+  .main-content {
+    padding-bottom: max(74px, calc(64px + var(--safe-bottom)));
+  }
+}
+
+/* Prevent auto-zoom in Safari iOS on input focus */
+@media screen and (max-width: 768px) {
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  input[type="tel"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
@@ -69,9 +132,15 @@ button, input, select, textarea {
 
 ::-webkit-scrollbar-thumb {
   background: #cbd5e1;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #ff5200;
+}
+
+/* Smooth selection colors */
+::selection {
+  background-color: #ffd8bf;
+  color: #ff5200;
 }

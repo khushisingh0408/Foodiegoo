@@ -1,5 +1,6 @@
 import { useContext, useState, useEffect } from "react";
-import { Flame, Heart, Star, Clock, Store, Plus, Minus } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Flame, Heart, Star, Clock, Store, Plus, Minus, Video, Play, Eye, Sparkles, X, ShoppingBag } from "lucide-react";
 import "../css/PopularFoods.css";
 import { CartContext } from "../context/CartContext";
 import { WishlistContext } from "../context/WishlistContext";
@@ -9,18 +10,21 @@ import DishModal from "./DishModal";
 import api from "../services/api";
 
 function PopularFoods({ searchTerm, selectedCategory, activeFilter }) {
+  const navigate = useNavigate();
   const {
     addToCart,
     getItemQuantity,
     increaseQuantity,
     decreaseQuantity,
-    isPureVegOnly
+    isPureVegOnly,
+    showToast
   } = useContext(CartContext);
   const { wishlist, addToWishlist, removeFromWishlist } = useContext(WishlistContext);
 
   const [foodsList, setFoodsList] = useState(localFoods);
   const [loading, setLoading] = useState(true);
   const [activeModalFood, setActiveModalFood] = useState(null);
+  const [sizzlePreviewFood, setSizzlePreviewFood] = useState(null);
 
   useEffect(() => {
     async function loadFoods() {
@@ -143,7 +147,7 @@ function PopularFoods({ searchTerm, selectedCategory, activeFilter }) {
                 {/* Dish Artwork */}
                 <div
                   className="food-image-wrapper"
-                  onClick={() => food.customizable && setActiveModalFood(foodObj)}
+                  onClick={() => navigate(`/product/${food.id}`)}
                 >
                   <img
                     src={displayImage}
@@ -156,6 +160,19 @@ function PopularFoods({ searchTerm, selectedCategory, activeFilter }) {
                         "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80";
                     }}
                   />
+                  {food.videoUrl && (
+                    <button
+                      className="card-video-pill-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSizzlePreviewFood(foodObj);
+                      }}
+                      title="Watch Sizzle Video"
+                    >
+                      <Play size={10} fill="#ffffff" color="#ffffff" />
+                      <span>Sizzle</span>
+                    </button>
+                  )}
                 </div>
 
                 {/* Dish Info */}
@@ -172,7 +189,7 @@ function PopularFoods({ searchTerm, selectedCategory, activeFilter }) {
 
                   <h3
                     className="food-name"
-                    onClick={() => food.customizable && setActiveModalFood(foodObj)}
+                    onClick={() => navigate(`/product/${food.id}`)}
                   >
                     {food.name}
                   </h3>
@@ -233,6 +250,65 @@ function PopularFoods({ searchTerm, selectedCategory, activeFilter }) {
           isOpen={!!activeModalFood}
           onClose={() => setActiveModalFood(null)}
         />
+      )}
+
+      {/* Sizzle Video Quick Lightbox */}
+      {sizzlePreviewFood && (
+        <div className="sizzle-lightbox-overlay" onClick={() => setSizzlePreviewFood(null)}>
+          <div className="sizzle-lightbox-container" onClick={(e) => e.stopPropagation()}>
+            <button
+              className="sizzle-lightbox-close"
+              onClick={() => setSizzlePreviewFood(null)}
+              aria-label="Close"
+            >
+              <X size={18} />
+            </button>
+
+            <div className="sizzle-video-box">
+              <video
+                src={sizzlePreviewFood.videoUrl}
+                autoPlay
+                controls
+                loop
+                playsInline
+                className="sizzle-modal-video"
+              />
+            </div>
+
+            <div className="sizzle-lightbox-info">
+              <div className="sizzle-title-row">
+                <div>
+                  <span className="sizzle-badge"><Flame size={12} /> CHEF SIZZLE REEL</span>
+                  <h3>{sizzlePreviewFood.name}</h3>
+                  <p>{sizzlePreviewFood.restaurantName || "FoodieGo Kitchen"}</p>
+                </div>
+                <div className="sizzle-price-tag">{sizzlePreviewFood.price}</div>
+              </div>
+
+              <div className="sizzle-cta-actions">
+                <button
+                  className="sizzle-order-btn"
+                  onClick={() => {
+                    addToCart(sizzlePreviewFood);
+                    showToast(`Added ${sizzlePreviewFood.name} to cart!`, "success");
+                    setSizzlePreviewFood(null);
+                  }}
+                >
+                  <ShoppingBag size={15} /> Add to Cart • {sizzlePreviewFood.price}
+                </button>
+                <button
+                  className="sizzle-full-btn"
+                  onClick={() => {
+                    navigate(`/product/${sizzlePreviewFood.id}`);
+                    setSizzlePreviewFood(null);
+                  }}
+                >
+                  View Details & 360°
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </section>
   );

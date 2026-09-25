@@ -59,21 +59,21 @@ function UserAccount() {
   const navigate = useNavigate();
 
   // Profile Edit State
-  const [editName, setEditName] = useState(user?.name || "Alex Morgan");
-  const [editEmail, setEditEmail] = useState(user?.email || "alex.morgan@foodiego.com");
-  const [editPhone, setEditPhone] = useState(user?.phone || "9876543210");
-  const [twoFactorAuth, setTwoFactorAuth] = useState(true);
+  const [editName, setEditName] = useState(user?.name || "");
+  const [editEmail, setEditEmail] = useState(user?.email || "");
+  const [editPhone, setEditPhone] = useState(user?.phone || "");
+  const [twoFactorAuth, setTwoFactorAuth] = useState(false);
 
   // New Address Modal State
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [newAddrTag, setNewAddrTag] = useState("Home");
-  const [newAddrName, setNewAddrName] = useState(user?.name || "Alex Morgan");
-  const [newAddrPhone, setNewAddrPhone] = useState(user?.phone || "9876543210");
+  const [newAddrName, setNewAddrName] = useState(user?.name || "");
+  const [newAddrPhone, setNewAddrPhone] = useState(user?.phone || "");
   const [newAddrHouse, setNewAddrHouse] = useState("");
   const [newAddrStreet, setNewAddrStreet] = useState("");
-  const [newAddrCity, setNewAddrCity] = useState("Noida");
-  const [newAddrState, setNewAddrState] = useState("Uttar Pradesh");
-  const [newAddrPin, setNewAddrPin] = useState("201309");
+  const [newAddrCity, setNewAddrCity] = useState("");
+  const [newAddrState, setNewAddrState] = useState("");
+  const [newAddrPin, setNewAddrPin] = useState("");
 
   // Wallet State
   const [walletBalance, setWalletBalance] = useState(350);
@@ -87,8 +87,8 @@ function UserAccount() {
       return [
         {
           id: "FGO-8921",
-          customerName: "Alex Morgan",
-          deliveryAddress: "Flat 402, Sunshine Heights, Sector 62, Noida (Home)",
+          customerName: "FoodieGo User",
+          deliveryAddress: "Home (Sector 62, Noida)",
           paymentMethod: "UPI (Google Pay)",
           total: 598,
           status: "Out for Delivery",
@@ -101,8 +101,8 @@ function UserAccount() {
         },
         {
           id: "FGO-7612",
-          customerName: "Alex Morgan",
-          deliveryAddress: "Tower B, Cyber City, DLF Phase 2, Gurugram (Work)",
+          customerName: "FoodieGo User",
+          deliveryAddress: "Work (Gurugram)",
           paymentMethod: "Credit Card (Visa •••• 6512)",
           total: 428,
           status: "Delivered",

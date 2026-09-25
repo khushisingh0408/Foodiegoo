@@ -25,8 +25,8 @@ function OrderSuccess() {
     } else {
       setOrder({
         id: orderId || "FGO-8921",
-        customerName: "Alex Morgan",
-        deliveryAddress: "Flat 402, Sunshine Heights, Sector 62, Noida",
+        customerName: "FoodieGo Customer",
+        deliveryAddress: "Selected Delivery Address",
         paymentMethod: "UPI (Google Pay)",
         total: 598,
         items: [

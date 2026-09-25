@@ -1,5 +1,6 @@
-import { useState, useEffect, useContext, useRef } from "react";
+import { useState, useEffect, useContext, useRef, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
+import api from "../services/api";
 import {
   Bike,
   CookingPot,
@@ -21,7 +22,13 @@ import {
   DoorClosed,
   Heart,
   Sparkles,
-  Check
+  Check,
+  RefreshCw,
+  Radio,
+  Volume2,
+  VolumeX,
+  CheckCheck,
+  AlertCircle
 } from "lucide-react";
 import { CartContext } from "../context/CartContext";
 import "../css/OrderTracking.css";
@@ -29,49 +36,80 @@ import "../css/OrderTracking.css";
 const stages = [
   {
     step: 1,
+    statusKey: "Order Placed",
     title: "Order Confirmed",
-    desc: "Your order has been received and verified by the restaurant.",
-    time: "2 mins ago"
+    desc: "Your order has been received and verified by the kitchen.",
+    time: "2 mins ago",
+    icon: Store
   },
   {
     step: 2,
+    statusKey: "Preparing",
     title: "Kitchen Preparing Food",
-    desc: "Chef is cooking your fresh and hot meal with premium ingredients.",
-    time: "Just now"
+    desc: "Chef is cooking your fresh and hot gourmet meal.",
+    time: "In Kitchen",
+    icon: CookingPot
   },
   {
     step: 3,
-    title: "Partner Picked Up Order",
-    desc: "Delivery partner Rahul Sharma has picked up your parcel.",
-    time: "In 5 mins"
+    statusKey: "Out for Delivery",
+    title: "Partner Picked Up & On the Way",
+    desc: "Delivery partner Rahul Sharma is riding towards your destination.",
+    time: "On the Way",
+    icon: Bike
   },
   {
     step: 4,
-    title: "Out for Delivery",
-    desc: "Your delivery partner is navigating through traffic towards your home.",
-    time: "In 12 mins"
-  },
-  {
-    step: 5,
-    title: "Order Delivered",
-    desc: "Package delivered safely. Enjoy your hot and delicious food!",
-    time: "Completed"
+    statusKey: "Delivered",
+    title: "Order Delivered Safely",
+    desc: "Package delivered. Enjoy your hot and fresh food!",
+    time: "Completed",
+    icon: CheckCircle2
   }
 ];
+
+// Web Audio synthesizer for milestone notifications
+function playTrackingChime() {
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+    if (ctx.state === "suspended") ctx.resume();
+
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
+    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15); // A5
+    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.45);
+  } catch {}
+}
 
 function OrderTracking() {
   const { orderId } = useParams();
   const { activeTrackingOrder, showToast } = useContext(CartContext);
 
+  const [dbOrder, setDbOrder] = useState(null);
   const [progress, setProgress] = useState(25); // 0 - 100
-  const [currentStageIndex, setCurrentStageIndex] = useState(1);
+  const [currentStageIndex, setCurrentStageIndex] = useState(0);
   const [isFastDemo, setIsFastDemo] = useState(false);
-  const [etaMinutes, setEtaMinutes] = useState(18);
+  const [etaMinutes, setEtaMinutes] = useState(22);
+  const [lastLiveSync, setLastLiveSync] = useState(new Date());
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+
+  const prevStatusRef = useRef(null);
 
   // Driver Chat Modal
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState([
-    { sender: "driver", text: "Hello! I am on my way to pick up your order from the restaurant.", time: "Just now" }
+    { sender: "driver", text: "Hello! I am assigned to your order. Will reach with hot food soon!", time: "Just now" }
   ]);
   const [inputMessage, setInputMessage] = useState("");
 
@@ -82,10 +120,95 @@ function OrderTracking() {
   const [feedbackText, setFeedbackText] = useState("");
   const [ratingSubmitted, setRatingSubmitted] = useState(false);
 
-  const order = activeTrackingOrder || {
+  // Map status string to index and percentage
+  const mapStatusToProgress = useCallback((statusStr) => {
+    switch (statusStr) {
+      case "Order Placed":
+        setCurrentStageIndex(0);
+        setProgress(20);
+        setEtaMinutes(25);
+        break;
+      case "Preparing":
+        setCurrentStageIndex(1);
+        setProgress(50);
+        setEtaMinutes(18);
+        break;
+      case "Out for Delivery":
+        setCurrentStageIndex(2);
+        setProgress(80);
+        setEtaMinutes(8);
+        break;
+      case "Delivered":
+        setCurrentStageIndex(3);
+        setProgress(100);
+        setEtaMinutes(0);
+        setShowRatingModal(true);
+        break;
+      case "Cancelled":
+        setProgress(0);
+        setEtaMinutes(0);
+        break;
+      default:
+        setCurrentStageIndex(0);
+        setProgress(20);
+        setEtaMinutes(25);
+    }
+  }, []);
+
+  // Fetch real order from SQL Database
+  const fetchOrderFromDb = useCallback(async () => {
+    if (!orderId) return;
+    try {
+      const res = await api.get(`/orders/${orderId}`);
+      if (res.success && res.order) {
+        setDbOrder(res.order);
+        setLastLiveSync(new Date());
+
+        const newStatus = res.order.status;
+        if (prevStatusRef.current && prevStatusRef.current !== newStatus) {
+          if (soundEnabled) playTrackingChime();
+          showToast(`Order status updated to "${newStatus}"!`, "info");
+        }
+        prevStatusRef.current = newStatus;
+        mapStatusToProgress(newStatus);
+      }
+    } catch (err) {
+      console.warn("Could not fetch order from DB:", err);
+    }
+  }, [orderId, soundEnabled, showToast, mapStatusToProgress]);
+
+  useEffect(() => {
+    fetchOrderFromDb();
+    // Fast real-time poll every 2.5 seconds for instant admin status updates
+    const interval = setInterval(fetchOrderFromDb, 2500);
+    return () => clearInterval(interval);
+  }, [fetchOrderFromDb]);
+
+  // Direct Live Status Change Handler (Syncs directly with backend SQL database)
+  const handleUpdateStatusLive = async (targetStatus) => {
+    if (!orderId || isUpdatingStatus) return;
+    setIsUpdatingStatus(true);
+    try {
+      const res = await api.patch(`/orders/${orderId}/status`, { status: targetStatus });
+      if (res.success) {
+        if (soundEnabled) playTrackingChime();
+        mapStatusToProgress(targetStatus);
+        setDbOrder((prev) => (prev ? { ...prev, status: targetStatus } : prev));
+        showToast(`Order status changed to "${targetStatus}" in database!`, "success");
+      }
+    } catch (err) {
+      // Local fallback
+      mapStatusToProgress(targetStatus);
+      showToast(`Updated to ${targetStatus}`, "info");
+    } finally {
+      setIsUpdatingStatus(false);
+    }
+  };
+
+  const order = dbOrder || activeTrackingOrder || {
     id: orderId || "FGO-8921",
-    customerName: "Alex Morgan",
-    deliveryAddress: "Flat 402, Sunshine Heights, Sector 62, Noida",
+    customerName: "FoodieGo Customer",
+    deliveryAddress: "Selected Delivery Address",
     items: [
       { name: "Margherita Pizza (Large)", quantity: 1, price: "₹449" },
       { name: "Peri Peri Masala Fries", quantity: 1, price: "₹169" },
@@ -96,8 +219,10 @@ function OrderTracking() {
     restaurantName: "La Pino'z Pizza"
   };
 
-  // Timer interval for real-time progress simulation
+  // Timer interval for demo mode simulation if not connected to live DB
   useEffect(() => {
+    if (dbOrder) return; // Prioritize real database status
+
     const intervalTime = isFastDemo ? 1200 : 8000;
     const interval = setInterval(() => {
       setProgress((prev) => {
@@ -125,7 +250,7 @@ function OrderTracking() {
     }, intervalTime);
 
     return () => clearInterval(interval);
-  }, [isFastDemo]);
+  }, [isFastDemo, dbOrder]);
 
   const handleSendMessage = (e) => {
     e.preventDefault();
@@ -173,31 +298,136 @@ function OrderTracking() {
 
   return (
     <div className="order-tracking-page">
-      {/* Top Bar with Demo Toggle */}
+      {/* Top Bar with Live Sync & Controls */}
       <div className="tracking-top-bar">
         <div>
           <h1 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             Live Order Tracking <Bike size={24} color="#ff4757" />
           </h1>
-          <p>Order #{order.id} • {order.restaurantName || "FoodieGo Kitchen"}</p>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", marginTop: "4px" }}>
+            <p style={{ margin: 0 }}>Order #{order.id} • {order.restaurantName || "FoodieGo Kitchen"}</p>
+            <span style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "5px",
+              fontSize: "0.74rem",
+              fontWeight: 700,
+              background: "#ecfdf5",
+              color: "#059669",
+              padding: "2px 8px",
+              borderRadius: "12px",
+              border: "1px solid #a7f3d0"
+            }}>
+              <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#10b981", display: "inline-block" }} />
+              Live DB Status: {dbOrder?.status || "In Transit"}
+            </span>
+            <small style={{ color: "#94a3b8", fontSize: "0.72rem" }}>
+              Synced {lastLiveSync.toLocaleTimeString()}
+            </small>
+          </div>
         </div>
 
-        <div className="demo-toggle-wrap">
+        <div className="tracking-controls-wrap" style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+          {/* Sound Toggle */}
+          <button
+            className="demo-btn"
+            onClick={() => {
+              setSoundEnabled(!soundEnabled);
+              if (!soundEnabled) playTrackingChime();
+              showToast(soundEnabled ? "Sound muted" : "Live Sound Alerts Enabled!", "info");
+            }}
+            title={soundEnabled ? "Mute audio alerts" : "Enable sound alerts"}
+            style={{ padding: "8px 12px" }}
+          >
+            {soundEnabled ? <Volume2 size={16} color="#ff5200" /> : <VolumeX size={16} color="#94a3b8" />}
+          </button>
+
+          {/* Manual Refresh */}
+          <button
+            className="demo-btn"
+            onClick={() => {
+              fetchOrderFromDb();
+              showToast("Synced with database!", "success");
+            }}
+            title="Sync latest live status from database"
+            style={{ padding: "8px 12px" }}
+          >
+            <RefreshCw size={15} />
+          </button>
+
+          {/* Fast Demo Toggle */}
           <button
             className={`demo-btn ${isFastDemo ? "active" : ""}`}
             onClick={() => {
               setIsFastDemo(!isFastDemo);
               showToast(
                 !isFastDemo
-                  ? "Fast-Forward Demo Mode ON (Full delivery cycle in 10s)"
+                  ? "Fast-Forward Simulation Mode ON (10s cycle)"
                   : "Normal Real-Time Speed ON",
                 "info"
               );
             }}
             style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
           >
-            {isFastDemo ? <><Zap size={14} /> Fast Demo ON</> : <><Play size={14} /> Test Fast Demo</>}
+            {isFastDemo ? <><Zap size={14} /> Fast Sim ON</> : <><Play size={14} /> Simulate Fast-Forward</>}
           </button>
+        </div>
+      </div>
+
+      {/* Live Interactive Status Controller Bar */}
+      <div className="tracking-status-controller-bar" style={{
+        background: "#ffffff",
+        border: "1.5px solid #fed7aa",
+        borderRadius: "16px",
+        padding: "14px 18px",
+        marginBottom: "24px",
+        boxShadow: "0 4px 16px rgba(255, 82, 0, 0.06)"
+      }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px", marginBottom: "10px" }}>
+          <strong style={{ fontSize: "0.86rem", color: "#9a3412", display: "inline-flex", alignItems: "center", gap: "6px" }}>
+            <Radio size={14} color="#ea580c" /> Interactive Status Controller (Live SQL DB Sync)
+          </strong>
+          <small style={{ color: "#64748b", fontSize: "0.75rem" }}>
+            Click any stage to update real-time delivery status in Database
+          </small>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: "8px" }}>
+          {[
+            { label: "1. Placed", status: "Order Placed", icon: Store },
+            { label: "2. Preparing", status: "Preparing", icon: CookingPot },
+            { label: "3. Out for Delivery", status: "Out for Delivery", icon: Bike },
+            { label: "4. Delivered", status: "Delivered", icon: CheckCircle2 }
+          ].map((btn) => {
+            const isCurrentActive = (dbOrder?.status || stages[currentStageIndex]?.statusKey) === btn.status;
+            const BtnIcon = btn.icon;
+            return (
+              <button
+                key={btn.status}
+                disabled={isUpdatingStatus}
+                onClick={() => handleUpdateStatusLive(btn.status)}
+                style={{
+                  padding: "8px 12px",
+                  borderRadius: "10px",
+                  border: isCurrentActive ? "2px solid #ff5200" : "1.5px solid #e2e8f0",
+                  background: isCurrentActive ? "#ff5200" : "#f8fafc",
+                  color: isCurrentActive ? "#ffffff" : "#334155",
+                  fontWeight: 700,
+                  fontSize: "0.8rem",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "6px",
+                  transition: "all 0.2s"
+                }}
+              >
+                <BtnIcon size={14} />
+                <span>{btn.label}</span>
+                {isCurrentActive && <Check size={13} strokeWidth={3} />}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -242,7 +472,7 @@ function OrderTracking() {
               {/* Restaurant Marker */}
               <div className="map-marker restaurant-marker" style={{ left: "40px", top: "140px" }}>
                 <span className="marker-icon"><Store size={18} color="#ff4757" /></span>
-                <span className="marker-label">Restaurant</span>
+                <span className="marker-label">Kitchen</span>
               </div>
 
               {/* Customer Home Marker */}
@@ -334,6 +564,7 @@ function OrderTracking() {
               {stages.map((st, idx) => {
                 const isCompleted = idx <= currentStageIndex;
                 const isCurrent = idx === currentStageIndex;
+                const StageIcon = st.icon;
 
                 return (
                   <div
@@ -346,7 +577,10 @@ function OrderTracking() {
 
                     <div className="timeline-content">
                       <div className="timeline-title-row">
-                        <h4>{st.title}</h4>
+                        <h4 style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                          <StageIcon size={16} color={isCurrent ? "#ff5200" : isCompleted ? "#10b981" : "#94a3b8"} />
+                          {st.title}
+                        </h4>
                         <span className="stage-time">{st.time}</span>
                       </div>
                       <p>{st.desc}</p>
@@ -364,10 +598,17 @@ function OrderTracking() {
             </div>
           </div>
 
-          {/* Order Summary Dropdown/Card */}
+          {/* Order Summary Card */}
           <div className="order-receipt-card">
             <div className="receipt-header">
-              <h3>Items in this Order ({order.items?.length || 0})</h3>
+              <div>
+                <h3 style={{ margin: "0 0 2px" }}>Receipt breakdown ({order.items?.length || 0} items)</h3>
+                {order.razorpayPaymentId && (
+                  <small style={{ color: "#16a34a", fontWeight: 700, display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                    <CheckCircle2 size={12} /> Razorpay ID: {order.razorpayPaymentId}
+                  </small>
+                )}
+              </div>
               <span className="payment-pill">{order.paymentMethod || "UPI"}</span>
             </div>
 

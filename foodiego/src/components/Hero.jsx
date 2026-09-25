@@ -4,7 +4,6 @@ import {
   Flame,
   Truck,
   Copy,
-  Search,
   Leaf,
   Star,
   Zap,
@@ -54,7 +53,7 @@ const promoBanners = [
   }
 ];
 
-function Hero({ searchTerm, setSearchTerm, activeFilter, setActiveFilter }) {
+function Hero({ activeFilter, setActiveFilter }) {
   const navigate = useNavigate();
   const { isPureVegOnly, updatePureVegFilter, showToast } = useContext(CartContext);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -66,13 +65,6 @@ function Hero({ searchTerm, setSearchTerm, activeFilter, setActiveFilter }) {
     }, 4500);
     return () => clearInterval(timer);
   }, []);
-
-  const handleSearch = () => {
-    const value = searchTerm.trim();
-    if (value !== "") {
-      navigate(`/search?search=${encodeURIComponent(value)}`);
-    }
-  };
 
   const banner = promoBanners[currentSlide];
 
@@ -137,20 +129,8 @@ function Hero({ searchTerm, setSearchTerm, activeFilter, setActiveFilter }) {
         </div>
       </div>
 
-      {/* Quick Search & Filter Pills Bar */}
+      {/* Quick Filter Chips Bar */}
       <div className="hero-filter-bar">
-        <div className="hero-search-inline">
-          <Search size={16} color="#94a3b8" />
-          <input
-            type="text"
-            placeholder="Search your favorite food or restaurant..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-          />
-          <button onClick={handleSearch}>Search</button>
-        </div>
-
         <div className="quick-filter-chips">
           <button
             className={`filter-chip ${isPureVegOnly ? "active-green" : ""}`}

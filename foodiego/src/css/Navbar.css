@@ -1106,15 +1106,21 @@
   }
 
   .mobile-cart-btn {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1e293b;
   }
 
   .mobile-hamburger {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .mobile-drawer {
     display: block;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   }
 
   .location-pill-btn {
@@ -1123,5 +1129,88 @@
 
   .nav-center-search {
     display: none;
+  }
+
+  .navbar {
+    padding: 10px 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .top-announcement-bar {
+    padding: 5px 12px;
+    font-size: 11px;
+  }
+
+  .announcement-right-links {
+    gap: 8px;
+  }
+
+  .navbar {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .logo-icon-wrap {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+  }
+
+  .logo-icon-wrap svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .logo-text h2 {
+    font-size: 19px;
+  }
+
+  .veg-switch-btn {
+    padding: 4px 8px;
+    font-size: 10px;
+    gap: 4px;
+  }
+
+  .switch-knob-track {
+    width: 24px;
+    height: 14px;
+  }
+
+  .switch-knob {
+    width: 10px;
+    height: 10px;
+  }
+
+  .veg-switch-btn.veg-active .switch-knob {
+    transform: translateX(10px);
+  }
+
+  .mobile-search-strip {
+    padding: 6px 12px;
+  }
+
+  .mobile-search-suggestions {
+    left: 10px;
+    right: 10px;
+    padding: 10px;
+  }
+
+  .mobile-drawer {
+    padding: 14px 16px 24px;
+  }
+}
+
+@media (max-width: 380px) {
+  .desktop-tagline {
+    display: none;
+  }
+
+  .veg-txt {
+    display: none;
+  }
+
+  .navbar {
+    padding: 6px 10px;
   }
 }

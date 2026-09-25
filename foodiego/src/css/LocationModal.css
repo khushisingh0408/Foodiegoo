@@ -248,7 +248,7 @@
     max-height: 85vh;
     max-width: 100%;
     margin: 0;
-    padding: 20px 16px;
+    padding: 20px 16px max(24px, env(safe-area-inset-bottom));
     animation: locationSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 }

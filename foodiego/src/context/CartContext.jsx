@@ -4,32 +4,7 @@ import { calculateDiscount } from "../data/couponsData";
 
 export const CartContext = createContext();
 
-const initialAddresses = [
-  {
-    id: "addr-1",
-    tag: "Home",
-    isDefault: true,
-    fullName: "Alex Morgan",
-    mobile: "9876543210",
-    houseFlat: "Flat 402, Sunshine Heights",
-    street: "Sector 62, Electronic City",
-    city: "Noida",
-    state: "Uttar Pradesh",
-    pincode: "201309"
-  },
-  {
-    id: "addr-2",
-    tag: "Work",
-    isDefault: false,
-    fullName: "Alex Morgan",
-    mobile: "9876543210",
-    houseFlat: "Tower B, 5th Floor",
-    street: "Cyber City, DLF Phase 2",
-    city: "Gurugram",
-    state: "Haryana",
-    pincode: "122002"
-  }
-];
+const initialAddresses = [];
 
 const initialNotifications = [
   {
@@ -43,30 +18,12 @@ const initialNotifications = [
   },
   {
     id: "notif-2",
-    title: "Order #FGO-8921 Shipped",
-    message: "Your rider Rahul Sharma is on the way to your location with your meal.",
+    title: "Order Placed Successfully",
+    message: "Welcome to FoodieGo! Hot and fresh gourmet food delivered to your door.",
     time: "25m ago",
     category: "orders",
     read: false,
-    link: "/track/FGO-8921"
-  },
-  {
-    id: "notif-3",
-    title: "Price Drop Alert!",
-    message: "Paneer Tikka Pizza dropped by ₹50! Grab yours before the sale ends.",
-    time: "2h ago",
-    category: "price_drop",
-    read: true,
-    link: "/product/3"
-  },
-  {
-    id: "notif-4",
-    title: "Free Delivery Unlocked!",
-    message: "Enjoy Zero Delivery fee on your next 3 orders above ₹199 using code FREEDEL.",
-    time: "1d ago",
-    category: "offers",
-    read: true,
-    link: "/offers"
+    link: "/shop"
   }
 ];
 
@@ -96,17 +53,29 @@ export function CartProvider({ children }) {
   const [deliveryLocation, setDeliveryLocation] = useState(() => {
     const saved = localStorage.getItem("foodieGoLocation");
     return saved ? JSON.parse(saved) : {
-      tag: "Home",
-      address: "Flat 402, Sunshine Heights, Sector 62, Noida",
-      city: "Noida, Uttar Pradesh",
-      pincode: "201309"
+      tag: "Current Location",
+      address: "Select your delivery location",
+      city: "Your City",
+      pincode: ""
     };
   });
 
   // Saved Addresses
   const [savedAddresses, setSavedAddresses] = useState(() => {
-    const saved = localStorage.getItem("foodieGoAddresses");
-    return saved ? JSON.parse(saved) : initialAddresses;
+    try {
+      const saved = localStorage.getItem("foodieGoAddresses");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // Filter out legacy dummy Alex Morgan addresses
+        const filtered = Array.isArray(parsed)
+          ? parsed.filter((a) => a.fullName !== "Alex Morgan" && a.id !== "addr-1" && a.id !== "addr-2")
+          : [];
+        return filtered;
+      }
+      return [];
+    } catch {
+      return [];
+    }
   });
 
   // Active Live Tracking Order

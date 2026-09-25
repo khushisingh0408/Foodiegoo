@@ -3,6 +3,7 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Categories from "./components/Categories";
+import FoodMediaReels from "./components/FoodMediaReels";
 import FlashSaleSection from "./components/FlashSaleSection";
 import Restaurants from "./components/Restaurants";
 import BrandShowcase from "./components/BrandShowcase";
@@ -34,6 +35,16 @@ import MobileBottomNav from "./components/MobileBottomNav";
 import SocialProofToast from "./components/SocialProofToast";
 import CompareDrawer from "./components/CompareDrawer";
 
+// Admin Panel Suite
+import AdminRoute from "./components/admin/AdminRoute";
+import AdminLayout from "./components/admin/AdminLayout";
+import AdminDashboard from "./components/admin/AdminDashboard";
+import AdminOrders from "./components/admin/AdminOrders";
+import AdminMenu from "./components/admin/AdminMenu";
+import AdminUsers from "./components/admin/AdminUsers";
+import AdminCoupons from "./components/admin/AdminCoupons";
+import AdminSubscribers from "./components/admin/AdminSubscribers";
+
 function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -41,10 +52,8 @@ function Home() {
 
   return (
     <>
-      {/* 1. Hero with Omnisearch & Quick Filters */}
+      {/* 1. Hero with Quick Filters */}
       <Hero
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
         activeFilter={activeFilter}
         setActiveFilter={setActiveFilter}
       />
@@ -55,7 +64,10 @@ function Home() {
         setSelectedCategory={setSelectedCategory}
       />
 
-      {/* 3. Limited-Time Flash Sale with Live Countdown */}
+      {/* 3. Food Media Stories & Kitchen Sizzle Reels */}
+      <FoodMediaReels />
+
+      {/* 4. Limited-Time Flash Sale with Live Countdown */}
       <FlashSaleSection />
 
       {/* 4. Promotional Deals & BOGO Banners */}
@@ -98,6 +110,35 @@ function ScrollToTop() {
 }
 
 function App() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith("/admin");
+
+  if (isAdminRoute) {
+    return (
+      <div className="admin-app-root">
+        <ScrollToTop />
+        <Routes>
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminLayout />
+              </AdminRoute>
+            }
+          >
+            <Route index element={<AdminDashboard />} />
+            <Route path="orders" element={<AdminOrders />} />
+            <Route path="menu" element={<AdminMenu />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="coupons" element={<AdminCoupons />} />
+            <Route path="subscribers" element={<AdminSubscribers />} />
+          </Route>
+        </Routes>
+        <Toast />
+      </div>
+    );
+  }
+
   return (
     <div className="app-layout">
       <ScrollToTop />

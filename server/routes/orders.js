@@ -79,7 +79,17 @@ router.get("/:id", (req, res) => {
 // POST /api/orders (Create new order)
 router.post("/", optionalAuth, (req, res) => {
   try {
-    const { customerName, customerMobile, deliveryAddress, paymentMethod, items, total } = req.body;
+    const {
+      customerName,
+      customerMobile,
+      deliveryAddress,
+      paymentMethod,
+      items,
+      total,
+      paymentStatus,
+      razorpayOrderId,
+      razorpayPaymentId
+    } = req.body;
 
     if (!customerName || !customerMobile || !deliveryAddress || !items || items.length === 0) {
       return res.status(400).json({
@@ -90,12 +100,13 @@ router.post("/", optionalAuth, (req, res) => {
 
     const userId = req.user ? req.user.id : null;
     const payment = paymentMethod || "Cash on Delivery";
+    const statusOfPayment = paymentStatus || (payment.toLowerCase().includes("cash") ? "Pending (COD)" : "Paid");
     const totalAmount = Number(total) || 0;
 
     // Insert Order
     const insertOrderStmt = db.prepare(`
-      INSERT INTO orders (user_id, customer_name, customer_mobile, delivery_address, payment_method, total_amount, status)
-      VALUES (?, ?, ?, ?, ?, ?, 'Order Placed')
+      INSERT INTO orders (user_id, customer_name, customer_mobile, delivery_address, payment_method, payment_status, razorpay_order_id, razorpay_payment_id, total_amount, status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Order Placed')
     `);
 
     const result = insertOrderStmt.run(
@@ -104,6 +115,9 @@ router.post("/", optionalAuth, (req, res) => {
       customerMobile.trim(),
       deliveryAddress.trim(),
       payment,
+      statusOfPayment,
+      razorpayOrderId || null,
+      razorpayPaymentId || null,
       totalAmount
     );
 
@@ -144,6 +158,9 @@ router.post("/", optionalAuth, (req, res) => {
         customerMobile: createdOrder.customer_mobile,
         deliveryAddress: createdOrder.delivery_address,
         paymentMethod: createdOrder.payment_method,
+        paymentStatus: createdOrder.payment_status,
+        razorpayOrderId: createdOrder.razorpay_order_id,
+        razorpayPaymentId: createdOrder.razorpay_payment_id,
         total: createdOrder.total_amount,
         status: createdOrder.status,
         date: createdOrder.created_at,

@@ -1019,18 +1019,20 @@
 }
 
 @media (max-width: 768px) {
-  .account-page-wrapper {
+  .user-account-page {
     padding: 16px 12px 90px;
   }
 
   .account-sidebar {
     padding: 16px 14px;
     border-radius: 16px;
+    width: 100%;
   }
 
   .sidebar-nav-list {
     flex-direction: row;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     padding-bottom: 4px;
     gap: 8px;
@@ -1040,65 +1042,66 @@
     display: none;
   }
 
-  .nav-tab-btn {
+  .sidebar-nav-item {
     white-space: nowrap;
     padding: 8px 14px;
     font-size: 12.5px;
     border-radius: 999px;
     background: #f8fafc;
     border: 1px solid #e2e8f0;
+    flex-shrink: 0;
+    width: auto;
   }
 
-  .nav-tab-btn.active {
+  .sidebar-nav-item.active {
     background: #ff5200;
     color: #ffffff;
     border-color: #ff5200;
   }
 
-  .nav-tab-btn span {
-    font-size: 14px;
+  .sidebar-nav-item.active .nav-item-icon {
+    color: #ffffff;
   }
 
-  .account-main-content {
+  .sidebar-logout-btn {
+    display: none;
+  }
+
+  .account-content-main {
     padding: 18px 14px;
     border-radius: 16px;
   }
 
-  .overview-stats-grid {
+  .metric-cards-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
   }
 
-  .stat-card-acc {
-    padding: 14px;
+  .profile-form-grid {
+    grid-template-columns: 1fr;
   }
 
-  .order-item-acc {
-    padding: 14px;
+  .profile-form-grid .save-profile-btn {
+    grid-column: span 1;
   }
 
-  .order-top-row {
+  .pass-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .security-toggle-row {
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
+    gap: 12px;
   }
 
-  .order-actions-row {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-  }
-
-  .order-actions-row .reorder-btn,
-  .order-actions-row .track-btn,
-  .order-actions-row .invoice-btn {
-    width: 100%;
-    text-align: center;
+  .toggle-2fa-btn {
+    align-self: flex-start;
   }
 }
 
 @media (max-width: 480px) {
-  .overview-stats-grid {
+  .metric-cards-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1120,4 +1123,21 @@
     width: 100%;
     box-sizing: border-box;
   }
+
+  .order-footer-details {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .order-btns-group {
+    width: 100%;
+  }
+
+  .order-btns-group button,
+  .order-btns-group a {
+    flex: 1;
+    text-align: center;
+  }
 }
+

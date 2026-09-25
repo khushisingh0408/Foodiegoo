@@ -46,3 +46,16 @@ export function optionalAuth(req, res, next) {
 
   next();
 }
+
+// Require Admin Role Middleware
+export function requireAdmin(req, res, next) {
+  authenticateToken(req, res, () => {
+    if (!req.user || req.user.role !== "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden: Administrator access required."
+      });
+    }
+    next();
+  });
+}

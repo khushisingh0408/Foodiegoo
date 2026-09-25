@@ -5,17 +5,20 @@ import "../css/AppDownloadSection.css";
 function AppDownloadSection() {
   const [phone, setPhone] = useState("");
   const [linkSent, setLinkSent] = useState(false);
+  const [sentNumber, setSentNumber] = useState("");
 
   const handleSendLink = (e) => {
     e.preventDefault();
     if (phone.length === 10) {
+      setSentNumber(phone);
       setLinkSent(true);
       setTimeout(() => {
         setLinkSent(false);
-        setPhone("");
-      }, 4000);
+      }, 7000);
     }
   };
+
+  const downloadUrl = "https://foodiego.com/app/download";
 
   return (
     <section className="app-download-section">
@@ -59,7 +62,7 @@ function AppDownloadSection() {
               <button type="submit" className="send-link-btn">
                 {linkSent ? (
                   <>
-                    <CheckCircle2 size={13} className="inline-icon" /> Link Sent!
+                    <CheckCircle2 size={13} className="inline-icon" /> Sent!
                   </>
                 ) : (
                   <>
@@ -69,6 +72,27 @@ function AppDownloadSection() {
               </button>
             </div>
           </form>
+
+          {/* Realistic SMS Message Preview */}
+          {linkSent && (
+            <div style={{
+              background: "rgba(16, 185, 129, 0.15)",
+              border: "1px solid #10b981",
+              borderRadius: "12px",
+              padding: "12px 16px",
+              marginBottom: "20px",
+              fontSize: "0.85rem",
+              color: "#f8fafc",
+              animation: "fadeIn 0.3s ease-out"
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 700, color: "#10b981", marginBottom: "4px" }}>
+                <CheckCircle2 size={16} /> SMS Dispatched to +91-{sentNumber}
+              </div>
+              <div style={{ color: "#cbd5e1", fontSize: "0.8rem", lineHeight: 1.4 }}>
+                <strong>Message:</strong> "Hey Foodie! Download the official FoodieGo App here for exclusive discounts: <a href={downloadUrl} target="_blank" rel="noreferrer" style={{ color: "#ff6b00", fontWeight: 700 }}>{downloadUrl}</a>"
+              </div>
+            </div>
+          )}
 
           <div className="store-buttons-row">
             <a href="#ios" onClick={(e) => e.preventDefault()} className="store-btn">
